@@ -1,0 +1,13 @@
+{
+    "seats": {
+        "A1": {
+            "status": "reserved"
+        },
+        "B9": {
+            "status": "reserved"
+        },
+        "F7": {
+            "status": "unavailable"
+        }
+    }
+}
