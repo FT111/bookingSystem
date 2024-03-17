@@ -1,0 +1,110 @@
+{% extends 'layout.html' %} 
+
+{% block head %}
+
+<title>Dashboard</title>
+<script src="
+https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js
+"></script>
+<script src="../static/Dashboard.js"></script>
+<style>
+.card {
+    padding: 1rem;
+    border-radius: 1.5rem;
+ }
+ :root {
+    --rounded-box: 1.5rem;
+ }
+
+</style>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="flex flex-col items-left px-8 py-2 justify-center w-full h-full">
+    <h1 class="text-6xl font-bold">Dashboard</h1>
+    </div>
+
+<div class="grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-6 gap-4 w-full auto-rows-min h-screen p-4 auto-columns-max">
+    <div class="sm:col-span-2 card w-full bg-base-300 card-primary flex-col gap-5 ">
+    <div class="stats h-min w-full stats-vertical lg:stats-horizontal">
+  
+        <div class="stat ">
+            <div class="stat-title">Total Tickets Sales</div>
+            <div class="stat-value">89,400</div>
+            <div class="stat-desc">21% more than last month</div>
+        </div>
+        <div class="stat">
+            <div class="stat-title">Total Revenue</div>
+            <div class="stat-value">89,400</div>
+            <div class="stat-desc">21% more than last month</div>
+        </div>
+    </div>
+        <div class="stats stats-vertical lg:stats-horizontal">
+  
+        <div class="stat">
+            <div class="stat-title">Revenue Per Viewing</div>
+            <div class="stat-value">89,400</div>
+            <div class="stat-desc">21% more than last month</div>
+        </div>
+        <div class="stat">
+            <div class="stat-title">Seats Remaining</div>
+            <div class="stat-value">89,400</div>
+            <div class="stat-desc">21% more than last month</div>
+        </div>
+        </div> 
+    </div>
+
+    <div class="sm:col-span-3 bg-base-300 card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Card Title</h3>
+    </div>
+    </div>
+
+    <div class="sm:col-span-2 lg:col-span-1  bg-base-200 card card-primary order-first sm:order-none">
+    <div class="card-header">
+        <h3 class="card-title">Options</h3>
+    </div>
+    <div class="card-body p-3">
+        <div class="form-control">
+            <label class="cursor-pointer label">
+                <span class="label-text">Upcoming Viewings</span>
+                <input type="radio" class="radio radio-primary timeSelector" name="viewings" checked>
+            </label>
+            <label class="cursor-pointer label">
+                <span class="label-text">Past Viewings</span>
+                <input type="radio" class="radio radio-primary timeSelector" name="viewings">
+            </label>
+            <label class="cursor-pointer label">
+                <span><select id="viewingSelector" class="select select-sm select-bordered select-primary w-min">
+                    <option disabled selected>Select</option>
+                    <option>All</option>
+                    <option>Viewing 1</option>
+                    <option>Viewing 2</option>
+                    <option>Viewing 3</option>
+                </select></span>
+                <input type="radio" class="radio radio-primary timeSelector" name="viewings">
+            </label>
+
+        </div>
+    </div>
+    </div>
+
+    <div class="sm:col-span-3 bg-base-300 card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Ticket Sales</h3>
+        <script type="module" src="../static/barChart.js"></script>
+
+        <div class="w-full h-full"><canvas id="barChart1"></canvas></div>
+
+    </div>
+    </div>
+        <div class="sm:col-span-3 bg-base-300 card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Card Title</h3>
+    </div>
+    </div>
+</div>
+
+{% endblock %}

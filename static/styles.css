@@ -3,8 +3,16 @@ body {
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
+    transition-property: color;
+    transition-duration: 0.3s;
     font-variation-settings:
       "slnt" 0;
+}
+
+:root {
+    transition-property: color;
+    transition-duration: 0.3s;
+
 }
 
 .availableSeatCbx:hover > label > .openSeatIcon {
@@ -19,3 +27,26 @@ body {
 #continueBtn:disabled > svg {
   scale: 0;
   display: none; }
+
+.card-title {
+    color: slategray;
+}
+
+.navbar {
+  -webkit-mask: -webkit-gradient(
+    linear,
+    left 85%,
+    left 100%,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
+  mask: gradient(
+    linear,
+    left 85%,
+    left 100%,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
+
+
+}
