@@ -3,6 +3,7 @@ from queue import Queue
 import threading
 
 class DatabaseConnection:
+    
     def __init__(self, path:str) -> None:
         self.queue = Queue()
         self.path = path
@@ -15,51 +16,73 @@ class DatabaseConnection:
 
     def executeQueuedQueries(self):
         while True:
-            query, args = self.queue.get()
-            db = self.newConnection().cursor()
-            db.execute(query, args)
-            queryOutput = db.fetchall()
+            arguments = self.queue.get()
+            query = arguments[0]
+            args = arguments[1]
+            db = self.newConnection()
+            cursor = db.cursor()
+            
+            if args == ():
+                cursor.execute(query)
+            else:
+                cursor.execute(query, args)
+            db.commit()
+            queryOutput = cursor.fetchall()
             self.queue.task_done()
             db.close()
+
             return queryOutput
+
 
     def startHandler(self):
         for _ in range(10):
             threading.Thread(target=self.executeQueuedQueries, daemon=True).start()
 
-    def execute(self, query:str, args:tuple) -> None:
+    def execute(self, query:str, args:tuple=()) -> list:
+        print(f'Executing {query} with {args}')
         self.queue.put((query, args))
+        return self.executeQueuedQueries()
 
-    
-
-    # TODO FIX THIS BULLSHIT 
-    # omds
 
 
 class Database:
+
     def __init__(self, DatabaseConnection:object) -> None:
         self.cursor = DatabaseConnection
 
-
-    # Gets rows from the database - Reduces risk of SQL injection
-    def getRecords(self, table:str, column='*', where='') -> list:
-        query = f'SELECT {column} FROM {table}' 
-        query += f' WHERE ?' if where else ''
-        records = self.cursor.execute(query, (where,))
-        return records if records is not None else []
+    # def getRecords(self, table:str, column='*', where='') -> list:
+    #     query = f'SELECT {column} FROM {table}' 
+    #     where = where.split(' ') if where else ''
+    #     query += f' WHERE {where[0]} {where[1]} ?' if where else ''
+    #     records = self.cursor.execute(query, (where[2] if where[2] else '',))
+    #     return records if records is not None else []
     
-    def addRecords(self, table:str, values:tuple) -> None:
-        self.cursor.execute('INSERT INTO ? VALUES ?;', (table, values,))
+    # def addRecords(self, table:str, values:tuple) -> None:
+    #     query = f'INSERT INTO {table} VALUES (?);'
+    #     self.cursor.execute(query, values)
+        
+    def getAllViewings(self) -> list:
+        return self.cursor.execute('SELECT * FROM Viewings;')
     
-    def getPrices(self) -> list:
-        return self.getRecords('Prices')
+    def getUpcomingViewingIDs(self) -> list:
+        return self.cursor.execute("SELECT viewingID FROM Viewings WHERE datetime(viewingDate) >= datetime('now') ORDER BY viewingDate ASC;")
+    
+    def getTicketTypes(self) -> list:
+        return self.cursor.execute('SELECT * FROM ticketTypes')
     
     def getReservedSeats(self, viewingID) -> list:
-        return self.getRecords('Tickets', 'Seat', f'ViewingID = {viewingID}')
+        return self.cursor.execute('SELECT Seat FROM Tickets WHERE ViewingID = ?;', (viewingID,))
     
     def getUnavailableSeats(self, viewingID) -> list:
-        return self.getRecords('UnavailableSeats', 'Seat', f'ViewingID = {viewingID}')
+        return self.cursor.execute('SELECT seat FROM unavailableSeats WHERE ViewingID = ?;', (viewingID,))
+    
+    def getTicketByID(self, ticketID) -> list:
+        return self.cursor.execute('SELECT * FROM Tickets WHERE ID = ?;', (ticketID,))
+    
 
-    def getLastID(self, table:str) -> int:
-        self.cursor.execute('SELECT last_insert_rowid() FROM %s;', (table,))
-        return self.cursor.fetchone()[0]
+    def newTicket(self, ticket:object, customer:object, viewing:object) -> None:
+        self.cursor.execute('INSERT INTO Tickets VALUES (?, ?, ?, ?, ?);', (ticket.getID(), ticket.getSeatLocation(), ticket.getType(), customer.getID(), viewing.getID(),))
+
+    # def getLastID(self, table:str) -> int:
+    #     self.cursor.execute('SELECT last_insert_rowid() FROM ;', (table,))
+    #     return self.cursor.fetchone()[0]

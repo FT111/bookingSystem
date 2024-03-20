@@ -4,9 +4,11 @@ from email.mime.image import MIMEImage
 import smtplib
 import qrcode
 import random
+import uuid
+import os
 from flask import render_template
 
-class Prices:
+class TicketTypes:
     def __init__(self, Database) -> None:
         self.Prices = ()
         self.Database = Database
@@ -27,21 +29,16 @@ class Ticket:
         cls.Database = Database
 
     def __init__(self, ticketType: str, seatLocation: str) -> None:
-        self.id = 0
         self.ticketType = ticketType
         self.seatLocation = seatLocation
         self.qrCodeURL = None
 
-        # Generates a unique ID and ensures it is not already in use
-        while self.id is 0 or self.id in Ticket.Database.getRecords('Tickets', 'ticketID', f'ticketID = {self.id}'):
-            self.id = random.randint(9**7, 9**10)
+        self.id = str(uuid.uuid4().int)
     
-
-    
-    def getID(self) -> int:
+    def getID(self) -> str:
         return self.id
 
-    def getTicketType(self) -> str:
+    def getType(self) -> str:
         return self.ticketType
     
     def getSeatLocation(self) -> str:
@@ -67,8 +64,11 @@ class Ticket:
         qr.add_data(self.id)
         qr.make(fit=True)
         img = qr.make_image(fill_color="black", back_color="white")
-        self.qrCodeURL = f'./static/assets/qrCodes/{self.id}.png'
+        self.qrCodeURL = f'./static/assets/codes/{self.id}.png'
         img.save(self.qrCodeURL)
+        return self.qrCodeURL
+    
+    def getQR(self) -> str:
         return self.qrCodeURL
 
 
@@ -104,7 +104,7 @@ class Booking:
         else:
             for ticket in self.Tickets:
                 self.Viewing.submitTicket(ticket, self.Customer)
-                ticket.generateQR()
+                qr = ticket.generateQR()
 
 
         
@@ -139,5 +139,5 @@ class Bookings:
     def removeBooking(self, index:int) -> None:
         self.allBookings.pop(index, None)
 
-    def getBooking(self, index:int) -> object:
+    def getBookingByID(self, index:int) -> object:
         return self.allBookings[index]

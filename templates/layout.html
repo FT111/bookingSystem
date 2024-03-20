@@ -44,10 +44,12 @@
                 </button>
             </div>
         </div>
+        
+        <div class="content min-h-screen">
+            {% block body %}{% endblock %}
+        </div>
 
-        {% block body %}{% endblock %}
-
-        <footer class="footer bg-neutral text-neutral-content p-10">
+        <footer class="footer bottom-0 bg-neutral text-neutral-content p-10">
             <nav>
                 <h6 class="footer-title">Services</h6>
                 <a class="link link-hover">Branding</a>

@@ -1,3 +1,4 @@
+import uuid
 
 class Customer:
     Database = None
@@ -15,14 +16,20 @@ class Customer:
 
         if self.id:
             self.firstName, self.Surname, self.email, self.phoneNumber = Customer.Database.getRecords('Customers', 'firstName, Surname, Email, phoneNumber', f'ID = {self.id}')
+        else:
+            self.id = uuid.uuid4().int & (1<<32)-1
 
-
+    def getID(self) -> int:
+        return self.id
 
     def getName(self) -> str:
         return self.name
     
     def getEmail(self) -> str:
         return self.email
+    
+    def submitToDB(self) -> None:
+        self.Database.addRecords('Customers', (self.name, self.email))
     
 class Customers:
     def __init__(self, Database) -> None:
@@ -40,14 +47,12 @@ class Customers:
     
     def newCustomer(self, firstName, Surname, email) -> object:
         newCustomer = Customer(None, firstName, Surname, email)
+        self.addCustomer(newCustomer)
         # newCustomer.submitToDB()
         return newCustomer
     
     def getStoredCustomer(self, customerID) -> object:
         return self.allCustomers.get(customerID, None)
-    
-    def submitToDB(self) -> None:
-        self.Database.addRecords('Customers', (self.name, self.email))
     
     def getCustomer(self, customerID:int) -> object:
         return self.allCustomers.get(customerID, None)

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+<h1 class="text-3xl sm:text-6xl my-6 text-center align-middle font-bold">Select Your Viewing</h1>
+
+{% if viewings|length != 0 %}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 w-screen p-6 gap-5">
+    {% for viewing in viewings %}
+        <div class="card w-full bg-base-300 h-80">
+            {% if viewing.Banner %}
+                <figure><img src="{{ viewing.Banner }}" alt="{{viewing.name}} banner" /></figure>
+            {% else %}
+                <figure></figure>
+            {% endif %}
+            <div class="card-body gap-3 flex-wrap">
+                <h2 class="card-title text-xl font-bold flex-wrap">{{ viewing.Name }}
+                <div class="badge p-3 badge-neutral">{{viewing.Date}}</div>
+                <div class="badge p-3 badge-neutral">{{viewing.Time}}</div>
+                </h2>
+                
+                <p>{{ viewing.Description }}</p>
+                <a href="/newBooking?id={{viewing.viewingID}}" class="btn btn-primary text-base-100 text-lg">Select</a>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+<div class= "flex flex-row p-4 gap-4 w-full items-center justify-center">
+    <h2 class="text-4xl font-semibold">No viewings available </h2>
+    <svg class="w-12" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill="#FFCC4D" d="M36 18c0 9.941-8.059 18-18 18c-9.94 0-18-8.059-18-18C0 8.06 8.06 0 18 0c9.941 0 18 8.06 18 18"></path><path fill="#664500" d="M17.312 17.612a.501.501 0 0 0-.61-.014c-.012.009-1.26.902-3.702.902c-2.441 0-3.69-.893-3.7-.9a.5.5 0 0 0-.757.603c.06.135 1.5 3.297 4.457 3.297c2.958 0 4.397-3.162 4.457-3.297a.498.498 0 0 0-.145-.591zm10 0a.5.5 0 0 0-.61-.014c-.012.009-1.261.902-3.702.902c-2.44 0-3.69-.893-3.7-.9a.5.5 0 0 0-.757.603c.06.135 1.5 3.297 4.457 3.297c2.958 0 4.397-3.162 4.457-3.297a.498.498 0 0 0-.145-.591zM22 28h-8a1 1 0 1 1 0-2h8a1 1 0 1 1 0 2zM6 14a1 1 0 0 1-.004-2c.156-.002 3.569-.086 6.205-3.6a1 1 0 0 1 1.6 1.2C10.538 13.95 6.184 14 6 14zm24 0c-.184 0-4.537-.05-7.8-4.4a1 1 0 1 1 1.599-1.2c2.641 3.521 6.061 3.599 6.206 3.6c.55.006.994.456.991 1.005A.996.996 0 0 1 30 14z"></path></g></svg>
+</div>  
+{% endif %}
+
+{% endblock %}
+
