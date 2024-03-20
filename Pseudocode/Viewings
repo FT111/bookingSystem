@@ -1,0 +1,11 @@
+class Viewings
+    function constructor()
+        allViewings as dictionary
+    endfunc
+    
+    function getViewings()
+        for viewing in Database.getAllViewings() do 
+            allViewings[viewing['ID']] = new Viewing(viewing['ID'], viewing['Name'], viewing['viewingDate'].toUnixTime(), viewing['viewingSeats'], viewing['seatsPerRow'])
+    endfunc
+
+endclass

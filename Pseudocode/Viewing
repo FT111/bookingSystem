@@ -1,0 +1,52 @@
+class Viewing
+    function constructor(ID as integer, Name as string, unixTime as integer, seatRows as integer, seatsPerRow as integer)
+        Description as string
+        Banner as string
+        SeatNames as array
+        strTime = unixTime.toDateTime()
+
+        for seatRow = 1 to seatRows do
+            for col = 1 to seatsPerRow do
+                rowLetter = chr(ord('A') + row - 1)
+                stringValue = rowLetter + col
+                append(SeatNames, stringValue)
+
+    function getSeatNames()
+        return SeatNames
+    endfunc
+
+    function getUnavailableSeats()
+        unavailableSeats = Database.getUnavailableViewingSeats(ID)
+        return unavailableSeats
+    endfunc
+
+    function getReservedSeats()
+        reservedSeats = Database.getReservedViewingSeats(ID)
+        return reservedSeats
+    endfunc
+
+    function setDescription(Desc)
+        Description = Desc
+    endfunc
+
+    function getRowNum()
+        return seatRows
+    endfunc
+
+    function getTime()
+        return strTime
+    endfunc
+
+    function submitTicket(Ticket)
+
+        // Generates random ticket ID and validates it is not already taken. Used to authenticate the ticket later on.
+        while True do
+            randomID = randomInt(1000000,99999999999999)
+            if Database.keyTaken(Table='Tickets', Key=randomID) != True then break
+
+        // Adds to Tickets table
+        Database.newRow('Tickets', (randomID, Ticket.getSeat(), Ticket.getCustomerID(), Ticket.getType(), ID,))
+
+        
+
+endclass
