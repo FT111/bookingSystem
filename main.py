@@ -22,6 +22,8 @@ def getSession():
         session['uuid'] = uuid.uuid4()
     return session['uuid']
 
+# Flow - viewingSelector -> newBooking -> seatSelector -> Summary -> --Submit--
+
 # Pages Routes
 # vvvvvvvvvvvv
 

@@ -35,11 +35,11 @@ class DatabaseConnection:
 
 
     def startHandler(self):
-        for _ in range(10):
+        for thread in range(10):
             threading.Thread(target=self.executeQueuedQueries, daemon=True).start()
 
     def execute(self, query:str, args:tuple=()) -> list:
-        print(f'Executing {query} with {args}')
+        print(f'Executing {query} {"with" + args if args != () else ""}')
         self.queue.put((query, args))
         return self.executeQueuedQueries()
 
@@ -78,7 +78,6 @@ class Database:
     
     def getTicketByID(self, ticketID) -> list:
         return self.cursor.execute('SELECT * FROM Tickets WHERE ID = ?;', (ticketID,))
-    
 
     def newTicket(self, ticket:object, customer:object, viewing:object) -> None:
         self.cursor.execute('INSERT INTO Tickets VALUES (?, ?, ?, ?, ?);', (ticket.getID(), ticket.getSeatLocation(), ticket.getType(), customer.getID(), viewing.getID(),))

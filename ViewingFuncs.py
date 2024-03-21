@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+import json
 
 class Viewings:
     def __init__(self, Database) -> None:
@@ -35,8 +36,14 @@ class Viewings:
         upcomingViewingsList = []
         self.getAllViewingsFromDB()
         for viewingID in upcomingViewingIDs:
-            viewing = self.getStoredViewingByID(viewingID[0])
-            upcomingViewingsList.append(viewing)
+            viewing = vars(self.getStoredViewingByID(viewingID[0]))
+            viewingFormatted = {'Name': viewing['Name'], 'Date': viewing['Date'],
+                                'Time': viewing['Time'],'Description': viewing['Description'],
+                                'Banner': viewing['Banner'],'viewingID': viewing['viewingID']}
+            viewingFormatted['Date'] = viewingFormatted['Date'].strftime('%Y-%m-%d')
+            viewingFormatted['Time'] = viewingFormatted['Time'].strftime('%H:%M:%S')
+
+            upcomingViewingsList.append(viewingFormatted)
         
         return upcomingViewingsList
     
