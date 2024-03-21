@@ -39,7 +39,10 @@ class DatabaseConnection:
             threading.Thread(target=self.executeQueuedQueries, daemon=True).start()
 
     def execute(self, query:str, args:tuple=()) -> list:
-        print(f'Executing {query} {"with" + args if args != () else ""}')
+        try:
+            print(f'Executing {query} {"with" + args if args != () else ""}')
+        except:
+            print(f'Executing {query}')
         self.queue.put((query, args))
         return self.executeQueuedQueries()
 

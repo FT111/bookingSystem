@@ -37,9 +37,9 @@ class Customers:
         self.Database = Database
 
     def getAllCustomersFromDB(self) -> dict:
-        customers = self.Database.getRecords('Customers', 'ID')
+        customers = self.Database.getAllCustomers()
         for customer in customers:
-            self.allCustomers[customer[0]] = Customer(customer[0])
+            self.allCustomers[customer[0]] = Customer(customer[0], customer[1], customer[2], customer[3])
         return self.allCustomers
     
     def addCustomer(self, customer:object) -> None:
