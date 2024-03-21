@@ -1,5 +1,20 @@
 let lastSearchedViewings = [];
-` Example viewing data = let viewings = JSON.parse('[{"Banner": null, "Date": "2024-04-06", "Description": "Film. For testing.", "Name": "Test Film", "Time": "19:30:00", "viewingID": 1}, {"Banner": null, "Date": "2024-04-08", "Description": "Film. 2. For testing.", "Name": "Test Film: The Sequel", "Time": "20:15:00", "viewingID": 2}, {"Banner": null, "Date": "2024-04-23", "Description": "The worse Film. For testing.", "Name": "Test Film: Revolutions", "Time": "17:45:00", "viewingID": 3}, {"Banner": "https://www.looper.com/img/gallery/why-the-matrix-is-the-best-sci-fi-movie-ever/l-intro-1606326740.jpg", "Date": "2024-05-20", "Description": "Eh. For Testing", "Name": "Test Film: Reloaded", "Time": "18:30:00", "viewingID": 5}, {"Banner": null, "Date": "2025-02-04", "Description": "Film", "Name": "The Imitation Game", "Time": "18:00:00", "viewingID": 0}]');`
+
+
+const showEnter = () => {
+    if (window.innerWidth > 768) {
+        document.getElementById('enter').style.display = 'block';
+        [...document.getElementsByClassName('unfocusedKbd')].forEach((element) => {element.style.display = 'none';});
+    }
+};
+
+const hideEnter = () => {
+    if (window.innerWidth > 768) {
+        document.getElementById('enter').style.display = 'none';
+        [...document.getElementsByClassName('unfocusedKbd')].forEach((element) => {element.style.display = 'block';});
+    }
+};
+
 
 const sortLatest = (viewings) => {
     return viewings.sort((a, b) => new Date(b.Date + ' ' + b.Time) - new Date(a.Date + ' ' + a.Time));
@@ -56,3 +71,11 @@ const renderViewings = (viewings) => {
         `;
     });
 };
+
+document.addEventListener('keydown', (event) => {
+    if (event.metaKey && event.key === 'k') {
+        let searchBox = document.getElementById('searchBar');
+        searchBox.focus();
+    }
+  });
+

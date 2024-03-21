@@ -27,9 +27,10 @@ let viewings = JSON.parse('{{ viewings| tojson | safe }}');
         </select>
 
         <label class="input flex items-center gap-2 w-full rounded-box max-w-xs">
-            <input class="w-full" type="text" onchange="searchName()" id="searchBar" placeholder="Search" class="grow" />
-            <kbd class="kbd kbd-sm hidden md:block">⌘</kbd>
-            <kbd class="kbd kbd-sm hidden md:block">K</kbd>
+            <input class="w-full" type="text" onfocusout="hideEnter()" onfocus="showEnter()" onchange="searchName()" id="searchBar" placeholder="Search" class="grow" />
+            <kbd class="kbd kbd-sm unfocusedKbd hidden md:block">⌘</kbd>
+            <kbd class="kbd kbd-sm unfocusedKbd hidden md:block">K</kbd>
+            <kbd id='enter' class="kbd kbd-sm hidden">⏎</kbd>
         </label>   
     </div>
 
