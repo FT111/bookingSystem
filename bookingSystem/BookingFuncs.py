@@ -44,13 +44,6 @@ class Ticket:
     def getSeatLocation(self) -> str:
         return self.seatLocation
     
-    def setSeatLocation(self, seatLocation: str) -> bool:
-        if seatLocation in self.Database.getUnavailableSeats(self.Viewing.viewingID) or seatLocation in self.Database.getReservedSeats(self.Viewing.viewingID):
-            return False
-        
-        self.seatLocation = seatLocation
-        return True
-    
     def setTicketType(self, ticketType: str) -> None:
         self.ticketType = ticketType
 

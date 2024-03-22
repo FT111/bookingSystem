@@ -1,7 +1,7 @@
-from ViewingFuncs import Viewing, Viewings
-from BookingFuncs import Ticket, Booking, Bookings
-from databaseFuncs import Database, DatabaseConnection
-from customerFuncs import Customer, Customers
+from bookingSystem.ViewingFuncs import Viewing, Viewings
+from bookingSystem.BookingFuncs import Ticket, Booking, Bookings
+from bookingSystem.databaseFuncs import Database, DatabaseConnection
+from bookingSystem.customerFuncs import Customer, Customers
 
 class BookingSystem:
 

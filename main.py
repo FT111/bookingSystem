@@ -6,7 +6,7 @@ import uuid
 import os
 import qrcode
 from datetime import datetime
-from bookingSystem import BookingSystem
+from bookingSystem.bookingSystem import BookingSystem
 
 
 bs = BookingSystem(dbPath='./database/bookingDatabase.db')
@@ -17,7 +17,8 @@ CORS(app)
 testViewing = bs.Viewings.newViewing(Name='Test Viewing', DateTime=datetime(year=25,month=4,day=23,hour=17,minute=00,second=00), rowCount=10, seatsPerRow=20)
 testBooking = bs.Bookings.newBooking(str(uuid.uuid4()),'Test Customer', testViewing)
 
-def getSession():
+# Fetches the session ID from the session cookies, if it doesn't exist it creates a new one
+def getSession() -> str:
     if 'uuid' not in session:
         session['uuid'] = uuid.uuid4()
     return session['uuid']
