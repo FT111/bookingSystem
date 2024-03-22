@@ -78,24 +78,30 @@ const refreshSeatIndicator = () => {
 
 window.onload = () => {
     if (sessionStorage.getItem('maxSeats')) {
-        const lastMaxSeats = JSON.parse(sessionStorage.getItem('maxSeats'));
-        if (lastMaxSeats != maxSeats) {
-            sessionStorage.setItem('maxSeats', JSON.stringify(maxSeats));
-        }
-        else {
-            if (sessionStorage.getItem('selectedSeats')) {
-                selectedSeats = JSON.parse(sessionStorage.getItem('selectedSeats'));
-                refreshSeatIndicator();
+        if (sessionStorage.getItem('viewing')!= null) {
+            const lastViewing = JSON.parse(sessionStorage.getItem('viewing'));
+            const lastMaxSeats = JSON.parse(sessionStorage.getItem('maxSeats'));
+            if (lastMaxSeats != maxSeats || lastViewing != viewingName) {
+                sessionStorage.setItem('maxSeats', JSON.stringify(maxSeats));
+                sessionStorage.setItem('viewing', JSON.stringify(viewingName));
             }
             else {
-                sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
-            }
-            ;
+                if (sessionStorage.getItem('selectedSeats')) {
+                    selectedSeats = JSON.parse(sessionStorage.getItem('selectedSeats'));
+                    refreshSeatIndicator();
+                }
+                else {
+                    sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
+                }
+                ;
         }
         ;
     }
+}
     else {
         sessionStorage.setItem('maxSeats', JSON.stringify(maxSeats));
+        sessionStorage.setItem('viewing', JSON.stringify(viewingName));
+        
     }
     ;
 };

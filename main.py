@@ -8,7 +8,6 @@ import qrcode
 from datetime import datetime
 from bookingSystem.bookingSystem import BookingSystem
 
-
 bs = BookingSystem(dbPath='./database/bookingDatabase.db')
 app = Flask(__name__)
 app.secret_key = 'eqrfvgkn=lqejkrnvw#c ( rtb&@/elgjkn$£;,sdcm/.jtfwq05d.@£y.`p3oi4jgp34jg3if2qjpfcvnqkalcs'
@@ -59,7 +58,7 @@ def chooseSeatsPage():
     # unavailableNames += [f'{chr(ord("A") + i)}13' for i in range(10)]
     # reservedNames = ['A4','B7','C9','D12','E15','F18','G21','H15','B4','F5','F6','D15','D14','H10','J2','J3','B19','B18','E2']
 
-    viewing = bs.Viewings.getAllViewingsFromDB()[0]
+    viewing = bs.Viewings.getAllViewingsFromDB()[1]
     seatNames = viewing.getSeatNames()
     reservedNames = []
     unavailableNames = []

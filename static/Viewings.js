@@ -74,7 +74,7 @@ const renderViewings = (viewings) => {
 };
 
 document.addEventListener('keydown', (event) => {
-    if (event.metaKey && event.key === 'k') {
+    if (event.metaKey && event.key === 'k' || event.ctrlKey && event.key === 'k') {
         let searchBox = document.getElementById('searchBar');
         searchBox.focus();
     }
