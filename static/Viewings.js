@@ -2,20 +2,24 @@ let lastSearchedViewings = [];
 let sortedViewings = [];    
 
 const newBooking = (viewingID) => {
-    response = fetch('/api/bookings/startNewBooking', {
+    fetch('/api/bookings/startNewBooking', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'viewingID': viewingID
-        }}).then((response) => {
-            if (response.status == 200) {
-                window.location.href = '/newBooking';
-            } else {
-                newError('Error: Selection request failed');
-        }}).catch((error) => {
-            newError('Error: Selection request failed - ' + error);
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({'viewingID': viewingID})
+    }).then((response) => {
+        if (response.status == 200) {
+            window.location.href = '/newBooking';
+        } else {
+            newError('Error: Selection request failed');
         }
-    )};
+    }).catch((error) => {
+        newError('Error: Selection request failed - ' + error);
+    });
+};
+
+
 const showEnter = () => {
     if (window.innerWidth > 768) {
         document.getElementById('enter').style.display = 'block';
@@ -80,7 +84,7 @@ const renderViewings = (viewings) => {
             </span>
             
             <p>${ viewing.Description }</p>
-            <a href="/newBooking?id=${viewing.viewingID}" class="btn btn-primary text-base-100 text-lg" name="Select">Select</a>
+            <button onclick= class="btn btn-primary text-base-100 text-lg" name="Select">Select</button>
         </div>
         </div>
         `;

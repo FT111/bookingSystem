@@ -56,7 +56,7 @@ let viewings = JSON.parse('{{ viewings| tojson | safe }}');
                     </span>
                     
                     <p>{{ viewing.Description }}</p>
-                    <button onclick="newBooking({{ viewing.ID }})" class="btn no-animation btn-primary text-base-100 text-lg" name="Select">Select</button>
+                    <button onclick="newBooking({{ viewing.viewingID }})" class="btn no-animation btn-primary text-base-100 text-lg" name="Select">Select</button>
                 </div>
             </div>
         {% endfor %}

@@ -66,9 +66,9 @@ class Ticket:
 
 
 class Booking:
-    def __init__(self, Database:object, Customer:object, ViewingObj:object) -> None:
+    def __init__(self, Database:object, ViewingObj:object) -> None:
         self.Database = Database
-        self.Customer = Customer
+        self.Customer = None
         self.Viewing = ViewingObj
         self.Tickets = []
 
@@ -80,6 +80,12 @@ class Booking:
 
     def getTickets(self) -> list:
         return self.Tickets
+    
+    def getViewing(self) -> object:
+        return self.Viewing
+    
+    def setCustomer(self, Customer:object) -> None:
+        self.Customer = Customer
     
     def getCustomer(self) -> object:
         return self.Customer
@@ -123,8 +129,8 @@ class Bookings:
         self.Database = Database
         self.allBookings = dict()
 
-    def newBooking(self, ID:str, Customer:object, ViewingObj:object) -> int:
-        newBooking = Booking(self.Database, Customer, ViewingObj)
+    def newBooking(self, ID:str, ViewingObj:object) -> int:
+        newBooking = Booking(self.Database, ViewingObj)
         self.allBookings[ID] = newBooking
 
         return ID

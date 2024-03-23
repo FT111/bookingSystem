@@ -14,7 +14,7 @@ app.secret_key = 'eqrfvgkn=lqejkrnvw#c ( rtb&@/elgjkn$£;,sdcm/.jtfwq05d.@£y.`p
 CORS(app)
 
 testViewing = bs.Viewings.newViewing(Name='Test Viewing', DateTime=datetime(year=25,month=4,day=23,hour=17,minute=00,second=00), rowCount=10, seatsPerRow=20)
-testBooking = bs.Bookings.newBooking(str(uuid.uuid4()),'Test Customer', testViewing)
+testBooking = bs.Bookings.newBooking(str(uuid.uuid4()), testViewing)
 
 # Fetches the session ID from the session cookies, if it doesn't exist it creates a new one
 def getSession() -> str:
@@ -43,12 +43,14 @@ def viewingsPage():
 @app.route('/newBooking')
 def newBookingPage():
     sessionID = getSession()
-    if request.args.get('viewingID') is None:
-        viewing = bs.Viewings.getStoredViewingByID(sessionID)
-    else:
-        viewing = bs.Viewings.getStoredViewingByID(request.args.get('viewingID'))
+    try:
+        currentBooking = bs.Bookings.getBookingByID(sessionID)
+        currentViewing = currentBooking.getViewing()
+    except AttributeError:
+        return redirect(url_for('viewingsPage'))
 
-    return render_template('newBooking.html', viewing=viewing)
+
+    return render_template('newBooking.html', booking=currentBooking, viewing=currentViewing)
 
 @app.route('/seatSelector')
 def chooseSeatsPage():
@@ -78,10 +80,6 @@ def chooseSeatsPage():
     maxSeats = 5
 
     return render_template('seatSelector.html', viewingName=viewingName, seatNames=seatNames, reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow, maxSeats=maxSeats)
-
-@app.route('/seatSelector/getSelectedSeats', methods=['GET'])
-def getSelectedSeats():
-    pass
 
 @app.before_request
 def handle_preflight():
@@ -115,7 +113,9 @@ def checkTicket():
 def startNewBooking():
     sessionID = getSession()
 
-    viewing = bs.Viewings.getStoredViewingByID(request.json.get('viewingID'))
+    requestJSON = request.get_json()
+    print(requestJSON)
+    viewing = bs.Viewings.getStoredViewingByID(requestJSON.get('viewingID'))
     bs.Bookings.newBooking(sessionID, viewing)
     return json.dumps({'status': '200'})
 
