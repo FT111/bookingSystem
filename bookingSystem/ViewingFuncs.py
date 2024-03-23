@@ -41,7 +41,7 @@ class Viewings:
                                 'Time': viewing['Time'],'Description': viewing['Description'],
                                 'Banner': viewing['Banner'],'viewingID': viewing['viewingID']}
             viewingFormatted['Date'] = viewingFormatted['Date'].strftime('%Y-%m-%d')
-            viewingFormatted['Time'] = viewingFormatted['Time'].strftime('%H:%M:%S')
+            viewingFormatted['Time'] = viewingFormatted['Time'].strftime('%H:%M')
 
             upcomingViewingsList.append(viewingFormatted)
         

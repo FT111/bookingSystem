@@ -25,3 +25,15 @@ const toggleTheme = () => {
     localStorage.setItem('theme', 'dark');
   }
 };
+
+const newError = (message) => {
+  console.log(message);
+  document.body.innerHTML += `
+  <div class="toast" id="warningToast">
+    <div class="alert alert-error text-base-200">
+      <span>${message}</span>
+    </div>
+  </div>
+
+  `;
+};

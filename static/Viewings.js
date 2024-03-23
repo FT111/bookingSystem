@@ -1,7 +1,21 @@
 let lastSearchedViewings = [];
 let sortedViewings = [];    
 
-
+const newBooking = (viewingID) => {
+    response = fetch('/api/bookings/startNewBooking', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'viewingID': viewingID
+        }}).then((response) => {
+            if (response.status == 200) {
+                window.location.href = '/newBooking';
+            } else {
+                newError('Error: Selection request failed');
+        }}).catch((error) => {
+            newError('Error: Selection request failed - ' + error);
+        }
+    )};
 const showEnter = () => {
     if (window.innerWidth > 768) {
         document.getElementById('enter').style.display = 'block';

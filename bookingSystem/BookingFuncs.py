@@ -133,4 +133,7 @@ class Bookings:
         self.allBookings.pop(index, None)
 
     def getBookingByID(self, index:int) -> object:
-        return self.allBookings[index]
+        if index in self.allBookings:
+            return self.allBookings[index]
+        else:
+            return None

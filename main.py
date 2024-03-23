@@ -20,7 +20,7 @@ testBooking = bs.Bookings.newBooking(str(uuid.uuid4()),'Test Customer', testView
 def getSession() -> str:
     if 'uuid' not in session:
         session['uuid'] = uuid.uuid4()
-    return session['uuid']
+    return str(session['uuid'])
 
 # Flow - viewingSelector -> newBooking -> seatSelector -> Summary -> --Submit--
 
@@ -58,7 +58,17 @@ def chooseSeatsPage():
     # unavailableNames += [f'{chr(ord("A") + i)}13' for i in range(10)]
     # reservedNames = ['A4','B7','C9','D12','E15','F18','G21','H15','B4','F5','F6','D15','D14','H10','J2','J3','B19','B18','E2']
 
-    viewing = bs.Viewings.getAllViewingsFromDB()[1]
+
+    # TODO: FIX SETTING BOOKING
+
+    bs.Viewings.getAllViewingsFromDB()
+    booking = bs.Bookings.getBookingByID(sessionID)
+    # if booking is None:
+    #     return redirect(url_for('viewingsPage'))
+    
+    viewing = booking.getViewing()
+    print(bs.Viewings.allViewings)
+    # viewing = bs.Viewings.getAllViewingsFromDB()[0]
     seatNames = viewing.getSeatNames()
     reservedNames = []
     unavailableNames = []
@@ -101,17 +111,28 @@ def checkTicket():
     #     return json.dumps({'status': 'Valid', 'seatLocation': ticket.getSeatLocation(), 'ticketType': ticket.getType()})
     # return json.dumps({'status': 'Invalid'})
 
+@app.route('/api/bookings/startNewBooking', methods=['POST'])
+def startNewBooking():
+    sessionID = getSession()
 
-@app.route('/api/bookings/newBooking', methods=['POST'])
+    viewing = bs.Viewings.getStoredViewingByID(request.json.get('viewingID'))
+    bs.Bookings.newBooking(sessionID, viewing)
+    return json.dumps({'status': '200'})
+
+@app.route('/api/bookings/addCustomer', methods=['POST'])
 def newBooking():
     sessionID = getSession()
+
     customer = bs.Customers.newCustomer(firstName=request.json.get('firstName'), Surname=request.json.get('surname'), email=request.json.get('email'))
-    booking = bs.Bookings.newBooking(sessionID, customer, request.json.get('viewingID'))
-    return json.dumps({'status': '200', 'bookingID': booking.getID()})
+    booking = bs.Bookings.getBookingByID(sessionID)
+    booking.setCustomer(customer)
+
+    return json.dumps({'status': '200', 'customerID': customer.getID()})
 
 @app.route('/api/bookings/addSeat', methods=['POST'])
 def addSeat():
     sessionID = getSession()
+
     booking = bs.Bookings.getBookingByID(sessionID)
     ticket = bs.Ticket(request.json.get('ticketType'), request.json.get('seatLocation'))
     booking.addTicket(ticket)
@@ -120,34 +141,45 @@ def addSeat():
 @app.route('/api/bookings/removeSeat', methods=['POST'])
 def removeSeat():
     sessionID = getSession()
+
     booking = bs.Bookings.getBookingByID(sessionID)
     ticket = bs.Ticket.getTicketByID(request.json.get('ticketID'))
     booking.removeTicket(ticket)
     return json.dumps({'status': '200', 'ticketID': ticket.getID()})
 
-@app.route('/api/bookings/getBookingInfo', methods=['GET'])
+@app.route('/api/bookings/getBookingInfo', methods=['POST'])
 def getBookingInfo():
     sessionID = getSession()
+
     booking = bs.Bookings.getBookingByID(sessionID)
     customer = booking.getCustomer()
-    customer_info = {
+    viewing = booking.getViewing()
+    customerInfo = {
         'firstName': customer.getFirstName(),
         'surname': customer.getSurname(),
         'email': customer.getEmail()
     }
 
-    booking_info = {
+    bookingInfo = {
         'bookingID': booking.getID(),
-        'customer': customer_info,
+        'customer': customerInfo,
         'viewingID': booking.getViewing().getID(),
         'tickets': [ticket.getID() for ticket in booking.getTickets()]
     }
 
-    return json.dumps({'customer': customer_info, 'booking': booking_info})
+    viewingInfo = {
+        'viewingID': viewing.getID(),
+        'viewingName': viewing.getName(),
+        'viewingDateTime': viewing.getDateTime().strftime('%Y-%m-%d %H:%M:%S'),
+        'rowCount': viewing.getRowCount(),
+        'seatsPerRow': viewing.getSeatsPerRow()
+    }
+    return json.dumps({'customer': customerInfo, 'booking': bookingInfo, 'viewing': viewingInfo})
 
-@app.route('/api/bookings/submit', methods=['GET'])
+@app.route('/api/bookings/submit', methods=['POST'])
 def submitBooking():
     sessionID = getSession()
+
     booking = bs.Bookings.getBookingByID(sessionID)
     booking.Submit()
     return json.dumps({'status': '200', 'bookingID': booking.getID()})
