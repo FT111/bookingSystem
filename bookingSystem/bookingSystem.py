@@ -1,5 +1,5 @@
 from bookingSystem.ViewingFuncs import Viewing, Viewings
-from bookingSystem.BookingFuncs import Ticket, Booking, Bookings
+from bookingSystem.BookingFuncs import Ticket, Booking, Bookings, TicketTypes
 from bookingSystem.databaseFuncs import Database, DatabaseConnection
 from bookingSystem.customerFuncs import Customer, Customers
 
@@ -17,6 +17,7 @@ class BookingSystem:
         self.Bookings = Bookings(self.Database) # Booking management container
         self.Viewings = Viewings(self.Database) # Viewing management container
         self.Customers = Customers(self.Database) # Customer management container
+        self.TicketTypes = TicketTypes(self.Database) # Ticket types
 
         Ticket.setDatabase(self.Database)
         Customer.setDatabase(self.Database)

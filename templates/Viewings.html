@@ -17,14 +17,24 @@ let viewings = JSON.parse('{{ viewings| tojson | safe }}');
 {% endblock %}
 
 {% block body %}
+<div class="flex w-full flex-col items-center">
+    <div class="text-sm breadcrumbs py-0">
+        <ul>
+            <li class="font-bold">Viewings</li> 
+            <li><a href="/booking/tickets">Ticket Selection</a></li> 
+            <li><a href="/booking/seats">Seat Selection</li>
+            <li><a href="/booking/summary">Summary</a></li>
+        </ul>
+    </div>
 
-<h1 class="text-3xl sm:text-6xl my-6 text-center align-middle font-bold">Select Your Viewing</h1>
+<h1 class="text-3xl sm:text-6xl my-6 font-bold">Select Your Viewing</h1>
+</div>
 
 {% if viewings|length != 0 %}
 
 <div class="flex flex-1 flex-col m-4 sm:m-8 gap-5">
 
-    <div class="bg-base-300 rounded-box p-3 gap-5 flex justify-between">
+    <div class="bg-base-300 drop-shadow-md sticky top-16 z-50 rounded-box p-3 gap-5 flex justify-between">
 
        <select id="orderSelector" onchange="getSort()" class="select w-full max-w-xs rounded-box">
             <option value="earliest">Earliest first</option>

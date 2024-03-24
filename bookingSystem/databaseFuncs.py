@@ -87,6 +87,3 @@ class Database:
 
     def submitViewing():
         pass
-    # def getLastID(self, table:str) -> int:
-    #     self.cursor.execute('SELECT last_insert_rowid() FROM ;', (table,))
-    #     return self.cursor.fetchone()[0]

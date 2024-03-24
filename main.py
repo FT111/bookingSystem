@@ -33,14 +33,14 @@ def index():
 
     return render_template('dashboard.html')
 
-@app.route('/viewingSelector')
+@app.route('/booking/new')
 def viewingsPage():
     sessionID = getSession()
     viewings = bs.Viewings.getUpcomingViewingsAsList()
 
     return render_template('viewings.html', viewings=viewings)
 
-@app.route('/newBooking')
+@app.route('/booking/tickets')
 def newBookingPage():
     sessionID = getSession()
     try:
@@ -49,10 +49,11 @@ def newBookingPage():
     except AttributeError:
         return redirect(url_for('viewingsPage'))
 
+    ticketTypes = bs.TicketTypes.getTypes()
 
-    return render_template('newBooking.html', booking=currentBooking, viewing=currentViewing)
+    return render_template('newBooking.html', booking=currentBooking, viewing=currentViewing, ticketTypes=ticketTypes)
 
-@app.route('/seatSelector')
+@app.route('/booking/seats')
 def chooseSeatsPage():
     sessionID = getSession()
     # unavailableNames = ['A9','A10','A11','A12','J1','J20']
@@ -63,10 +64,10 @@ def chooseSeatsPage():
 
     # TODO: FIX SETTING BOOKING
 
-    bs.Viewings.getAllViewingsFromDB()
     booking = bs.Bookings.getBookingByID(sessionID)
-    # if booking is None:
-    #     return redirect(url_for('viewingsPage'))
+
+    if booking is None:
+        return redirect(url_for('viewingsPage'))
     
     viewing = booking.getViewing()
     print(bs.Viewings.allViewings)

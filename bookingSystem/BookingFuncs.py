@@ -10,12 +10,17 @@ from flask import render_template
 
 class TicketTypes:
     def __init__(self, Database) -> None:
-        self.Prices = ()
+        self.allTypes = list()
         self.Database = Database
 
-    def getPrices(self) -> tuple:
-        self.Prices = self.Database.getPrices()
-        return self.Prices
+    def getTypes(self) -> tuple:
+        self.typesTuple = self.Database.getTicketTypes()
+        self.allTypes = []
+        for type in self.typesTuple:
+            self.allTypes.append({ 'ID':type[0],
+                                'Name': type[1], 
+                                'Price': type[2] })
+        return self.allTypes
 
 ###
 ### Container pattern heirachy: Bookings -> Booking -> Ticket

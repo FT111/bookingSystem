@@ -16,7 +16,16 @@ let viewingName = '{{ viewingName }}';
 {% block body %}
 
 <!-- Content Container -->
-<div class="sm:m-6 mb-3 w-content flex flex-col gap-3 items-center">
+<div class="sm:mx-6 mb-3 w-content flex flex-col gap-3 items-center">
+    <div class="text-sm breadcrumbs py-0">
+        <ul>
+            <li><a href="/booking/new">Viewings</a></li> 
+            <li><a href="/booking/tickets">Ticket Selection</a></li> 
+            <li class="font-bold">Seat Selection</li>
+            <li><a href="/bookint/summary">Summary</a></li>
+        </ul>
+    </div>
+
     <h1 class="text-3xl sm:text-6xl my-6 text-center align-middle font-bold">{{ viewingName }} - Select Your Seats</h1>
     
     <!-- Stage -->

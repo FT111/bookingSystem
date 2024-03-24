@@ -10,7 +10,7 @@ const newBooking = (viewingID) => {
         body: JSON.stringify({'viewingID': viewingID})
     }).then((response) => {
         if (response.status == 200) {
-            window.location.href = '/newBooking';
+            window.location.href = '/booking/tickets';
         } else {
             newError('Error: Selection request failed');
         }
@@ -84,8 +84,8 @@ const renderViewings = (viewings) => {
             </span>
             
             <p>${ viewing.Description }</p>
-            <button onclick= class="btn btn-primary text-base-100 text-lg" name="Select">Select</button>
-        </div>
+            <button onclick="newBooking(${ viewing.viewingID })" class="btn no-animation btn-primary text-base-100 text-lg" name="Select">Select</button>
+            </div>
         </div>
         `;
     });
