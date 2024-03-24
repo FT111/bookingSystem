@@ -33,7 +33,7 @@ class Ticket:
     def setDatabase(cls, Database:object) -> None:
         cls.Database = Database
 
-    def __init__(self, ticketType: str, seatLocation: str) -> None:
+    def __init__(self, ticketType: str, seatLocation=None) -> None:
         self.ticketType = ticketType
         self.seatLocation = seatLocation
         self.qrCodeURL = None
@@ -51,6 +51,10 @@ class Ticket:
     
     def setTicketType(self, ticketType: str) -> None:
         self.ticketType = ticketType
+
+    def setSeatLocation(self, seatLocation: str) -> None:
+        self.seatLocation = seatLocation
+        
 
     def generateQR(self) -> str:
         qr = qrcode.QRCode(
@@ -95,20 +99,38 @@ class Booking:
     def getCustomer(self) -> object:
         return self.Customer
     
-    def Submit(self) -> bool:
+    def Submit(self, seats=None) -> bool:
+        # Validate that the booking has a customer
+        if self.Customer == None:
+            return False
+        
         # Validate that the requested seats are available
-        unavailableSeats = self.Database.getReservedSeats(self.Viewing.viewingID)
-        unavailableSeats += self.Database.getUnavailableSeats(self.Viewing.viewingID)
+        unavailableSeats = self.Viewing.getUnavailableSeats()
+        unavailableSeats += self.Viewing.getReservedSeats()
+        seats = list(seats)
 
-        for ticket in self.Tickets:
-            if ticket.getSeatLocation() in unavailableSeats:
-                return False
+        # Validate that the booking has tickets
         if len(self.Tickets) == 0:
             return False
-        else:
+
+        # Handles assigning seats to tickets if they are not already assigned
+        if seats != None:
+            if len(seats) != len(self.Tickets):
+                return False
+            
             for ticket in self.Tickets:
-                self.Viewing.submitTicket(ticket, self.Customer)
-                qr = ticket.generateQR()
+                ticket.setSeatLocation(seats.pop(0))
+        
+
+        for ticket in self.Tickets:
+            if ticket.getSeatLocation() in unavailableSeats or ticket.getSeatLocation() not in self.Viewing.getSeatNames():
+                self.Tickets = []
+                return False
+
+        # If the seats are available, submit the booking
+        for ticket in self.Tickets:
+            self.Viewing.submitTicket(ticket, self.Customer)
+            qr = ticket.generateQR()
 
 
         
@@ -138,7 +160,7 @@ class Bookings:
         newBooking = Booking(self.Database, ViewingObj)
         self.allBookings[ID] = newBooking
 
-        return ID
+        return newBooking
 
     def removeBooking(self, index:int) -> None:
         self.allBookings.pop(index, None)

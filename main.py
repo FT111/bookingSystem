@@ -6,6 +6,7 @@ import uuid
 import os
 import qrcode
 from datetime import datetime
+
 from bookingSystem.bookingSystem import BookingSystem
 
 bs = BookingSystem(dbPath='./database/bookingDatabase.db')
@@ -124,23 +125,23 @@ def newBooking():
 
     return json.dumps({'status': '200', 'customerID': customer.getID()})
 
-@app.route('/api/bookings/addSeat', methods=['POST'])
+@app.route('/api/bookings/addTicket', methods=['POST'])
 def addSeat():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
-    ticket = bs.Ticket(request.json.get('ticketType'), request.json.get('seatLocation'))
+    ticket = bs.Ticket(request.json.get('ticketType'))
     booking.addTicket(ticket)
     return json.dumps({'status': '200', 'ticketID': ticket.getID()})
 
-@app.route('/api/bookings/removeSeat', methods=['POST'])
+@app.route('/api/bookings/removeTicket', methods=['POST'])
 def removeSeat():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
     ticket = bs.Ticket.getTicketByID(request.json.get('ticketID'))
     booking.removeTicket(ticket)
-    return json.dumps({'status': '200', 'ticketID': ticket.getID()})
+    return json.dumps({'status': '200'})
 
 @app.route('/api/bookings/getBookingInfo', methods=['POST'])
 def getBookingInfo():
@@ -176,7 +177,8 @@ def submitBooking():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
-    booking.Submit()
+    seatLocations = request.json.get('seats')
+    booking.Submit(seatLocations)
     return json.dumps({'status': '200', 'bookingID': booking.getID()})
 
 
@@ -189,15 +191,17 @@ def testEndpoint():
     sessionID = getSession()
     
     customer = bs.Customers.newCustomer(firstName='Test', Surname='Customer', email='freddiejljtaylor+test@gmail.com')
-    booking = bs.Bookings.newBooking(sessionID, customer, testViewing)
-    ticket = bs.Ticket('Adult', 'A1')
-    ticket2 = bs.Ticket('Adult', 'A2')
+    booking = bs.Bookings.newBooking(sessionID, testViewing)
+    ticket = bs.Ticket('Adult')
+    ticket2 = bs.Ticket('Adult')
+    booking.setCustomer(customer)
+    
 
     # new function
     bookingRetrived = bs.Bookings.getBookingByID(sessionID)
     bookingRetrived.addTicket(ticket)
     bookingRetrived.addTicket(ticket2)
-    bookingRetrived.Submit()
+    bookingRetrived.Submit(('A1', 'A2'))
     os.system(f'open {ticket.getQR()}')
     os.system(f'open {ticket2.getQR()}')
 

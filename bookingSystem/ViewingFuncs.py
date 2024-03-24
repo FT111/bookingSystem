@@ -35,11 +35,14 @@ class Viewings:
         upcomingViewingIDs = self.Database.getUpcomingViewingIDs()
         upcomingViewingsList = []
         self.getAllViewingsFromDB()
+
+        # Format the viewings for Jinja to render
         for viewingID in upcomingViewingIDs:
             viewing = vars(self.getStoredViewingByID(viewingID[0]))
             viewingFormatted = {'Name': viewing['Name'], 'Date': viewing['Date'],
                                 'Time': viewing['Time'],'Description': viewing['Description'],
-                                'Banner': viewing['Banner'],'viewingID': viewing['viewingID']}
+                                'Banner': viewing['Banner'],'viewingID': viewing['viewingID'],
+                                'remainingSeats': viewing['remainingSeats']}
             viewingFormatted['Date'] = viewingFormatted['Date'].strftime('%Y-%m-%d')
             viewingFormatted['Time'] = viewingFormatted['Time'].strftime('%H:%M')
 
@@ -55,14 +58,20 @@ class Viewing:
         self.Database = Database
         self.viewingID = viewingID
         self.Name = Name
+        self.Banner = viewingBanner
+        self.Description = Description
         self.Date = Date
         self.Time = Time
+
         self.rowCount = rowCount
         self.seatsPerRow = seatsPerRow
-
-        self.Description = Description
-        self.Banner = viewingBanner
         self.seatNames = []
+        self.remainingSeats = None
+        self.reservedSeats = None
+        self.unavailableSeats = None
+
+        if self.viewingID != None:
+            self.getRemainingSeats()
 
         # Generate seat names - 'A1', 'A2', 'A3', etc.
         for SeatRow in range(1, rowCount + 1):
@@ -86,6 +95,20 @@ class Viewing:
         
     def getSeatNames(self) -> list:
         return self.seatNames
+    
+    def getRemainingSeats(self) -> int:
+        self.remainingSeats = self.seatsPerRow * self.rowCount
+        self.remainingSeats -= len(self.Database.getReservedSeats(self.viewingID))
+        self.remainingSeats -= len(self.Database.getUnavailableSeats(self.viewingID))
+        return self.remainingSeats
+    
+    def getReservedSeats(self) -> int:
+        self.reservedSeats = self.Database.getReservedSeats(self.viewingID)
+        return self.reservedSeats
+    
+    def getUnavailableSeats(self) -> int:
+        self.unavailableSeats = self.Database.getUnavailableSeats(self.viewingID)
+        return self.unavailableSeats
     
     def getRowLength(self) -> int:
         return self.seatsPerRow
