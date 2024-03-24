@@ -75,23 +75,23 @@ class Viewing:
         if self.viewingID == None:
             self.viewingID = uuid.uuid4().int & (1<<32)-1
 
-    def getID(self):
+    def getID(self) -> int:
         return self.viewingID
     
-    def getName(self):
+    def getName(self) -> str:
         return self.Name
     
-    def getDate(self):
+    def getDate(self) -> datetime.date:
         return self.Date
         
-    def getSeatNames(self):
+    def getSeatNames(self) -> list:
         return self.seatNames
     
-    def getRowLength(self):
+    def getRowLength(self) -> int:
         return self.seatsPerRow
     
-    def submitToDB(self):
+    def submitToDB(self) -> None:
         self.Database.addRecords('Viewings', (self.viewingID, self.Name, self.Description, self.Banner, self.Date, self.rowCount, self.seatsPerRow))
     
-    def submitTicket(self, Ticket:object, Customer:object):
+    def submitTicket(self, Ticket:object, Customer:object) -> None:
         self.Database.newTicket(Ticket, Customer, self)

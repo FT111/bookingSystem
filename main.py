@@ -104,18 +104,12 @@ def scanTicket():
 @app.route('/api/tickets/checkQR', methods=['POST'])
 def checkTicket():
     pass
-    # qrImage = request.files['body']
-    # # ticket = bs.Ticket.getTicketByID(qrID)
-    # if ticket is not None:
-    #     return json.dumps({'status': 'Valid', 'seatLocation': ticket.getSeatLocation(), 'ticketType': ticket.getType()})
-    # return json.dumps({'status': 'Invalid'})
 
 @app.route('/api/bookings/startNewBooking', methods=['POST'])
 def startNewBooking():
     sessionID = getSession()
 
     requestJSON = request.get_json()
-    print(requestJSON)
     viewing = bs.Viewings.getStoredViewingByID(requestJSON.get('viewingID'))
     bs.Bookings.newBooking(sessionID, viewing)
     return json.dumps({'status': '200'})
