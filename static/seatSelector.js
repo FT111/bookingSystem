@@ -20,7 +20,7 @@ const disableAllSeats = () => {
             Seats[i].disabled = true;
             Seats[i].nextElementSibling.classList.add('opacity-75');
             document.getElementById('continueBtn').disabled = false;
-            document.getElementById('continueTooltip').classList.remove('tooltip', 'tooltip-left');
+            document.getElementById('continueTooltip').classList.remove('tooltip', 'tooltip-bottom');
         }
         ;
     }
@@ -33,7 +33,7 @@ const enableAllSeats = () => {
         Seats[i].disabled = false;
         Seats[i].nextElementSibling.classList.remove('opacity-75');
         document.getElementById('continueBtn').disabled = true;
-        document.getElementById('continueTooltip').classList.add('tooltip', 'tooltip-left');
+        document.getElementById('continueTooltip').classList.add('tooltip', 'tooltip-bottom');
     }
     ;
 };

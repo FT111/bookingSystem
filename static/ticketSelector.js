@@ -1,4 +1,3 @@
-let ticketSum = 0;
 
 const incrementTicket = (ticketType) => {
     const ticket = document.getElementById(ticketType);
@@ -40,9 +39,13 @@ const checkTotal = () => {
     
     if (ticketSum == 0) {
         document.getElementById('continueBtn').disabled = true;
+        document.getElementById('continueTooltip').classList.add('tooltip', 'tooltip-left');
     } else {
         document.getElementById('continueBtn').disabled = false;
+        document.getElementById('continueTooltip').classList.remove('tooltip', 'tooltip-left');
     }
 }
 
-
+document.addEventListener('DOMContentLoaded', () => {
+    checkTotal();   
+});
