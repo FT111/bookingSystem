@@ -19,6 +19,7 @@ class BookingSystem:
         self.Customers = Customers(self.Database) # Customer management container
         self.TicketTypes = TicketTypes(self.Database) # Ticket types
 
+        Booking.setTicketTypes(self.TicketTypes)
         Ticket.setDatabase(self.Database)
         Customer.setDatabase(self.Database)
     

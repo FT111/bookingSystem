@@ -1,3 +1,4 @@
+let ticketSum = 0;
 
 const incrementTicket = (ticketType) => {
     const ticket = document.getElementById(ticketType);
@@ -10,8 +11,10 @@ const incrementTicket = (ticketType) => {
     }).then(() => {
 
     ticket.value = parseInt(ticket.value) + 1;
+    ticketSum++;
+    checkTotal();
     });
-    // updateTotal();
+
 };
 
 const decrementTicket = (ticketType) => {
@@ -27,8 +30,19 @@ const decrementTicket = (ticketType) => {
         }
     }).then(() => {
     ticket.value = parseInt(ticket.value) - 1;
+    ticketSum--;
+    checkTotal();
+
     });
-    // updateTotal();
 }
 
-// TODO: Implement decrementTicket / updateTotal functions
+const checkTotal = () => {
+    
+    if (ticketSum == 0) {
+        document.getElementById('continueBtn').disabled = true;
+    } else {
+        document.getElementById('continueBtn').disabled = false;
+    }
+}
+
+

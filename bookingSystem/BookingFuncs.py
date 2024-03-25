@@ -75,6 +75,12 @@ class Ticket:
 
 
 class Booking:
+    TicketTypes = None
+    
+    @classmethod
+    def setTicketTypes(cls, TicketTypes:object) -> None:
+        cls.TicketTypes = TicketTypes
+
     def __init__(self, Database:object, ViewingObj:object) -> None:
         self.Database = Database
         self.Customer = None
@@ -95,6 +101,21 @@ class Booking:
 
     def getTickets(self) -> list:
         return self.Tickets
+    
+    def getTicketCountPerType(self) -> dict:
+        ticketCounts = dict()
+        ticketTypes = self.TicketTypes.getTypes()
+
+        # Fill the dictionary with ticket types
+        for type in ticketTypes:
+            ticketCounts[type['ID']] = 0
+        
+
+        # Count the number of tickets of each type
+        for ticket in self.Tickets:
+            ticketCounts[ticket.getType()] += 1
+        
+        return ticketCounts
     
     def getViewing(self) -> object:
         return self.Viewing

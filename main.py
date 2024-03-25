@@ -52,8 +52,10 @@ def newBookingPage():
         return redirect(url_for('viewingsPage'))
 
     ticketTypes = bs.TicketTypes.getTypes()
+    ticketCounts = currentBooking.getTicketCountPerType()
+    print(ticketCounts)
 
-    return render_template('newBooking.html', booking=currentBooking, viewing=currentViewing, ticketTypes=ticketTypes)
+    return render_template('newBooking.html', booking=currentBooking, ticketCounts=ticketCounts, viewing=currentViewing, ticketTypes=ticketTypes)
 
 @app.route('/booking/seats')
 def chooseSeatsPage():
