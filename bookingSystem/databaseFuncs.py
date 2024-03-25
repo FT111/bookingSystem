@@ -67,6 +67,9 @@ class Database:
     def getAllViewings(self) -> list:
         return self.cursor.execute('SELECT * FROM Viewings;')
     
+    def getAllViewingIDs(self) -> list:
+        return self.cursor.execute('SELECT viewingID FROM Viewings;')
+    
     def getUpcomingViewingIDs(self) -> list:
         return self.cursor.execute("SELECT viewingID FROM Viewings WHERE datetime(viewingDate) >= datetime('now') ORDER BY viewingDate ASC;")
     
@@ -74,10 +77,25 @@ class Database:
         return self.cursor.execute('SELECT * FROM ticketTypes')
     
     def getReservedSeats(self, viewingID) -> list:
-        return self.cursor.execute('SELECT Seat FROM Tickets WHERE ViewingID = ?;', (viewingID,))
+        reservedSeatTuples = self.cursor.execute('SELECT seat FROM Tickets WHERE ViewingID = ?;', (viewingID,))
+        reservedSeatList = []
+        for seat in reservedSeatTuples:
+            reservedSeatList.append(seat[0])
+
+        return reservedSeatList
     
     def getUnavailableSeats(self, viewingID) -> list:
-        return self.cursor.execute('SELECT seat FROM unavailableSeats WHERE ViewingID = ?;', (viewingID,))
+        unavailableSeatTuples =  self.cursor.execute('SELECT seat FROM unavailableSeats WHERE ViewingID = ?;', (viewingID,))
+        unavailableSeatList = []
+        for seat in unavailableSeatTuples:
+            unavailableSeatList.append(seat[0])
+        
+        return unavailableSeatList
+
+    def getAllUnavailableSeats(self) -> list:
+        unavailableSeats = self.cursor.execute('SELECT ViewingID FROM Tickets;')
+        unavailableSeats += self.cursor.execute('SELECT ViewingID FROM unavailableSeats;')
+        return unavailableSeats
     
     def getTicketByID(self, ticketID) -> list:
         return self.cursor.execute('SELECT * FROM Tickets WHERE ID = ?;', (ticketID,))

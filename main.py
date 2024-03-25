@@ -28,7 +28,7 @@ def getSession() -> str:
 # Pages Routes
 # vvvvvvvvvvvv
 
-@app.route('/')
+@app.route('/dashboard')
 def index():
     sessionID = getSession()
 
@@ -38,6 +38,7 @@ def index():
 def viewingsPage():
     sessionID = getSession()
     viewings = bs.Viewings.getUpcomingViewingsAsList()
+
 
     return render_template('viewings.html', viewings=viewings)
 
@@ -62,24 +63,21 @@ def chooseSeatsPage():
     # unavailableNames += [f'{chr(ord("A") + i)}13' for i in range(10)]
     # reservedNames = ['A4','B7','C9','D12','E15','F18','G21','H15','B4','F5','F6','D15','D14','H10','J2','J3','B19','B18','E2']
 
-
-    # TODO: FIX SETTING BOOKING
-
     booking = bs.Bookings.getBookingByID(sessionID)
 
     if booking is None:
         return redirect(url_for('viewingsPage'))
     
+    # Retrieve the viewing object from the current user's booking
     viewing = booking.getViewing()
-    print(bs.Viewings.allViewings)
-    # viewing = bs.Viewings.getAllViewingsFromDB()[0]
+
     seatNames = viewing.getSeatNames()
-    reservedNames = []
-    unavailableNames = []
+    reservedNames = viewing.getReservedSeats()
+    unavailableNames = viewing.getUnavailableSeats()
     seatsPerRow = viewing.getRowLength()
     viewingName = viewing.getName()
 
-    maxSeats = 5
+    maxSeats = len(booking.getTickets())
 
     return render_template('seatSelector.html', viewingName=viewingName, seatNames=seatNames, reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow, maxSeats=maxSeats)
 
@@ -139,8 +137,8 @@ def removeSeat():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
-    ticket = bs.Ticket.getTicketByID(request.json.get('ticketID'))
-    booking.removeTicket(ticket)
+    print(request.json.get('ticketType'))
+    booking.removeTicket(request.json.get('ticketType'))
     return json.dumps({'status': '200'})
 
 @app.route('/api/bookings/getBookingInfo', methods=['POST'])
