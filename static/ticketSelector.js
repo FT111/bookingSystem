@@ -1,9 +1,9 @@
 
-const incrementTicket = (ticketID) => {
-    const ticket = document.getElementById(ticketID);
+const incrementTicket = (ticketType) => {
+    const ticket = document.getElementById(ticketType);
     fetch('/api/bookings/addTicket', {
         method: 'POST',
-        body: JSON.stringify({ticketID: ticketID}),
+        body: JSON.stringify({ticketType: ticketType}),
         headers: {
             'Content-Type': 'application/json'
         }
@@ -14,11 +14,14 @@ const incrementTicket = (ticketID) => {
     // updateTotal();
 };
 
-const decrementTicket = (ticketID) => {
-    const ticket = document.getElementById(ticketID);
+const decrementTicket = (ticketType) => {
+    if (document.getElementById(ticketType).value === '0') {
+        return;
+    }
+    const ticket = document.getElementById(ticketType);
     fetch('/api/bookings/removeTicket', {
         method: 'POST',
-        body: JSON.stringify({ticketID: ticketID}),
+        body: JSON.stringify({ticketType: ticketType}),
         headers: {
             'Content-Type': 'application/json'
         }

@@ -138,7 +138,7 @@ def removeSeat():
 
     booking = bs.Bookings.getBookingByID(sessionID)
     print(request.json.get('ticketType'))
-    booking.removeTicket(request.json.get('ticketType'))
+    booking.removeTicketOfType(request.json.get('ticketType'))
     return json.dumps({'status': '200'})
 
 @app.route('/api/bookings/getBookingInfo', methods=['POST'])

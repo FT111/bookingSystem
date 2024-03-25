@@ -87,6 +87,12 @@ class Booking:
     def removeTicket(self, ticket:object) -> None:
         self.Tickets.remove(ticket)
 
+    def removeTicketOfType(self, ticketType:str) -> None:
+        for ticket in self.Tickets:
+            if ticket.getType() == ticketType:
+                self.Tickets.remove(ticket)
+                break
+
     def getTickets(self) -> list:
         return self.Tickets
     
