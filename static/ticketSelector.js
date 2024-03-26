@@ -1,5 +1,5 @@
 
-const incrementTicket = (ticketType) => {
+const incrementTicket = (ticketType, Price) => {
     const ticket = document.getElementById(ticketType);
     fetch('/api/bookings/addTicket', {
         method: 'POST',
@@ -11,12 +11,14 @@ const incrementTicket = (ticketType) => {
 
     ticket.value = parseInt(ticket.value) + 1;
     ticketSum++;
+    priceSum += Price;
+
     checkTotal();
     });
 
 };
 
-const decrementTicket = (ticketType) => {
+const decrementTicket = (ticketType, Price) => {
     if (document.getElementById(ticketType).value === '0') {
         return;
     }
@@ -30,12 +32,24 @@ const decrementTicket = (ticketType) => {
     }).then(() => {
     ticket.value = parseInt(ticket.value) - 1;
     ticketSum--;
+    priceSum -= Price;
+
     checkTotal();
 
     });
 }
 
 const checkTotal = () => {
+
+    for (let i = 0; i < ticketTypes.length; i++) {
+        const ticket = document.getElementById(ticketTypes[i].ID);
+        if (ticket.value != 0) {
+            // 'outline', 'outline-1', 'outline-sky-700'
+            document.getElementById(ticketTypes[i].ID + 'Card').classList.add('shadow-md');
+        } else {
+            document.getElementById(ticketTypes[i].ID + 'Card').classList.remove('shadow-md');
+        }
+    }
     
     if (ticketSum == 0) {
         document.getElementById('continueBtn').disabled = true;
@@ -44,6 +58,8 @@ const checkTotal = () => {
         document.getElementById('continueBtn').disabled = false;
         document.getElementById('continueTooltip').classList.remove('tooltip', 'tooltip-left');
     }
+
+    document.getElementById('priceSumIndicator').innerHTML = formatter.format(priceSum);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

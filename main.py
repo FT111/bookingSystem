@@ -1,20 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, session
 from flask_cors import CORS
 import json
-import random
 import uuid
 import os
-import qrcode
-from datetime import datetime
 
 from bookingSystem.bookingSystem import BookingSystem
 
 bs = BookingSystem(dbPath='./database/bookingDatabase.db')
+bs.Viewings.getAllViewingsFromDB()
 app = Flask(__name__)
 app.secret_key = 'eqrfvgkn=lqejkrnvw#c ( rtb&@/elgjkn$£;,sdcm/.jtfwq05d.@£y.`p3oi4jgp34jg3if2qjpfcvnqkalcs'
 CORS(app)
 
-testViewing = bs.Viewings.newViewing(Name='Test Viewing', DateTime=datetime(year=25,month=4,day=23,hour=17,minute=00,second=00), rowCount=10, seatsPerRow=20)
+
+testViewing = bs.Viewings.getStoredViewingByID(1)
 testBooking = bs.Bookings.newBooking(str(uuid.uuid4()), testViewing)
 
 # Fetches the session ID from the session cookies, if it doesn't exist it creates a new one
@@ -30,18 +29,17 @@ def getSession() -> str:
 
 @app.route('/dashboard')
 def index():
-    sessionID = getSession()
 
     return render_template('dashboard.html')
 
+# Shows the upcoming viewings to the user and allows selection
 @app.route('/booking/new')
 def viewingsPage():
-    sessionID = getSession()
     viewings = bs.Viewings.getUpcomingViewingsAsList()
-
 
     return render_template('viewings.html', viewings=viewings)
 
+# Allows the user to select the number of tickets they want to purchase
 @app.route('/booking/tickets')
 def newBookingPage():
     sessionID = getSession()
@@ -54,10 +52,11 @@ def newBookingPage():
     ticketTypes = bs.TicketTypes.getTypes()
     ticketCounts = currentBooking.getTicketCountPerType()
     ticketSum = sum(ticketCounts.values())
-    print(ticketCounts)
+    priceSum = currentBooking.getPriceSum()
 
-    return render_template('newBooking.html', booking=currentBooking, ticketSum=ticketSum, ticketCounts=ticketCounts, viewing=currentViewing, ticketTypes=ticketTypes)
+    return render_template('newBooking.html', booking=currentBooking, ticketSum=ticketSum, priceSum=priceSum, ticketCounts=ticketCounts, viewing=currentViewing, ticketTypes=ticketTypes)
 
+# Allows the user to select the seats they want to book
 @app.route('/booking/seats')
 def chooseSeatsPage():
     sessionID = getSession()
@@ -83,6 +82,22 @@ def chooseSeatsPage():
 
 
     return render_template('seatSelector.html', viewingName=viewingName, seatNames=seatNames, reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow, maxSeats=maxSeats)
+
+
+@app.route('/booking/summary')
+def bookingSummary():
+    sessionID = getSession()
+    booking = bs.Bookings.getBookingByID(sessionID)
+    if booking is None:
+        return redirect(url_for('viewingsPage'))
+    
+    tickets = booking.getTickets()
+    if len(tickets) == 0:
+        return redirect(url_for('newBookingPage'))
+    
+    seats = None
+    
+    return render_template('bookingSummary.html', booking=booking)
 
 @app.before_request
 def handle_preflight():
@@ -136,13 +151,32 @@ def addSeat():
     return json.dumps({'status': '200', 'ticketID': ticket.getID()})
 
 @app.route('/api/bookings/removeTicket', methods=['POST'])
-def removeSeat():
+def removeTicket():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
     print(request.json.get('ticketType'))
     booking.removeTicketOfType(request.json.get('ticketType'))
     return json.dumps({'status': '200'})
+
+@app.route('/api/bookings/addSeat', methods=['POST'])
+def setSeats():
+    sessionID = getSession()
+
+    booking = bs.Bookings.getBookingByID(sessionID)
+    seatLocations = request.json.get('seat')
+    booking.addSeat(seatLocations)
+    return json.dumps({'status': '200'})
+
+@app.route('/api/bookings/removeSeat', methods=['POST'])
+def removeSeat():
+    sessionID = getSession()
+
+    booking = bs.Bookings.getBookingByID(sessionID)
+    seatLocations = request.json.get('seat')
+    booking.removeSeat(seatLocations)
+    return json.dumps({'status': '200'})
+
 
 @app.route('/api/bookings/getBookingInfo', methods=['POST'])
 def getBookingInfo():
@@ -193,8 +227,8 @@ def testEndpoint():
     
     customer = bs.Customers.newCustomer(firstName='Test', Surname='Customer', email='freddiejljtaylor+test@gmail.com')
     booking = bs.Bookings.newBooking(sessionID, testViewing)
-    ticket = bs.Ticket('Adult')
-    ticket2 = bs.Ticket('Adult')
+    ticket = bs.Ticket(2)
+    ticket2 = bs.Ticket(1)
     booking.setCustomer(customer)
     
 

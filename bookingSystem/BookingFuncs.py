@@ -1,11 +1,7 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
-import smtplib
 import qrcode
-import random
 import uuid
-import os
 from flask import render_template
 
 class TicketTypes:
@@ -86,12 +82,33 @@ class Booking:
         self.Customer = None
         self.Viewing = ViewingObj
         self.Tickets = []
+        self.selectedSeats = []
 
     def addTicket(self, ticket:object) -> None:
         self.Tickets.append(ticket)
     
     def removeTicket(self, ticket:object) -> None:
         self.Tickets.remove(ticket)
+
+    def addSeat(self, seat:str) -> bool:
+        # Validates that the seat is an available, existing seat
+        if seat in self.Viewing.getUnavailableSeats() or seat in self.Viewing.getReservedSeats() or seat not in self.Viewing.getSeats():
+            return False
+        
+        self.selectedSeats.append(seat)
+        return True
+    
+    def removeSeat(self, seat:str) -> bool:
+        if seat not in self.selectedSeats:
+            return False
+        self.selectedSeats.pop(seat, None)
+    
+    def resetSeats(self) -> None:
+        self.selectedSeats = None
+
+    def getSelectedSeats(self):
+        return self.selectedSeats
+    
 
     def removeTicketOfType(self, ticketType:str) -> None:
         for ticket in self.Tickets:
@@ -117,6 +134,18 @@ class Booking:
         
         return ticketCounts
     
+    def getPriceSum(self) -> float:
+        ticketTypes = self.TicketTypes.getTypes()
+        priceSum = 0
+
+        for ticket in self.Tickets:
+            for type in ticketTypes:
+                if ticket.getType() == type['ID']:
+                    priceSum += type['Price']
+                    break
+
+        return priceSum
+    
     def getViewing(self) -> object:
         return self.Viewing
     
@@ -128,7 +157,7 @@ class Booking:
     
     def Submit(self, seats=None) -> bool:
         # Validate that the booking has a customer
-        if self.Customer == None:
+        if self.Customer is None:
             return False
         
         # Validate that the requested seats are available
@@ -141,14 +170,13 @@ class Booking:
             return False
 
         # Handles assigning seats to tickets if they are not already assigned
-        if seats != None:
+        if seats is not None:
             if len(seats) != len(self.Tickets):
                 return False
             
             for ticket in self.Tickets:
                 ticket.setSeatLocation(seats.pop(0))
         
-
         for ticket in self.Tickets:
             if ticket.getSeatLocation() in unavailableSeats or ticket.getSeatLocation() not in self.Viewing.getSeatNames():
                 self.Tickets = []
@@ -157,10 +185,7 @@ class Booking:
         # If the seats are available, submit the booking
         for ticket in self.Tickets:
             self.Viewing.submitTicket(ticket, self.Customer)
-            qr = ticket.generateQR()
-
-
-        
+            ticket.generateQR()
         # self.confirmBooking()
         return True
         

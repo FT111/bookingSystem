@@ -9,7 +9,6 @@
 <script>
 let ticketSum = {{ ticketSum }};
 let priceSum = {{ priceSum }};
-let ticketTypes = {{ ticketTypes|tojson }};
 </script>
 
 {% endblock %}
@@ -44,7 +43,7 @@ let ticketTypes = {{ ticketTypes|tojson }};
             
                 <div class="flex flex-col gap-4">
                 {% for ticketType in ticketTypes %}
-                    <div class="flex bg-base-200 rounded-box p-4 items-center transition-all duration-50 ease-in-out" id="{{ ticketType.ID }}Card">
+                    <div class="flex bg-base-200 rounded-box p-4 items-center">
                         <p class="text-lg sm:text-2xl font-bold">{{ ticketType.Name }}</p>
                         <p class="text-lg sm:text-2xl font-semibold text-slate-400 grow-0 px-5">{{  "£%.2f"|format(ticketType.Price) }}</p>
                         <div class="flex items-center justify-center">
