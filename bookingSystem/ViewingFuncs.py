@@ -108,7 +108,7 @@ class Viewing:
                 self.seatNames.append(stringValue)
         
         # Generate a unique ID for the viewing
-        if self.inDB == False:
+        if not self.inDB:
             self.viewingID = uuid.uuid4().int & (1<<32)-1
 
     def getID(self) -> int:

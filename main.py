@@ -87,17 +87,31 @@ def chooseSeatsPage():
 @app.route('/booking/summary')
 def bookingSummary():
     sessionID = getSession()
-    booking = bs.Bookings.getBookingByID(sessionID)
-    if booking is None:
+    try:
+        currentBooking = bs.Bookings.getBookingByID(sessionID)
+        currentViewing = currentBooking.getViewing()
+    except AttributeError:
         return redirect(url_for('viewingsPage'))
     
-    tickets = booking.getTickets()
-    if len(tickets) == 0:
+    tickets = currentBooking.getTickets()
+    seats = currentBooking.getSelectedSeats()
+    if len(tickets) <= 0:
         return redirect(url_for('newBookingPage'))
     
-    seats = None
+    print(tickets)
+    print(seats)
+    if len(seats) != len(tickets):
+        return redirect(url_for('chooseSeatsPage'))
     
-    return render_template('bookingSummary.html', booking=booking)
+
+    ticketTypes = bs.TicketTypes.getTypes()
+    ticketCounts = currentBooking.getTicketCountPerType()
+    ticketSum = sum(ticketCounts.values())
+    priceSum = currentBooking.getPriceSum()
+    tickets = currentBooking.getTickets()
+
+    return render_template('bookingSummary.html', booking=currentBooking, tickets=tickets, ticketSum=ticketSum, priceSum=priceSum, ticketCounts=ticketCounts, viewing=currentViewing, ticketTypes=ticketTypes)
+
 
 @app.before_request
 def handle_preflight():
@@ -113,6 +127,10 @@ def handle_preflight():
 @app.route('/ticketCheck')
 def scanTicket():
     return render_template('ticketCheck.html')
+
+
+
+
 
 
 # API Endpoints
@@ -164,8 +182,8 @@ def setSeats():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
-    seatLocations = request.json.get('seat')
-    booking.addSeat(seatLocations)
+    seatLocation = request.json.get('seat')
+    booking.addSeat(seatLocation)
     return json.dumps({'status': '200'})
 
 @app.route('/api/bookings/removeSeat', methods=['POST'])
@@ -173,8 +191,8 @@ def removeSeat():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
-    seatLocations = request.json.get('seat')
-    booking.removeSeat(seatLocations)
+    seatLocation = request.json.get('seat')
+    booking.removeSeat(seatLocation)
     return json.dumps({'status': '200'})
 
 

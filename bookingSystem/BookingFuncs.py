@@ -92,7 +92,7 @@ class Booking:
 
     def addSeat(self, seat:str) -> bool:
         # Validates that the seat is an available, existing seat
-        if seat in self.Viewing.getUnavailableSeats() or seat in self.Viewing.getReservedSeats() or seat not in self.Viewing.getSeats():
+        if seat in self.Viewing.getUnavailableSeats() or seat in self.Viewing.getReservedSeats() or seat not in self.Viewing.getSeatNames():
             return False
         
         self.selectedSeats.append(seat)
@@ -101,7 +101,7 @@ class Booking:
     def removeSeat(self, seat:str) -> bool:
         if seat not in self.selectedSeats:
             return False
-        self.selectedSeats.pop(seat, None)
+        self.selectedSeats.remove(seat)
     
     def resetSeats(self) -> None:
         self.selectedSeats = None

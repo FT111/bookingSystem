@@ -42,9 +42,23 @@ const toggleSeat = (seat) => {
     console.log(seat);
     if (selectedSeats.includes(seat)) {
         removeSeat(seat);
+        fetch ('/api/bookings/removeSeat', {
+            method: 'POST',
+            body: JSON.stringify({seat: seat}),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
     else {
         selectedSeats.push(seat);
+        fetch ('/api/bookings/addSeat', {
+            method: 'POST',
+            body: JSON.stringify({seat: seat}),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
     sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
     refreshSeatIndicator();
