@@ -104,7 +104,7 @@ class Booking:
         self.selectedSeats.remove(seat)
     
     def resetSeats(self) -> None:
-        self.selectedSeats = None
+        self.selectedSeats = []
 
     def getSelectedSeats(self):
         return self.selectedSeats

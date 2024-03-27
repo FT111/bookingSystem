@@ -45,9 +45,9 @@ const checkTotal = () => {
         const ticket = document.getElementById(ticketTypes[i].ID);
         if (ticket.value != 0) {
             // 'outline', 'outline-1', 'outline-sky-700'
-            document.getElementById(ticketTypes[i].ID + 'Card').classList.add('shadow-md');
+            document.getElementById(ticketTypes[i].ID + 'Card').classList.add('shadow-md', 'scale-[1.02]', 'outline', 'outline-1', 'outline-sky-800');
         } else {
-            document.getElementById(ticketTypes[i].ID + 'Card').classList.remove('shadow-md');
+            document.getElementById(ticketTypes[i].ID + 'Card').classList.remove('shadow-md', 'scale-[1.02]', 'outline', 'outline-1', 'outline-sky-800');
         }
     }
     

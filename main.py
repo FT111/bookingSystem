@@ -166,6 +166,7 @@ def addSeat():
     booking = bs.Bookings.getBookingByID(sessionID)
     ticket = bs.Ticket(request.json.get('ticketType'))
     booking.addTicket(ticket)
+    booking.resetSeats()
     return json.dumps({'status': '200', 'ticketID': ticket.getID()})
 
 @app.route('/api/bookings/removeTicket', methods=['POST'])
@@ -175,6 +176,7 @@ def removeTicket():
     booking = bs.Bookings.getBookingByID(sessionID)
     print(request.json.get('ticketType'))
     booking.removeTicketOfType(request.json.get('ticketType'))
+    booking.resetSeats()
     return json.dumps({'status': '200'})
 
 @app.route('/api/bookings/addSeat', methods=['POST'])
