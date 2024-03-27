@@ -92,12 +92,13 @@ const refreshSeatIndicator = () => {
 
 window.onload = () => {
     if (sessionStorage.getItem('maxSeats')) {
-        if (sessionStorage.getItem('viewing')!= null) {
-            const lastViewing = JSON.parse(sessionStorage.getItem('viewing'));
+        if (sessionStorage.getItem('bookingID')!= null) {
+            const lastBookingID = JSON.parse(sessionStorage.getItem('bookingID'));
             const lastMaxSeats = JSON.parse(sessionStorage.getItem('maxSeats'));
-            if (lastMaxSeats != maxSeats || lastViewing != viewingName) {
+
+            if (lastMaxSeats != maxSeats || lastBookingID != bookingID) {
                 sessionStorage.setItem('maxSeats', JSON.stringify(maxSeats));
-                sessionStorage.setItem('viewing', JSON.stringify(viewingName));
+                sessionStorage.setItem('bookingID', JSON.stringify(bookingID));
             }
             else {
                 if (sessionStorage.getItem('selectedSeats')) {
@@ -106,16 +107,12 @@ window.onload = () => {
                 }
                 else {
                     sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
-                }
-                ;
+                };
+            };
         }
-        ;
-    }
-}
-    else {
+    } else {
         sessionStorage.setItem('maxSeats', JSON.stringify(maxSeats));
-        sessionStorage.setItem('viewing', JSON.stringify(viewingName));
-        
-    }
-    ;
+        sessionStorage.setItem('bookingID', JSON.stringify(bookingID));
+            
+        };
 };

@@ -79,9 +79,10 @@ def chooseSeatsPage():
     unavailableNames = viewing.getUnavailableSeats()
     seatsPerRow = viewing.getRowLength()
     viewingName = viewing.getName()
+    bookingID = booking.getID()
 
 
-    return render_template('seatSelector.html', viewingName=viewingName, seatNames=seatNames, reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow, maxSeats=maxSeats)
+    return render_template('seatSelector.html', bookingID=bookingID, viewingName=viewingName, seatNames=seatNames, reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow, maxSeats=maxSeats)
 
 
 @app.route('/booking/summary')

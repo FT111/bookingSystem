@@ -82,7 +82,11 @@ class Booking:
         self.Customer = None
         self.Viewing = ViewingObj
         self.Tickets = []
+        self.bookingID = str(uuid.uuid4().int)
         self.selectedSeats = []
+
+    def getID(self) -> str:
+        return self.bookingID
 
     def addTicket(self, ticket:object) -> None:
         self.Tickets.append(ticket)

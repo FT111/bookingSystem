@@ -1,3 +1,8 @@
+let selectedClasses = ['shadow-md', 'scale-[1.02]', 'outline', 'outline-1', 'outline-sky-800'];
+
+if (window.screen.width < 800) {
+    selectedClasses = [...selectedClasses, 'rounded-md'];
+}
 
 const incrementTicket = (ticketType, Price) => {
     const ticket = document.getElementById(ticketType);
@@ -41,13 +46,14 @@ const decrementTicket = (ticketType, Price) => {
 
 const checkTotal = () => {
 
+    
     for (let i = 0; i < ticketTypes.length; i++) {
         const ticket = document.getElementById(ticketTypes[i].ID);
         if (ticket.value != 0) {
             // 'outline', 'outline-1', 'outline-sky-700'
-            document.getElementById(ticketTypes[i].ID + 'Card').classList.add('shadow-md', 'scale-[1.02]', 'outline', 'outline-1', 'outline-sky-800');
+            document.getElementById(ticketTypes[i].ID + 'Card').classList.add(...selectedClasses);
         } else {
-            document.getElementById(ticketTypes[i].ID + 'Card').classList.remove('shadow-md', 'scale-[1.02]', 'outline', 'outline-1', 'outline-sky-800');
+            document.getElementById(ticketTypes[i].ID + 'Card').classList.remove(...selectedClasses);
         }
     }
     
@@ -63,5 +69,6 @@ const checkTotal = () => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+
     checkTotal();   
 });
