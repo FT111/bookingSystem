@@ -88,11 +88,17 @@ class Booking:
     def getID(self) -> str:
         return self.bookingID
 
-    def addTicket(self, ticket:object) -> None:
+    def addTicket(self, ticket:object) -> bool:
+        if len(self.Tickets) >= self.Viewing.getRemainingSeats():
+            return False
         self.Tickets.append(ticket)
+        return True
     
-    def removeTicket(self, ticket:object) -> None:
+    def removeTicket(self, ticket:object) -> bool:
+        if ticket not in self.Tickets:
+            return False
         self.Tickets.remove(ticket)
+        return False
 
     def addSeat(self, seat:str) -> bool:
         # Validates that the seat is an available, existing seat
@@ -165,9 +171,10 @@ class Booking:
             return False
         
         # Validate that the requested seats are available
-        unavailableSeats = self.Viewing.getUnavailableSeats()
-        unavailableSeats += self.Viewing.getReservedSeats()
-        seats = list(seats)
+        if seats is not None:
+            unavailableSeats = self.Viewing.getUnavailableSeats()
+            unavailableSeats += self.Viewing.getReservedSeats()
+            seats = list(seats)
 
         # Validate that the booking has tickets
         if len(self.Tickets) == 0:

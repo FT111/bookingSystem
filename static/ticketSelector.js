@@ -6,40 +6,51 @@ if (window.screen.width < 800) {
 
 const incrementTicket = (ticketType, Price) => {
     const ticket = document.getElementById(ticketType);
-    fetch('/api/bookings/addTicket', {
+    response = fetch('/api/bookings/addTicket', {
         method: 'POST',
         body: JSON.stringify({ticketType: ticketType}),
         headers: {
             'Content-Type': 'application/json'
         }
-    }).then(() => {
-
-    ticket.value = parseInt(ticket.value) + 1;
-    ticketSum++;
-    priceSum += Price;
-
-    checkTotal();
+    }).then((response) => {
+        let responseData = response.json().then((responseData) => {
+            if (responseData.status != 200) {
+                newError(responseData.body);
+                return;
+        } else {
+            ticket.value = parseInt(ticket.value) + 1;
+            ticketSum++;
+            priceSum += Price;
+            checkTotal();
+        }
     });
-
+    }
+).catch((error) => {
+    newError('An error occured while trying to add a ticket');
+});
 };
+
 
 const decrementTicket = (ticketType, Price) => {
     if (document.getElementById(ticketType).value === '0') {
         return;
     }
     const ticket = document.getElementById(ticketType);
-    fetch('/api/bookings/removeTicket', {
+    response = fetch('/api/bookings/removeTicket', {
         method: 'POST',
         body: JSON.stringify({ticketType: ticketType}),
         headers: {
             'Content-Type': 'application/json'
         }
-    }).then(() => {
-    ticket.value = parseInt(ticket.value) - 1;
-    ticketSum--;
-    priceSum -= Price;
+    }).then((response) => {
+        if (response.status != 200) {
+            return;
+        }
+        ticket.value = parseInt(ticket.value) - 1;
+        ticketSum--;
+        priceSum -= Price;
 
-    checkTotal();
+        checkTotal();
 
     });
 }

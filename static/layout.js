@@ -21,7 +21,7 @@ const toggleTheme = () => {
     document.documentElement.setAttribute('data-theme', 'nord');
 
   } else {
-    document.documentElement.setAttribute('data-theme', 'dim');
+    document.documentElement.setAttribute('data-theme', 'business');
     localStorage.setItem('theme', 'dark');
   }
 };
@@ -36,6 +36,10 @@ const newError = (message) => {
   </div>
 
   `;
+
+  setTimeout(() => {
+    document.getElementById('warningToast').remove();
+  }, 2000);
 };
 
 const formatter = new Intl.NumberFormat('en-GB', {

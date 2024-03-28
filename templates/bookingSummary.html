@@ -3,7 +3,7 @@
 {% block head %}
 
 <title>Summary</title>
-<script src="../static/ticketSelector.js"></script>
+<script src="../static/bookingSummary.js"></script>
 
 <!-- Passing data to JS -->
 <script>
@@ -42,15 +42,10 @@ let priceSum = {{ priceSum }};
                 <h2 class="card-title sm:p-0 p-3 text-2xl sm:text-4xl font-bold">{{ viewing.Name }}</h2>
             
                 <div class="flex flex-col gap-4">
-                {% for ticketType in ticketTypes %}
+                {% for ticket in tickets %}
                     <div class="flex bg-base-200 rounded-box p-4 items-center">
-                        <p class="text-lg sm:text-2xl font-bold">{{ ticketType.Name }}</p>
-                        <p class="text-lg sm:text-2xl font-semibold text-slate-400 grow-0 px-5">{{  "£%.2f"|format(ticketType.Price) }}</p>
-                        <div class="flex items-center justify-center">
-                            <button class="px-4 py-2 bg-secondary text-white rounded-l-lg transition-all ease-in-out duration-200 hover:bg-slate-600" onclick="decrementTicket({{ ticketType.ID }}, {{ ticketType.Price }})">-</button>
-                            <input disabled="disabled" id="{{ ticketType.ID }}" class="px-4 py-2 bg-white text-gray-700 w-20 text-center" value="{{ ticketCounts[ticketType.ID] }}">
-                            <button class="px-4 py-2 bg-secondary text-white rounded-r-lg transition-all ease-in-out duration-200 hover:bg-slate-600" onclick="incrementTicket({{ ticketType.ID }}, {{ ticketType.Price }})">+</button>
-                        </div>
+                        <p class="text-lg sm:text-2xl font-bold">{{ ticketTypes[ticket.ticketType-1].Name }}</p>
+                        <p class="text-lg sm:text-2xl font-semibold text-slate-400 grow-0 px-5">{{ "£%.2f"|format(ticketTypes[ticket.ticketType-1].Price) }}</p>
                     </div>
                 {% endfor %}
                 </div>
@@ -58,6 +53,58 @@ let priceSum = {{ priceSum }};
                 <div class="flex flex-col items-end w-full p-4 py-0">
                 <p class="text-lg sm:text-xl font-semibold text-primary grow-0">Total</p>
                 <p class="text-lg sm:text-4xl font-semibold grow-0" id="priceSumIndicator">{{ "£%.2f"|format(priceSum) }}</p>
+                </div>
+                  
+                <div class="divider my-0"></div> 
+                
+                <!-- User selection -->
+                <div class="flex flex-col w-full sm:flex-row ">
+
+                    <!-- Select existing user -->
+                    <div class="drawer drawer-end">
+                    <input id="existingUserDraw" type="checkbox" class="drawer-toggle" />
+                    <div class="drawer-content">
+                        <label for="existingUserDraw" class="drawer-button btn flex-grow h-16 card bg-secondary hover:bg-slate-600 transition-all duration-200 ease-in-out text-base-100 rounded-box">Select a user</label>
+                    </div> 
+                    <div class="drawer-side z-50">
+                        <label for="existingUserDraw" aria-label="close sidebar" class="drawer-overlay"></label>
+                        <div class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+                        {% for user in users %}
+                            <label class="flex items-center gap-4 p-2 hover:bg-slate-600 transition-all duration-200 ease-in-out rounded-box">
+                                <input type="radio" name="user" value="{{ user.ID }}" class="radio radio-primary" onclick="enableContinue()">
+                                <div class="flex flex-col">
+                                    <p class="text-lg">{{ user.Name }}</p>
+                                    <p class="text-sm text-slate-400">{{ user.Email }}</p>
+                                </div>
+                            </label>
+                        {% endfor %}
+                        </div>
+
+                        </div>
+                    </div>
+                    <!-- End select existing user -->         
+
+                    <div class="divider sm:divider-horizontal">OR</div> 
+
+                    <!-- Add new user -->
+                    <div class="drawer drawer-end">
+                    <input id="newUserDraw" type="checkbox" class="drawer-toggle" />
+                    <div class="drawer-content">
+                        <label for="newUserDraw" class="drawer-button btn flex-grow h-16 card bg-secondary hover:bg-slate-600 transition-all duration-200 ease-in-out text-base-100 rounded-box">Add a new user</label>
+                    </div> 
+                    <div class="drawer-side z-50">
+                        <label for="newUserDraw" aria-label="close sidebar" class="drawer-overlay"></label>
+
+                        <form id="newUserForm" class="menu p-4 w-80 min-h-full bg-base-200 text-base-content gap-3">
+                            <input type="text" name="name" placeholder="Name" class="input input-primary rounded-md input-bordered" required>
+                            <input type="text" name="email" placeholder="Email" class="input input-primary rounded-md input-bordered" required>
+                            <input type="text" name="phone" placeholder="Phone" class="input input-primary rounded-md input-bordered" required>
+                            <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200">Add User</button>
+                        </form>
+                        </div>
+                    </div>
+                    <!-- End add new user -->
+
                 </div>
 
             </div>
@@ -67,8 +114,8 @@ let priceSum = {{ priceSum }};
         <div class="flex flex-col gap-4 sm:gap-0 my-3 px-0 p-3 sm:flex-row w-full items-center justify-between transition-full ease-in-out duration-100">
             <div></div> <!-- Spacer -->
 
-            <div class="tooltip order-2 tooltip-lef tooltip-open" id="continueTooltip" data-tip="Select a ticket to continue">
-                <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200" onclick="window.location.href='/booking/seats'" disabled="disabled" id="continueBtn">Continue
+            <div class="tooltip order-2 tooltip-left tooltip-open" id="continueTooltip" data-tip="Select a user to submit">
+                <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200" onclick="window.location.href='/booking/seats'" disabled="disabled" id="continueBtn">Submit
                     <!-- prettier-ignore -->
                     <svg class="stroke-base-200 transition-all ease-in-out duration-400" width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                 </button>

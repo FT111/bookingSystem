@@ -3,13 +3,14 @@ from flask_cors import CORS
 import json
 import uuid
 import os
+import secrets
 
 from bookingSystem.bookingSystem import BookingSystem
 
 bs = BookingSystem(dbPath='./database/bookingDatabase.db')
 bs.Viewings.getAllViewingsFromDB()
 app = Flask(__name__)
-app.secret_key = 'eqrfvgkn=lqejkrnvw#c ( rtb&@/elgjkn$£;,sdcm/.jtfwq05d.@£y.`p3oi4jgp34jg3if2qjpfcvnqkalcs'
+app.secret_key = secrets.token_urlsafe(16)
 CORS(app)
 
 
@@ -98,15 +99,14 @@ def bookingSummary():
     seats = currentBooking.getSelectedSeats()
     if len(tickets) <= 0:
         return redirect(url_for('newBookingPage'))
-    
-    print(tickets)
-    print(seats)
+
     if len(seats) != len(tickets):
         return redirect(url_for('chooseSeatsPage'))
     
 
     ticketTypes = bs.TicketTypes.getTypes()
     ticketCounts = currentBooking.getTicketCountPerType()
+    print(ticketCounts)
     ticketSum = sum(ticketCounts.values())
     priceSum = currentBooking.getPriceSum()
     tickets = currentBooking.getTickets()
@@ -141,6 +141,17 @@ def scanTicket():
 def checkTicket():
     pass
 
+@app.route('/api/customers/new', methods=['POST'])
+def newCustomer():
+    requiredFields = ['firstName', 'surname', 'email', 'phoneNumber']
+    for field in requiredFields:
+        if field not in request.json:
+            return Response('{"body": "Missing required fields"}', status=400, mimetype='application/json')
+    
+    bs.Customers.newCustomer(firstName=request.json.get('firstName'), Surname=request.json.get('surname'), email=request.json.get('email'), phoneNumber=request.json.get('phoneNumber'))
+
+    return json.dumps({'status': '200'})
+
 @app.route('/api/bookings/startNewBooking', methods=['POST'])
 def startNewBooking():
     sessionID = getSession()
@@ -158,7 +169,7 @@ def newBooking():
     booking = bs.Bookings.getBookingByID(sessionID)
     booking.setCustomer(customer)
 
-    return json.dumps({'status': '200', 'customerID': customer.getID()})
+    return json.dumps({'status': '200'})
 
 @app.route('/api/bookings/addTicket', methods=['POST'])
 def addSeat():
@@ -166,9 +177,11 @@ def addSeat():
 
     booking = bs.Bookings.getBookingByID(sessionID)
     ticket = bs.Ticket(request.json.get('ticketType'))
-    booking.addTicket(ticket)
+    confirmation = booking.addTicket(ticket)
     booking.resetSeats()
-    return json.dumps({'status': '200', 'ticketID': ticket.getID()})
+    if not confirmation:
+        return Response('{"body": "Not enough tickets remaining"}', status=400, mimetype='application/json')
+    return json.dumps({"status": "200", "body": ticket.getID()})
 
 @app.route('/api/bookings/removeTicket', methods=['POST'])
 def removeTicket():
@@ -238,6 +251,15 @@ def submitBooking():
     return json.dumps({'status': '200', 'bookingID': booking.getID()})
 
 
+
+
+
+
+
+
+# Test Endpoints
+# vvvvvvvvvvvvvv
+
 @app.route('/testEmail')
 def testEmail():
     return render_template('./confEmailBody.html', booking=None)
@@ -272,4 +294,5 @@ def testEndpoint2():
 
 
 if __name__ == '__main__':
+    # deepcode ignore RunWithDebugTrue: <please specify a reason of ignoring this>
     app.run(debug=True, port=8000, host='0.0.0.0')
