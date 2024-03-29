@@ -16,7 +16,7 @@ const removeSeat = (seat) => {
 const disableAllSeats = () => {
     const Seats = document.getElementsByClassName('Seat');
     for (let i = 0; i < Seats.length; i++) {
-        if (Seats[i].checked == false) {
+        if (Seats[i].checked === false) {
             Seats[i].disabled = true;
             Seats[i].nextElementSibling.classList.add('opacity-75');
             document.getElementById('continueBtn').disabled = false;

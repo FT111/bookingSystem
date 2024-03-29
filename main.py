@@ -19,6 +19,7 @@ testBooking = bs.Bookings.newBooking(str(uuid.uuid4()), testViewing)
 
 # Fetches the session ID from the session cookies, if it doesn't exist it creates a new one
 def getSession() -> str:
+
     if 'uuid' not in session:
         session['uuid'] = uuid.uuid4()
     return str(session['uuid'])
@@ -66,10 +67,9 @@ def chooseSeatsPage():
     booking = bs.Bookings.getBookingByID(sessionID)
     if booking is None:
         return redirect(url_for('viewingsPage'))
-    
 
     maxSeats = len(booking.getTickets())
-    if maxSeats <= 0: # Ensures that the user has selected at least one ticket
+    if maxSeats <= 0:  # Ensures that the user has selected at least one ticket
         return redirect(url_for('newBookingPage'))
     
     # Retrieve the viewing object from the current user's booking
@@ -88,6 +88,7 @@ def chooseSeatsPage():
 
 @app.route('/booking/summary')
 def bookingSummary():
+
     sessionID = getSession()
     try:
         currentBooking = bs.Bookings.getBookingByID(sessionID)
@@ -102,7 +103,6 @@ def bookingSummary():
 
     if len(seats) != len(tickets):
         return redirect(url_for('chooseSeatsPage'))
-    
 
     ticketTypes = bs.TicketTypes.getTypes()
     ticketCounts = currentBooking.getTicketCountPerType()
@@ -127,6 +127,7 @@ def handle_preflight():
 
 @app.route('/ticketCheck')
 def scanTicket():
+
     return render_template('ticketCheck.html')
 
 
@@ -141,14 +142,31 @@ def scanTicket():
 def checkTicket():
     pass
 
+
+@app.route('/api/customers/getAll', methods=['POST'])
+def getAllCustomers():
+    customers = bs.Customers.getAllCustomerInfoFromDB('firstName', 'Surname', 'emailAddress', 'phoneNumber', 'ID')
+
+    print(customers)
+    customers = json.dumps(customers)
+
+    return Response(f'{{"body": {customers}}}', status=200, mimetype='application/json')
+
+
 @app.route('/api/customers/new', methods=['POST'])
 def newCustomer():
-    requiredFields = ['firstName', 'surname', 'email', 'phoneNumber']
+    print(request.json)
+    requiredFields = ['Name', 'Email', 'phoneNumber']
     for field in requiredFields:
-        if field not in request.json:
+        if field not in request.json.keys():
             return Response('{"body": "Missing required fields"}', status=400, mimetype='application/json')
     
-    bs.Customers.newCustomer(firstName=request.json.get('firstName'), Surname=request.json.get('surname'), email=request.json.get('email'), phoneNumber=request.json.get('phoneNumber'))
+    splitName = request.json.get('Name').split(' ')
+    firstName = splitName[0]
+    surname = splitName[len(splitName)-1]
+
+    if not bs.Customers.newCustomer(firstName=firstName, surname=surname, email=request.json.get('Email'), phoneNumber=request.json.get('phoneNumber')):
+        return Response('{"body": "Error creating customer"}', status=400, mimetype='application/json')
 
     return json.dumps({'status': '200'})
 
@@ -161,15 +179,15 @@ def startNewBooking():
     bs.Bookings.newBooking(sessionID, viewing)
     return json.dumps({'status': '200'})
 
-@app.route('/api/bookings/addCustomer', methods=['POST'])
-def newBooking():
-    sessionID = getSession()
+# @app.route('/api/bookings/addCustomer', methods=['POST'])
+# def newBooking():
+#     sessionID = getSession()
 
-    customer = bs.Customers.newCustomer(firstName=request.json.get('firstName'), Surname=request.json.get('surname'), email=request.json.get('email'))
-    booking = bs.Bookings.getBookingByID(sessionID)
-    booking.setCustomer(customer)
+#     customer = bs.Customers.newCustomer(firstName=request.json.get('firstName'), Surname=request.json.get('surname'), email=request.json.get('email'))
+#     booking = bs.Bookings.getBookingByID(sessionID)
+#     booking.setCustomer(customer)
 
-    return json.dumps({'status': '200'})
+#     return json.dumps({'status': '200'})
 
 @app.route('/api/bookings/addTicket', methods=['POST'])
 def addSeat():

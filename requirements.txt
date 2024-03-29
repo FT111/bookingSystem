@@ -1,3 +1,5 @@
 flask
 requests
 qrcode
+flask_cors
+regex

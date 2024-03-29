@@ -4,19 +4,21 @@ import qrcode
 import uuid
 from flask import render_template
 
+
 class TicketTypes:
     def __init__(self, Database) -> None:
         self.allTypes = list()
         self.Database = Database
 
-    def getTypes(self) -> tuple:
-        self.typesTuple = self.Database.getTicketTypes()
+    def getTypes(self) -> list:
+        typesTuple = self.Database.getTicketTypes()
         self.allTypes = []
-        for type in self.typesTuple:
-            self.allTypes.append({ 'ID':type[0],
-                                'Name': type[1], 
-                                'Price': type[2] })
+        for type in typesTuple:
+            self.allTypes.append({'ID': type[0],
+                                  'Name': type[1],
+                                  'Price': type[2]})
         return self.allTypes
+
 
 ###
 ### Container pattern heirachy: Bookings -> Booking -> Ticket
@@ -26,7 +28,7 @@ class Ticket:
     Database = None
 
     @classmethod
-    def setDatabase(cls, Database:object) -> None:
+    def setDatabase(cls, Database: object) -> None:
         cls.Database = Database
 
     def __init__(self, ticketType: str, seatLocation=None) -> None:
@@ -35,22 +37,21 @@ class Ticket:
         self.qrCodeURL = None
 
         self.id = str(uuid.uuid4().int)
-    
+
     def getID(self) -> str:
         return self.id
 
     def getType(self) -> str:
         return self.ticketType
-    
+
     def getSeatLocation(self) -> str:
         return self.seatLocation
-    
+
     def setTicketType(self, ticketType: str) -> None:
         self.ticketType = ticketType
 
     def setSeatLocation(self, seatLocation: str) -> None:
         self.seatLocation = seatLocation
-        
 
     def generateQR(self) -> str:
         qr = qrcode.QRCode(
@@ -65,19 +66,19 @@ class Ticket:
         self.qrCodeURL = f'./static/assets/codes/{self.id}.png'
         img.save(self.qrCodeURL)
         return self.qrCodeURL
-    
+
     def getQR(self) -> str:
         return self.qrCodeURL
 
 
 class Booking:
     TicketTypes = None
-    
+
     @classmethod
-    def setTicketTypes(cls, TicketTypes:object) -> None:
+    def setTicketTypes(cls, TicketTypes: object) -> None:
         cls.TicketTypes = TicketTypes
 
-    def __init__(self, Database:object, ViewingObj:object) -> None:
+    def __init__(self, Database: object, ViewingObj: object) -> None:
         self.Database = Database
         self.Customer = None
         self.Viewing = ViewingObj
@@ -88,39 +89,38 @@ class Booking:
     def getID(self) -> str:
         return self.bookingID
 
-    def addTicket(self, ticket:object) -> bool:
+    def addTicket(self, ticket: object) -> bool:
         if len(self.Tickets) >= self.Viewing.getRemainingSeats():
             return False
         self.Tickets.append(ticket)
         return True
-    
-    def removeTicket(self, ticket:object) -> bool:
+
+    def removeTicket(self, ticket: object) -> bool:
         if ticket not in self.Tickets:
             return False
         self.Tickets.remove(ticket)
         return False
 
-    def addSeat(self, seat:str) -> bool:
+    def addSeat(self, seat: str) -> bool:
         # Validates that the seat is an available, existing seat
         if seat in self.Viewing.getUnavailableSeats() or seat in self.Viewing.getReservedSeats() or seat not in self.Viewing.getSeatNames():
             return False
-        
+
         self.selectedSeats.append(seat)
         return True
-    
-    def removeSeat(self, seat:str) -> bool:
+
+    def removeSeat(self, seat: str) -> bool:
         if seat not in self.selectedSeats:
             return False
         self.selectedSeats.remove(seat)
-    
+
     def resetSeats(self) -> None:
         self.selectedSeats = []
 
     def getSelectedSeats(self):
         return self.selectedSeats
-    
 
-    def removeTicketOfType(self, ticketType:str) -> None:
+    def removeTicketOfType(self, ticketType: str) -> None:
         for ticket in self.Tickets:
             if ticket.getType() == ticketType:
                 self.Tickets.remove(ticket)
@@ -128,7 +128,7 @@ class Booking:
 
     def getTickets(self) -> list:
         return self.Tickets
-    
+
     def getTicketCountPerType(self) -> dict:
         ticketCounts = dict()
         ticketTypes = self.TicketTypes.getTypes()
@@ -136,14 +136,13 @@ class Booking:
         # Fill the dictionary with ticket types
         for type in ticketTypes:
             ticketCounts[type['ID']] = 0
-        
 
         # Count the number of tickets of each type
         for ticket in self.Tickets:
             ticketCounts[ticket.getType()] += 1
-        
+
         return ticketCounts
-    
+
     def getPriceSum(self) -> float:
         ticketTypes = self.TicketTypes.getTypes()
         priceSum = 0
@@ -155,21 +154,21 @@ class Booking:
                     break
 
         return priceSum
-    
+
     def getViewing(self) -> object:
         return self.Viewing
-    
-    def setCustomer(self, Customer:object) -> None:
+
+    def setCustomer(self, Customer: object) -> None:
         self.Customer = Customer
-    
+
     def getCustomer(self) -> object:
         return self.Customer
-    
+
     def Submit(self, seats=None) -> bool:
         # Validate that the booking has a customer
         if self.Customer is None:
             return False
-        
+
         # Validate that the requested seats are available
         if seats is not None:
             unavailableSeats = self.Viewing.getUnavailableSeats()
@@ -184,10 +183,10 @@ class Booking:
         if seats is not None:
             if len(seats) != len(self.Tickets):
                 return False
-            
+
             for ticket in self.Tickets:
                 ticket.setSeatLocation(seats.pop(0))
-        
+
         for ticket in self.Tickets:
             if ticket.getSeatLocation() in unavailableSeats or ticket.getSeatLocation() not in self.Viewing.getSeatNames():
                 self.Tickets = []
@@ -199,7 +198,7 @@ class Booking:
             ticket.generateQR()
         # self.confirmBooking()
         return True
-        
+
     def confirmBooking(self) -> None:
 
         # Send Email
@@ -212,23 +211,23 @@ class Booking:
         emailBody = render_template('confEmailBody.html', booking=self)
         msg.attach(MIMEText(emailBody, 'html'))
 
-        
+
 class Bookings:
 
-    def __init__(self, Database:object) -> None:
+    def __init__(self, Database: object) -> None:
         self.Database = Database
         self.allBookings = dict()
 
-    def newBooking(self, ID:str, ViewingObj:object) -> int:
+    def newBooking(self, ID: str, ViewingObj: object) -> int:
         newBooking = Booking(self.Database, ViewingObj)
         self.allBookings[ID] = newBooking
 
         return newBooking
 
-    def removeBooking(self, index:int) -> None:
+    def removeBooking(self, index: int) -> None:
         self.allBookings.pop(index, None)
 
-    def getBookingByID(self, index:int) -> object:
+    def getBookingByID(self, index: int) -> object:
         if index in self.allBookings:
             return self.allBookings[index]
         else:

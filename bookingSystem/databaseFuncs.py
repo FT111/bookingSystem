@@ -2,9 +2,10 @@ import sqlite3
 from queue import Queue
 import threading
 
+
 class DatabaseConnection:
-    
-    def __init__(self, path:str) -> None:
+
+    def __init__(self, path: str) -> None:
         self.queue = Queue()
         self.path = path
 
@@ -16,12 +17,13 @@ class DatabaseConnection:
 
     def executeQueuedQueries(self):
         while True:
+            # file deepcode ignore single~iteration~loop: <please specify a reason of ignoring this>
             arguments = self.queue.get()
             query = arguments[0]
             args = arguments[1]
             db = self.newConnection()
             cursor = db.cursor()
-            
+
             if args == ():
                 cursor.execute(query)
             else:
@@ -33,12 +35,11 @@ class DatabaseConnection:
 
             return queryOutput
 
-
     def startHandler(self):
         for thread in range(10):
             threading.Thread(target=self.executeQueuedQueries, daemon=True).start()
 
-    def execute(self, query:str, args:tuple=()) -> list:
+    def execute(self, query: str, args: tuple = ()) -> list:
         try:
             print(f'Executing {query} {"with" + args if args != () else ""}')
         except TypeError:
@@ -47,11 +48,11 @@ class DatabaseConnection:
         return self.executeQueuedQueries()
 
 
-
 class Database:
+    def __init__(self, DBConnectionInstance: object) -> None:
+        self.cursor = DBConnectionInstance
 
-    def __init__(self, DatabaseConnection:object) -> None:
-        self.cursor = DatabaseConnection
+        self.acceptedCustomerColumns = ['ID', 'firstName', 'Surname', 'emailAddress', 'phoneNumber']
 
     # def getRecords(self, table:str, column='*', where='') -> list:
     #     query = f'SELECT {column} FROM {table}' 
@@ -59,23 +60,24 @@ class Database:
     #     query += f' WHERE {where[0]} {where[1]} ?' if where else ''
     #     records = self.cursor.execute(query, (where[2] if where[2] else '',))
     #     return records if records is not None else []
-    
+
     # def addRecords(self, table:str, values:tuple) -> None:
     #     query = f'INSERT INTO {table} VALUES (?);'
     #     self.cursor.execute(query, values)
-        
+
     def getAllViewings(self) -> list:
         return self.cursor.execute('SELECT * FROM Viewings;')
-    
+
     def getAllViewingIDs(self) -> list:
         return self.cursor.execute('SELECT viewingID FROM Viewings;')
-    
+
     def getUpcomingViewingIDs(self) -> list:
-        return self.cursor.execute("SELECT viewingID FROM Viewings WHERE datetime(viewingDate) >= datetime('now') ORDER BY viewingDate ASC;")
-    
+        return self.cursor.execute("""SELECT viewingID FROM Viewings WHERE datetime(viewingDate) >= datetime('now')
+                                      ORDER BY viewingDate ASC;""")
+
     def getTicketTypes(self) -> list:
         return self.cursor.execute('SELECT * FROM ticketTypes')
-    
+
     def getReservedSeats(self, viewingID) -> list:
         reservedSeatTuples = self.cursor.execute('SELECT seat FROM Tickets WHERE ViewingID = ?;', (viewingID,))
         reservedSeatList = []
@@ -83,25 +85,45 @@ class Database:
             reservedSeatList.append(seat[0])
 
         return reservedSeatList
-    
+
     def getUnavailableSeats(self, viewingID) -> list:
-        unavailableSeatTuples =  self.cursor.execute('SELECT seat FROM unavailableSeats WHERE ViewingID = ?;', (viewingID,))
+        unavailableSeatTuples = self.cursor.execute('SELECT seat FROM unavailableSeats WHERE ViewingID = ?;',
+                                                    (viewingID,))
         unavailableSeatList = []
         for seat in unavailableSeatTuples:
             unavailableSeatList.append(seat[0])
-        
+
         return unavailableSeatList
 
     def getAllUnavailableSeats(self) -> list:
         unavailableSeats = self.cursor.execute('SELECT ViewingID FROM Tickets;')
         unavailableSeats += self.cursor.execute('SELECT ViewingID FROM unavailableSeats;')
         return unavailableSeats
-    
+
     def getTicketByID(self, ticketID) -> list:
         return self.cursor.execute('SELECT * FROM Tickets WHERE ID = ?;', (ticketID,))
 
-    def newTicket(self, ticket:object, customer:object, viewing:object) -> None:
-        self.cursor.execute('INSERT INTO Tickets VALUES (?, ?, ?, ?, ?);', (ticket.getID(), ticket.getSeatLocation(), ticket.getType(), customer.getID(), viewing.getID(),))
+    def newTicket(self, ticket: object, customer: object, viewing: object) -> None:
+        self.cursor.execute('INSERT INTO Tickets VALUES (?, ?, ?, ?, ?);', (
+            ticket.getID(), ticket.getSeatLocation(), ticket.getType(), customer.getID(), viewing.getID(),))
 
-    def submitViewing():
+    def newCustomer(self, customer: object) -> None:
+        print(customer.getID(), customer.getFirstName(), customer.getSurname(), customer.getEmail(),
+              customer.getPhoneNumber())
+        self.cursor.execute('INSERT INTO Customers VALUES (?, ?, ?, ?, ?);', (
+            customer.getID(), customer.getFirstName(), customer.getSurname(), customer.getEmail(),
+            customer.getPhoneNumber(),)
+                            )
+
+    def getAllCustomerInfo(self, columns: list) -> list:
+        for column in columns:
+            if column not in self.acceptedCustomerColumns:
+                return []
+        sqlColumns = ', '.join(columns)
+        response = self.cursor.execute(f'SELECT {sqlColumns} FROM Customers;')
+        for index, record in enumerate(response):
+            response[index] = dict(zip(columns, record))
+        return response
+
+    def submitViewing(self):
         pass

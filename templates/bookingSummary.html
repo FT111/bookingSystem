@@ -4,6 +4,7 @@
 
 <title>Summary</title>
 <script src="../static/bookingSummary.js"></script>
+<script src="../static/userForms.js"></script>
 
 <!-- Passing data to JS -->
 <script>
@@ -64,23 +65,41 @@ let priceSum = {{ priceSum }};
                     <div class="drawer drawer-end">
                     <input id="existingUserDraw" type="checkbox" class="drawer-toggle" />
                     <div class="drawer-content">
-                        <label for="existingUserDraw" class="drawer-button btn flex-grow h-16 card bg-secondary hover:bg-slate-600 transition-all duration-200 ease-in-out text-base-100 rounded-box">Select a user</label>
+                        <label for="existingUserDraw" onclick="getAllCustomers('existingUserTable')"
+                               class="drawer-button btn flex-grow h-16 card bg-secondary hover:bg-slate-600
+                               transition-all duration-200 ease-in-out text-base-100 rounded-box">
+                            Select a user
+                        </label>
                     </div> 
                     <div class="drawer-side z-50">
                         <label for="existingUserDraw" aria-label="close sidebar" class="drawer-overlay"></label>
-                        <div class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-                        {% for user in users %}
-                            <label class="flex items-center gap-4 p-2 hover:bg-slate-600 transition-all duration-200 ease-in-out rounded-box">
-                                <input type="radio" name="user" value="{{ user.ID }}" class="radio radio-primary" onclick="enableContinue()">
-                                <div class="flex flex-col">
-                                    <p class="text-lg">{{ user.Name }}</p>
-                                    <p class="text-sm text-slate-400">{{ user.Email }}</p>
-                                </div>
-                            </label>
-                        {% endfor %}
-                        </div>
 
+                        <!-- Table of existing users / Draw Content -->
+                        <div class="overflow-x-auto flex flex-col gap-3  p-4 w-10/12 sm:w-1/2 min-h-full bg-base-300 text-base-content">
+                            <div class="bg-base-300 drop-shadow-md w-full top-16 z-50 rounded-box p-3 gap-5 flex justify-between">
+                                <div></div>
+                                <label class="input flex items-center gap-2 w-full rounded-box max-w-xs">
+                                    <input type="text" onkeyup="getCustomersByName('customerSearchBar', 'existingUserTable')" id="customerSearchBar" placeholder="Search users" class="grow w-full" />
+                                </label>
+                            </div>
+
+                          <div class="border-base-200">
+                          <table class="table table-sm w-full" id="existingUserTable">
+                            <thead>
+                              <tr class="bg-secondary text-base-100">
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone Number</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                          </table>
                         </div>
+                            <!-- End Draw Content -->
+                    </div>
+                    </div>
                     </div>
                     <!-- End select existing user -->         
 
@@ -88,17 +107,17 @@ let priceSum = {{ priceSum }};
 
                     <!-- Add new user -->
                     <div class="drawer drawer-end">
-                    <input id="newUserDraw" type="checkbox" class="drawer-toggle" />
+                    <input id="newUserDrawToggle" type="checkbox" class="drawer-toggle" />
                     <div class="drawer-content">
                         <label for="newUserDraw" class="drawer-button btn flex-grow h-16 card bg-secondary hover:bg-slate-600 transition-all duration-200 ease-in-out text-base-100 rounded-box">Add a new user</label>
                     </div> 
                     <div class="drawer-side z-50">
                         <label for="newUserDraw" aria-label="close sidebar" class="drawer-overlay"></label>
 
-                        <form id="newUserForm" class="menu p-4 w-80 min-h-full bg-base-200 text-base-content gap-3">
-                            <input type="text" name="name" placeholder="Name" class="input input-primary rounded-md input-bordered" required>
-                            <input type="text" name="email" placeholder="Email" class="input input-primary rounded-md input-bordered" required>
-                            <input type="text" name="phone" placeholder="Phone" class="input input-primary rounded-md input-bordered" required>
+                        <form id="newUserForm" class="menu p-6 w-10/12 sm:w-1/4 min-h-full bg-base-200 text-base-content gap-3">
+                            <input type="text" name="name" id="newName" placeholder="Name" class="input input-primary rounded-md input-bordered" required>
+                            <input type="text" name="email" id="newEmail" placeholder="Email" class="input input-primary rounded-md input-bordered" required>
+                            <input type="text" name="phone" id="newPhone" placeholder="Phone" class="input input-primary rounded-md input-bordered" required>
                             <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200">Add User</button>
                         </form>
                         </div>
@@ -106,6 +125,27 @@ let priceSum = {{ priceSum }};
                     <!-- End add new user -->
 
                 </div>
+                <div class="card card-outline bg-base-200 p-4 w-full">
+{#                        <p class="text-lg sm:text-xl font-semibold text-primary">Selected User</p>#}
+
+                        <table class="table table-lg w-full" id="selectedUserTable">
+                            <tbody>
+                                <tr>
+                                    <td class="font-semibold">Name</td>
+                                    <td id="selectedName">None</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">Email</td>
+                                    <td id="selectedEmail">None</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold">Phone Number</td>
+                                    <td id="selectedPhone">None</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
 
             </div>
 

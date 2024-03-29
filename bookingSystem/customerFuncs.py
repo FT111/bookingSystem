@@ -1,4 +1,5 @@
 import uuid
+import regex as re
 
 class Customer:
     Database = None
@@ -23,14 +24,24 @@ class Customer:
         return self.id
 
     def getName(self) -> str:
-        return self.name
+        return self.firstName + ' ' + self.Surname
+    
+    def getFirstName(self) -> str:
+        return self.firstName
+    
+    def getSurname(self) -> str:
+        return self.Surname
+    
+    def getPhoneNumber(self) -> int:
+        return self.phoneNumber
     
     def getEmail(self) -> str:
         return self.email
     
     def submitToDB(self) -> None:
-        self.Database.addRecords('Customers', (self.name, self.email))
-    
+        self.Database.newCustomer(self)
+
+
 class Customers:
     def __init__(self, Database) -> None:
         self.allCustomers = dict()
@@ -41,14 +52,27 @@ class Customers:
         for customer in customers:
             self.allCustomers[customer[0]] = Customer(customer[0], customer[1], customer[2], customer[3])
         return self.allCustomers
-    
+
+    def getAllCustomerInfoFromDB(self, *args: str) -> dict:
+        args = list(args)
+        if 'Name' in args:
+            args[args.index('Name')] = 'firstName'
+            args.insert(args.index('firstName') + 1, 'Surname')
+
+        info = self.Database.getAllCustomerInfo(args)
+        return info
+
     def addCustomer(self, customer:object) -> None:
         self.allCustomers[customer.id] = customer
     
-    def newCustomer(self, firstName, Surname, email) -> object:
-        newCustomer = Customer(None, firstName, Surname, email)
+    def newCustomer(self, firstName, surname, email, phoneNumber) -> object:
+        # Detail validation
+        if len(phoneNumber) != 11 or not re.match(r'^07[0-9]{9}$', phoneNumber) or not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+            return None
+        
+        newCustomer = Customer(None, firstName, surname, email, phoneNumber)
         self.addCustomer(newCustomer)
-        # newCustomer.submitToDB()
+        newCustomer.submitToDB()
         return newCustomer
     
     def getStoredCustomer(self, customerID) -> object:
