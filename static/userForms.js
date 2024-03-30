@@ -28,9 +28,18 @@ const renderUserTable = (outputTableID, data) => {
 }
 
 const selectCustomer = (user, userTableID=null) => {
-    document.getElementById('newUserDrawToggle').disabled = true;
+    [...document.getElementsByClassName('drawer-toggle')].forEach(drawer => {
+        drawer.checked = false;
+    });
 
     selectedUser = user;
+
+    try {
+        document.getElementById(('continueBtn')).disabled = false;
+        document.getElementById('continueTooltip').classList.remove('tooltip', 'tooltip-left');
+    } catch (error) {
+
+    }
 
     if (userTableID !== null) {
         document.getElementById('selectedEmail').innerHTML = user['emailAddress'];
@@ -67,6 +76,7 @@ const getAllCustomers = (outputTableID) => {
 const getCustomersByName =(userElement, outputTableID) => {
     const searchValue = document.getElementById('customerSearchBar').value;
     let filteredUsers = Users.filter(user => user['firstName'].toLowerCase().includes(searchValue.toLowerCase()) || user['Surname'].toLowerCase().includes(searchValue.toLowerCase()));
+
     renderUserTable(outputTableID, filteredUsers);
 
 }
