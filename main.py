@@ -165,10 +165,14 @@ def newCustomer():
     firstName = splitName[0]
     surname = splitName[len(splitName)-1]
 
-    if not bs.Customers.newCustomer(firstName=firstName, surname=surname, email=request.json.get('Email'), phoneNumber=request.json.get('phoneNumber')):
+    newCust = bs.Customers.newCustomer(firstName=firstName, surname=surname, email=request.json.get('Email'), phoneNumber=request.json.get('phoneNumber'))
+    if newCust is None:
         return Response('{"body": "Error creating customer"}', status=400, mimetype='application/json')
 
-    return json.dumps({'status': '200'})
+    print(newCust.getID())
+
+    return Response(f'{{"body": "{str(newCust.getID())}"}}', status=200, mimetype='application/json')
+
 
 @app.route('/api/bookings/startNewBooking', methods=['POST'])
 def startNewBooking():

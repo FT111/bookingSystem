@@ -84,8 +84,6 @@ const getCustomersByName =(userElement, outputTableID) => {
 
 document.addEventListener('DOMContentLoaded', function() {
 
-
-
     document.getElementById('newUserForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -104,6 +102,15 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify(formValues)
         }).then(response => response.json())
         .then(data => {
+            let newUser = {
+                'ID': data.body,
+                'firstName': formValues.Name.split(' ')[0],
+                'Surname': formValues.Name.split(' ')[1],
+                'emailAddress': formValues.Email,
+                'phoneNumber': formValues.phoneNumber
+            }
+
+            selectCustomer(newUser, 'userTable');
             newError(data.body);
         })
         .catch(error => {

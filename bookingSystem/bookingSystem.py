@@ -3,6 +3,7 @@ from bookingSystem.BookingFuncs import Ticket, Booking, Bookings, TicketTypes
 from bookingSystem.databaseFuncs import Database, DatabaseConnection
 from bookingSystem.customerFuncs import Customer, Customers
 
+
 class BookingSystem:
 
     def __init__(self, dbPath:str) -> None:
