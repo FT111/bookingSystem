@@ -38,8 +38,11 @@ class Customer:
     def getEmail(self) -> str:
         return self.email
     
-    def submitToDB(self) -> None:
-        self.Database.newCustomer(self)
+    def submitToDB(self) -> bool:
+        if self.Database.addNewCustomer(self, self.firstName, self.Surname, self.email, self.phoneNumber):
+            return True
+
+        return False
 
 
 class Customers:

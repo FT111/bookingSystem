@@ -5,24 +5,24 @@ import uuid
 import os
 import secrets
 
-from bookingSystem.bookingSystem import BookingSystem
+import bookingSystem as bSystem
 
-bs = BookingSystem(dbPath='./database/bookingDatabase.db')
+bs = bSystem.BookingSystem(dbPath='./database/bookingDatabase.db')
 bs.Viewings.getAllViewingsFromDB()
 app = Flask(__name__)
 app.secret_key = secrets.token_urlsafe(16)
 CORS(app)
 
-
 testViewing = bs.Viewings.getStoredViewingByID(1)
 testBooking = bs.Bookings.newBooking(str(uuid.uuid4()), testViewing)
 
+
 # Fetches the session ID from the session cookies, if it doesn't exist it creates a new one
 def getSession() -> str:
-
     if 'uuid' not in session:
         session['uuid'] = uuid.uuid4()
     return str(session['uuid'])
+
 
 # Flow - viewingSelector -> newBooking -> seatSelector -> Summary -> --Submit--
 
@@ -31,8 +31,8 @@ def getSession() -> str:
 
 @app.route('/dashboard')
 def index():
-
     return render_template('dashboard.html')
+
 
 # Shows the upcoming viewings to the user and allows selection
 @app.route('/booking/new')
@@ -40,6 +40,7 @@ def viewingsPage():
     viewings = bs.Viewings.getUpcomingViewingsAsList()
 
     return render_template('viewings.html', viewings=viewings)
+
 
 # Allows the user to select the number of tickets they want to purchase
 @app.route('/booking/tickets')
@@ -56,7 +57,9 @@ def newBookingPage():
     ticketSum = sum(ticketCounts.values())
     priceSum = currentBooking.getPriceSum()
 
-    return render_template('newBooking.html', booking=currentBooking, ticketSum=ticketSum, priceSum=priceSum, ticketCounts=ticketCounts, viewing=currentViewing, ticketTypes=ticketTypes)
+    return render_template('newBooking.html', booking=currentBooking, ticketSum=ticketSum, priceSum=priceSum,
+                           ticketCounts=ticketCounts, viewing=currentViewing, ticketTypes=ticketTypes)
+
 
 # Allows the user to select the seats they want to book
 @app.route('/booking/seats')
@@ -71,7 +74,7 @@ def chooseSeatsPage():
     maxSeats = len(booking.getTickets())
     if maxSeats <= 0:  # Ensures that the user has selected at least one ticket
         return redirect(url_for('newBookingPage'))
-    
+
     # Retrieve the viewing object from the current user's booking
     viewing = booking.getViewing()
 
@@ -82,20 +85,20 @@ def chooseSeatsPage():
     viewingName = viewing.getName()
     bookingID = booking.getID()
 
-
-    return render_template('seatSelector.html', bookingID=bookingID, viewingName=viewingName, seatNames=seatNames, reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow, maxSeats=maxSeats)
+    return render_template('seatSelector.html', bookingID=bookingID, viewingName=viewingName, seatNames=seatNames,
+                           reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow,
+                           maxSeats=maxSeats)
 
 
 @app.route('/booking/summary')
 def bookingSummary():
-
     sessionID = getSession()
     try:
         currentBooking = bs.Bookings.getBookingByID(sessionID)
         currentViewing = currentBooking.getViewing()
     except AttributeError:
         return redirect(url_for('viewingsPage'))
-    
+
     tickets = currentBooking.getTickets()
     seats = currentBooking.getSelectedSeats()
     if len(tickets) <= 0:
@@ -111,7 +114,9 @@ def bookingSummary():
     priceSum = currentBooking.getPriceSum()
     tickets = currentBooking.getTickets()
 
-    return render_template('bookingSummary.html', booking=currentBooking, tickets=tickets, ticketSum=ticketSum, priceSum=priceSum, ticketCounts=ticketCounts, viewing=currentViewing, ticketTypes=ticketTypes)
+    return render_template('bookingSummary.html', booking=currentBooking, tickets=tickets, ticketSum=ticketSum,
+                           priceSum=priceSum, ticketCounts=ticketCounts, viewing=currentViewing,
+                           ticketTypes=ticketTypes)
 
 
 @app.before_request
@@ -121,18 +126,14 @@ def handle_preflight():
         res.headers['X-Content-Type-Options'] = '*'
         return res
 
+
 # @app.route('/cdn/codes/<path:path>')
 # def returnCode(path):
 #     return app.send_file(f'../assets/qrCodes/{path}.png')
 
 @app.route('/ticketCheck')
 def scanTicket():
-
     return render_template('ticketCheck.html')
-
-
-
-
 
 
 # API Endpoints
@@ -160,12 +161,15 @@ def newCustomer():
     for field in requiredFields:
         if field not in request.json.keys():
             return Response('{"body": "Missing required fields"}', status=400, mimetype='application/json')
-    
+
     splitName = request.json.get('Name').split(' ')
     firstName = splitName[0]
-    surname = splitName[len(splitName)-1]
+    surname = splitName[len(splitName) - 1]
 
-    newCust = bs.Customers.newCustomer(firstName=firstName, surname=surname, email=request.json.get('Email'), phoneNumber=request.json.get('phoneNumber'))
+    newCust = bs.Customers.newCustomer(firstName=firstName,
+                                       surname=surname,
+                                       email=request.json.get('Email'),
+                                       phoneNumber=request.json.get('phoneNumber'))
     if newCust is None:
         return Response('{"body": "Error creating customer"}', status=400, mimetype='application/json')
 
@@ -182,6 +186,7 @@ def startNewBooking():
     viewing = bs.Viewings.getStoredViewingByID(requestJSON.get('viewingID'))
     bs.Bookings.newBooking(sessionID, viewing)
     return json.dumps({'status': '200'})
+
 
 # @app.route('/api/bookings/addCustomer', methods=['POST'])
 # def newBooking():
@@ -205,6 +210,7 @@ def addSeat():
         return Response('{"body": "Not enough tickets remaining"}', status=400, mimetype='application/json')
     return json.dumps({"status": "200", "body": ticket.getID()})
 
+
 @app.route('/api/bookings/removeTicket', methods=['POST'])
 def removeTicket():
     sessionID = getSession()
@@ -215,6 +221,7 @@ def removeTicket():
     booking.resetSeats()
     return json.dumps({'status': '200'})
 
+
 @app.route('/api/bookings/addSeat', methods=['POST'])
 def setSeats():
     sessionID = getSession()
@@ -223,6 +230,7 @@ def setSeats():
     seatLocation = request.json.get('seat')
     booking.addSeat(seatLocation)
     return json.dumps({'status': '200'})
+
 
 @app.route('/api/bookings/removeSeat', methods=['POST'])
 def removeSeat():
@@ -263,6 +271,7 @@ def getBookingInfo():
     }
     return json.dumps({'customer': customerInfo, 'booking': bookingInfo, 'viewing': viewingInfo})
 
+
 @app.route('/api/bookings/submit', methods=['POST'])
 def submitBooking():
     sessionID = getSession()
@@ -273,12 +282,6 @@ def submitBooking():
     return json.dumps({'status': '200', 'bookingID': booking.getID()})
 
 
-
-
-
-
-
-
 # Test Endpoints
 # vvvvvvvvvvvvvv
 
@@ -286,16 +289,16 @@ def submitBooking():
 def testEmail():
     return render_template('./confEmailBody.html', booking=None)
 
+
 @app.route('/testEndpoint')
 def testEndpoint():
     sessionID = getSession()
-    
+
     customer = bs.Customers.newCustomer(firstName='Test', Surname='Customer', email='freddiejljtaylor+test@gmail.com')
     booking = bs.Bookings.newBooking(sessionID, testViewing)
     ticket = bs.Ticket(2)
     ticket2 = bs.Ticket(1)
     booking.setCustomer(customer)
-    
 
     # new function
     bookingRetrived = bs.Bookings.getBookingByID(sessionID)
@@ -307,12 +310,11 @@ def testEndpoint():
 
     return '200'
 
+
 @app.route('/testEndpoint2')
 def testEndpoint2():
     print(session['uuid'])
     return str(session['uuid'])
-
-
 
 
 if __name__ == '__main__':
