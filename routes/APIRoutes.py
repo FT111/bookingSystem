@@ -5,15 +5,16 @@ import os
 from routes.sharedInstances import bs
 from routes.webAppFunctions import getSession
 
+# Defines the blueprint for use in the main file
 apiRoutes = Blueprint('apiRoutes', __name__)
 
 
-@apiRoutes.route('/api/tickets/checkQR', methods=['POST'])
+@apiRoutes.route('/tickets/checkQR', methods=['POST'])
 def checkTicket():
     pass
 
 
-@apiRoutes.route('/api/customers/getAll', methods=['POST'])
+@apiRoutes.route('/customers/getAll', methods=['POST'])
 def getAllCustomers():
     customers = bs.Customers.getAllCustomerInfoFromDB('firstName', 'Surname', 'emailAddress', 'phoneNumber', 'ID')
 
@@ -23,7 +24,7 @@ def getAllCustomers():
     return Response(f'{{"body": {customers}}}', status=200, mimetype='application/json')
 
 
-@apiRoutes.route('/api/customers/new', methods=['POST'])
+@apiRoutes.route('/customers/new', methods=['POST'])
 def newCustomer():
     print(request.json)
     requiredFields = ['Name', 'Email', 'phoneNumber']
@@ -42,12 +43,10 @@ def newCustomer():
     if newCust is None:
         return Response('{"body": "Error creating customer"}', status=400, mimetype='application/json')
 
-    print(newCust.getID())
-
     return Response(f'{{"body": "{str(newCust.getID())}"}}', status=200, mimetype='application/json')
 
 
-@apiRoutes.route('/api/bookings/startNewBooking', methods=['POST'])
+@apiRoutes.route('/bookings/startNewBooking', methods=['POST'])
 def startNewBooking():
     sessionID = getSession()
 
@@ -57,7 +56,7 @@ def startNewBooking():
     return json.dumps({'status': '200'})
 
 
-# @app.route('/api/bookings/addCustomer', methods=['POST'])
+# @app.route('/bookings/addCustomer', methods=['POST'])
 # def newBooking():
 #     sessionID = getSession()
 
@@ -67,7 +66,7 @@ def startNewBooking():
 
 #     return json.dumps({'status': '200'})
 
-@apiRoutes.route('/api/bookings/addTicket', methods=['POST'])
+@apiRoutes.route('/bookings/addTicket', methods=['POST'])
 def addSeat():
     sessionID = getSession()
 
@@ -80,7 +79,7 @@ def addSeat():
     return json.dumps({"status": "200", "body": ticket.getID()})
 
 
-@apiRoutes.route('/api/bookings/removeTicket', methods=['POST'])
+@apiRoutes.route('/bookings/removeTicket', methods=['POST'])
 def removeTicket():
     sessionID = getSession()
 
@@ -91,7 +90,7 @@ def removeTicket():
     return json.dumps({'status': '200'})
 
 
-@apiRoutes.route('/api/bookings/addSeat', methods=['POST'])
+@apiRoutes.route('/bookings/addSeat', methods=['POST'])
 def setSeats():
     sessionID = getSession()
 
@@ -101,7 +100,7 @@ def setSeats():
     return json.dumps({'status': '200'})
 
 
-@apiRoutes.route('/api/bookings/removeSeat', methods=['POST'])
+@apiRoutes.route('/bookings/removeSeat', methods=['POST'])
 def removeSeat():
     sessionID = getSession()
 
@@ -111,7 +110,7 @@ def removeSeat():
     return json.dumps({'status': '200'})
 
 
-@apiRoutes.route('/api/bookings/getBookingInfo', methods=['POST'])
+@apiRoutes.route('/bookings/getBookingInfo', methods=['POST'])
 def getBookingInfo():
     sessionID = getSession()
 
@@ -141,14 +140,30 @@ def getBookingInfo():
     return json.dumps({'customer': customerInfo, 'booking': bookingInfo, 'viewing': viewingInfo})
 
 
-@apiRoutes.route('/api/bookings/submit', methods=['POST'])
+@apiRoutes.route('/bookings/addCustomer', methods=['POST'])
+def addCustomer():
+    sessionID = getSession()
+
+    booking = bs.Bookings.getBookingByID(sessionID)
+    customer = bs.Customers.getStoredCustomer(request.json.get('customerID'))
+
+    if not customer:
+        customer = bs.Customer(id=request.json.get('customerID'))
+        bs.Customers.addCustomer(customer)
+
+    booking.setCustomer(customer)
+    return json.dumps({'status': '200'})
+
+
+@apiRoutes.route('/bookings/submit', methods=['POST'])
 def submitBooking():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
-    seatLocations = request.json.get('seats')
+    seatLocations = booking.getSelectedSeats()
     booking.Submit(seatLocations)
-    return json.dumps({'status': '200', 'bookingID': booking.getID()})
+
+    return Response('{"status": "200"}', status=200, mimetype='application/json')
 
 
 # Test Endpoints
@@ -163,17 +178,21 @@ def testEmail():
 def testEndpoint():
     sessionID = getSession()
 
-    customer = bs.Customers.newCustomer(firstName='Test', Surname='Customer', email='freddiejljtaylor+test@gmail.com')
-    booking = bs.Bookings.newBooking(sessionID, testViewing)
+    bs.Viewings.getAllViewingsFromDB()
+    customer = bs.Customers.newCustomer(firstName='Test',
+                                        surname='Customer',
+                                        email='freddiejljtaylor+test2@gmail.com',
+                                        phoneNumber='07776159389')
+    booking = bs.Bookings.newBooking(sessionID, bs.Viewings.getStoredViewingByID(1))
     ticket = bs.Ticket(2)
     ticket2 = bs.Ticket(1)
     booking.setCustomer(customer)
 
     # new function
-    bookingRetrived = bs.Bookings.getBookingByID(sessionID)
-    bookingRetrived.addTicket(ticket)
-    bookingRetrived.addTicket(ticket2)
-    bookingRetrived.Submit(('A1', 'A2'))
+    bookingRetrieved = bs.Bookings.getBookingByID(sessionID)
+    bookingRetrieved.addTicket(ticket)
+    bookingRetrieved.addTicket(ticket2)
+    bookingRetrieved.Submit(('A1', 'A2'))
     os.system(f'open {ticket.getQR()}')
     os.system(f'open {ticket2.getQR()}')
 

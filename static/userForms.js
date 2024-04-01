@@ -31,24 +31,28 @@ const selectCustomer = (user, userTableID=null) => {
     [...document.getElementsByClassName('drawer-toggle')].forEach(drawer => {
         drawer.checked = false;
     });
-
     selectedUser = user;
 
-    try {
-        document.getElementById(('continueBtn')).disabled = false;
-        document.getElementById('continueTooltip').classList.remove('tooltip', 'tooltip-left');
-    } catch (error) {
-
-    }
+    document.getElementById(('continueBtn')).disabled = false;
+    document.getElementById('continueTooltip').classList.remove('tooltip', 'sm:tooltip-left', 'tooltip-bottom');
 
     if (userTableID !== null) {
         document.getElementById('selectedEmail').innerHTML = user['emailAddress'];
         document.getElementById('selectedPhone').innerHTML = user['phoneNumber'];
         document.getElementById('selectedName').innerHTML = user['firstName'] + ' ' + user['Surname'];
     }
+    console.log(user);
+    let response = fetch('/api/bookings/addCustomer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"customerID": user['ID']})
 
-    return selectedUser
-}
+    }).then(
+        response => {
+            return selectedUser;
+})};
 
 const getAllCustomers = (outputTableID) => {
     if (Users.length !== 0) {

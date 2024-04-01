@@ -1,6 +1,7 @@
 import uuid
 import regex as re
 
+
 class Customer:
     Database = None
 
@@ -16,7 +17,7 @@ class Customer:
         self.phoneNumber = phoneNumber
 
         if self.id:
-            self.firstName, self.Surname, self.email, self.phoneNumber = Customer.Database.getRecords('Customers', 'firstName, Surname, Email, phoneNumber', f'ID = {self.id}')
+            self.id, self.firstName, self.Surname, self.email, self.phoneNumber = self.Database.getCustomerInfoByID(ID=self.id)[0]
         else:
             self.id = uuid.uuid4().int & (1<<32)-1
 
@@ -39,7 +40,7 @@ class Customer:
         return self.email
     
     def submitToDB(self) -> bool:
-        if self.Database.addNewCustomer(self, self.firstName, self.Surname, self.email, self.phoneNumber):
+        if self.Database.newCustomer(self):
             return True
 
         return False
@@ -68,18 +69,21 @@ class Customers:
     def addCustomer(self, customer:object) -> None:
         self.allCustomers[customer.id] = customer
     
-    def newCustomer(self, firstName, surname, email, phoneNumber) -> object:
+    def newCustomer(self, firstName, surname, email, phoneNumber, inDB=True) -> object:
         # Detail validation
         if len(phoneNumber) != 11 or not re.match(r'^07[0-9]{9}$', phoneNumber) or not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
             return None
         
         newCustomer = Customer(None, firstName, surname, email, phoneNumber)
         self.addCustomer(newCustomer)
-        newCustomer.submitToDB()
+        if not inDB:
+            newCustomer.submitToDB()
         return newCustomer
     
     def getStoredCustomer(self, customerID) -> object:
-        return self.allCustomers.get(customerID, None)
+        if customerID in self.allCustomers.keys():
+            return self.allCustomers.get(customerID, None)
+        return None
     
     def getCustomer(self, customerID:int) -> object:
         return self.allCustomers.get(customerID, None)

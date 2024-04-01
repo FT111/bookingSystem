@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, Response, 
 from routes.sharedInstances import bs
 from routes.webAppFunctions import getSession
 
+# Defines the blueprint for use in the main file
 pageRoutes = Blueprint('pageRoutes', __name__)
 
 

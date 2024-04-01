@@ -165,37 +165,57 @@ class Booking:
         return self.Customer
 
     def Submit(self, seats=None) -> bool:
+        print('Stage 0')
         # Validate that the booking has a customer
         if self.Customer is None:
             return False
 
+        print('Stage 1')
+
         # Validate that the requested seats are available
+        unavailableSeats = self.Viewing.getUnavailableSeats()
+        unavailableSeats += self.Viewing.getReservedSeats()
         if seats is not None:
-            unavailableSeats = self.Viewing.getUnavailableSeats()
-            unavailableSeats += self.Viewing.getReservedSeats()
             seats = list(seats)
+
+        print('Stage 2')
 
         # Validate that the booking has tickets
         if len(self.Tickets) == 0:
             return False
 
+        print('Stage 3')
+
         # Handles assigning seats to tickets if they are not already assigned
-        if seats is not None:
+        if seats:
             if len(seats) != len(self.Tickets):
                 return False
 
             for ticket in self.Tickets:
                 ticket.setSeatLocation(seats.pop(0))
 
-        for ticket in self.Tickets:
-            if ticket.getSeatLocation() in unavailableSeats or ticket.getSeatLocation() not in self.Viewing.getSeatNames():
-                self.Tickets = []
-                return False
+        print('Stage 4')
+
+        if not seats:
+            for ticket in self.Tickets:
+                if ticket.getSeatLocation() in unavailableSeats or ticket.getSeatLocation() not in self.Viewing.getSeatNames():
+                    self.Tickets = []
+                    return False
+        else:
+            for seat in seats:
+                if seat in unavailableSeats or seat not in self.Viewing.getSeatNames():
+                    self.Tickets = []
+                    return False
+
+        print('Stage 5')
 
         # If the seats are available, submit the booking
         for ticket in self.Tickets:
             self.Viewing.submitTicket(ticket, self.Customer)
             ticket.generateQR()
+
+        print('Stage 6')
+
         # self.confirmBooking()
         return True
 

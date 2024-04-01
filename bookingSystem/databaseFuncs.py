@@ -108,12 +108,12 @@ class Database:
             ticket.getID(), ticket.getSeatLocation(), ticket.getType(), customer.getID(), viewing.getID(),))
 
     def newCustomer(self, customer: object) -> None:
-        print(customer.getID(), customer.getFirstName(), customer.getSurname(), customer.getEmail(),
-              customer.getPhoneNumber())
         self.cursor.execute('INSERT INTO Customers VALUES (?, ?, ?, ?, ?);', (
             customer.getID(), customer.getFirstName(), customer.getSurname(), customer.getEmail(),
-            customer.getPhoneNumber(),)
-                            )
+            customer.getPhoneNumber(),))
+
+    def getCustomerInfoByID(self, ID: int) -> list:
+        return self.cursor.execute('SELECT * FROM Customers WHERE ID = ?;', (ID,))
 
     def getAllCustomerInfo(self, columns: list) -> list:
         for column in columns:
