@@ -6,11 +6,22 @@ from flask import render_template
 
 
 class TicketTypes:
+    """
+    A class wrapping the ticket types in the booking system.
+    Retreives the ticket types from the database.
+    """
+
     def __init__(self, Database) -> None:
         self.allTypes = list()
         self.Database = Database
 
     def getTypes(self) -> list:
+        """
+        Retrieves all ticket types from the database.
+
+        Returns:
+            A list of dictionaries representing each ticket type, with keys 'ID', 'Name', and 'Price'.
+        """
         typesTuple = self.Database.getTicketTypes()
         self.allTypes = []
         for type in typesTuple:
@@ -72,6 +83,41 @@ class Ticket:
 
 
 class Booking:
+    """
+    Represents a booking made by a customer for a viewing.
+    Not submitted directly to the database, but instead the booking's tickets are.
+
+    Attributes:
+    - TicketTypes: A reference to the TicketTypes object that contains information about available ticket types.
+    - Database: A reference to the Database object used for storing booking information.
+    - Customer: The customer who made the booking.
+    - Viewing: The viewing object for which the booking is made.
+    - Tickets: A list of tickets included in the booking.
+    - bookingID: The unique ID of the booking.
+    - selectedSeats: A list of seats selected for the booking.
+
+    Methods:
+    - setTicketTypes: Classmethod - Sets the TicketTypes object for all booking instances.
+
+    - getID: Returns the ID of the booking.
+    - addTicket: Adds a ticket to the booking.
+    - removeTicket: Removes a ticket from the booking.
+    - addSeat: Adds a seat to the booking.
+    - removeSeat: Removes a seat from the booking.
+    - resetSeats: Resets the selected seats for the booking.
+    - getSelectedSeats: Returns the selected seats for the booking.
+    - removeTicketOfType: Removes all tickets of a specific type from the booking.
+    - getTickets: Returns the list of tickets in the booking.
+    - getTicketCountPerType: Returns a dictionary with the count of tickets per ticket type.
+    - getPriceSum: Returns the total price of the booking.
+    - getViewing: Returns the viewing object for the booking.
+    - setCustomer: Sets the customer for the booking.
+    - getCustomer: Returns the customer for the booking.
+
+    - Submit: Submits the booking.
+    - confirmBooking: Sends a confirmation email for the booking.
+    """
+
     TicketTypes = None
 
     @classmethod
@@ -233,21 +279,61 @@ class Booking:
 
 
 class Bookings:
+    """
+    Represents the system's currently stored bookings.
+    Wraps the collection of bookings and provides methods for managing them.
+
+    Attributes:
+        Database (object): The database object used for storing booking information.
+        allBookings (dict): A dictionary containing all the bookings, with booking IDs as keys and Booking objects as values.
+    Methods:
+        newBooking: Creates a new booking and adds it to the collection of bookings.
+        removeBooking: Removes a booking from the collection of bookings.
+        getBookingByID: Retrieves a booking from the collection of bookings based on its ID.
+    """
 
     def __init__(self, Database: object) -> None:
         self.Database = Database
         self.allBookings = dict()
 
     def newBooking(self, ID: str, ViewingObj: object) -> int:
+        """
+        Creates a new booking and adds it to the collection of bookings.
+
+        Args:
+            ID (str): The ID of the booking.
+            ViewingObj (object): The viewing object associated with the booking.
+
+        Returns:
+            int: The booking object that was created.
+        """
+
         newBooking = Booking(self.Database, ViewingObj)
         self.allBookings[ID] = newBooking
 
         return newBooking
 
     def removeBooking(self, index: int) -> None:
+        """
+        Removes a booking from the collection of bookings.
+
+        Args:
+            index (int): The index of the booking to be removed.
+        """
+
         self.allBookings.pop(index, None)
 
     def getBookingByID(self, index: int) -> object:
+        """
+        Retrieves a booking from the collection of bookings based on its ID.
+
+        Args:
+            index (int): The ID of the booking to be retrieved.
+
+        Returns:
+            object: The booking object with the specified ID, or None if it doesn't exist.
+        """
+
         if index in self.allBookings:
             return self.allBookings[index]
         else:

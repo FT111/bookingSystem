@@ -9,6 +9,7 @@ const submitBooking = () => {
         console.log(data);
         if (data.status === "200") {
             window.location.href = '/booking/new';
+            newSuccessAlert('Booking submitted successfully');
         } else {
             newError('Error submitting booking');
         }

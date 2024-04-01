@@ -42,6 +42,21 @@ const newError = (message) => {
   }, 2000);
 };
 
+const newSuccessAlert = (message) => {
+  console.log(message);
+  document.body.innerHTML += `
+  <div class="toast" id="warningToast">
+    <div class="alert alert-success text-base-content">
+      <span>${message}</span>
+    </div>
+  </div>
+  `;
+
+  setTimeout(() => {
+    document.getElementById('warningToast').remove();
+  }, 2000);
+};
+
 const formatter = new Intl.NumberFormat('en-GB', {
   style: 'currency',
   currency: 'GBP',

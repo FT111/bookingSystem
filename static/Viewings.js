@@ -44,7 +44,7 @@ const sortEarliest = (viewings) => {
 };
 
 const getSort = () => {
-    selector = document.getElementById('orderSelector')
+    let selector = document.getElementById('orderSelector')
     if (selector.value === 'earliest') {
         sortedViewings = sortEarliest(viewings);
         renderViewings(viewings);
