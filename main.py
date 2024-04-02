@@ -5,7 +5,13 @@ from flask_cors import CORS
 from routes.pageRoutes import pageRoutes
 from routes.APIRoutes import apiRoutes
 
-class BookingSystemWebApp():
+
+class BookingSystemWebApp:
+    """
+    Main class for the web application. This class is responsible for setting up the Flask app and registering the
+    routes.
+    """
+
     def __init__(self):
         self.app = Flask(__name__)
         CORS(self.app)

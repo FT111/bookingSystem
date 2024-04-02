@@ -7,14 +7,17 @@
 https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js
 "></script>
 <script src="../static/Dashboard.js"></script>
+<script>
+let stats = JSON.parse({{ stats | tojson | safe }});
+</script>
 <style>
 .card {
     padding: 1rem;
     border-radius: 1.5rem;
  }
- :root {
-    --rounded-box: 1.5rem;
- }
+ {#:root {#}
+ {#   --rounded-box: 1.5rem;#}
+ {#}#}
 
 </style>
 
@@ -22,17 +25,31 @@ https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js
 
 {% block body %}
 
-<div class="flex flex-col items-left px-8 py-2 justify-center w-full h-full">
-    <h1 class="text-6xl font-bold">Dashboard</h1>
-    </div>
+<div class="flex flex-col items-center px-8 py-2 justify-center w-full h-full">
+    <h1 class="text-3xl sm:text-6xl font-bold">Dashboard</h1>
+</div>
 
-<div class="grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-6 gap-4 w-full auto-rows-min h-screen p-4 auto-columns-max">
+<!-- Content container -->
+<div class="m-4 sm:m-8 flex gap-5 flex-col">
+  <div class="bg-base-300 drop-shadow-md sticky top-16 z-50 rounded-box p-3 gap-5 flex justify-between">
+
+       <select id="orderSelector" onchange="getViewings()" class="select w-full max-w-xs rounded-box">
+            <option value="all">All viewings</option>
+            <option value="past">Past viewings</option>
+            <option value="upcoming">Upcoming viewings</option>
+            <option value="specific">Specific viewing</option>
+       </select>
+
+
+  </div>
+
+<div class="grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-6 gap-4 w-full auto-rows-min h-screen auto-columns-max">
     <div class="sm:col-span-2 card w-full bg-base-300 card-primary flex-col gap-5 ">
     <div class="stats h-min w-full stats-vertical lg:stats-horizontal">
   
         <div class="stat ">
             <div class="stat-title">Total Tickets Sales</div>
-            <div class="stat-value">89,400</div>
+            <div class="stat-value">{{ stats['totalTickets'] }}</div>
             <div class="stat-desc">21% more than last month</div>
         </div>
         <div class="stat">
@@ -105,6 +122,7 @@ https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js
         <h3 class="card-title">Card Title</h3>
     </div>
     </div>
+</div>
 </div>
 
 {% endblock %}

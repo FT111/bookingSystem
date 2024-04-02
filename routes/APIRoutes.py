@@ -14,6 +14,11 @@ def checkTicket():
     pass
 
 
+@apiRoutes.route('/viewings/getViewingDataByIDs', methods=['POST'])
+def getViewingData():
+    selectedViewings = (bs.Viewings.getStoredViewingByID(viewingID) for viewingID in request.json.get('viewingIDs'))
+
+
 @apiRoutes.route('/customers/getAll', methods=['POST'])
 def getAllCustomers():
     customers = bs.Customers.getAllCustomerInfoFromDB('firstName', 'Surname', 'emailAddress', 'phoneNumber', 'ID')
@@ -28,9 +33,11 @@ def getAllCustomers():
 def newCustomer():
     print(request.json)
     requiredFields = ['Name', 'Email', 'phoneNumber']
-    for field in requiredFields:
-        if field not in request.json.keys():
-            return Response('{"body": "Missing required fields"}', status=400, mimetype='application/json')
+    missingFields = [field for field in requiredFields if field not in request.json.keys()]
+
+    if missingFields:
+        return Response(f'{{"body": "Missing required fields: {", ".join(missingFields)}"}}', status=400,
+                        mimetype='application/json')
 
     splitName = request.json.get('Name').split(' ')
     firstName = splitName[0]
@@ -42,6 +49,12 @@ def newCustomer():
                                        phoneNumber=request.json.get('phoneNumber'))
     if newCust is None:
         return Response('{"body": "Error creating customer"}', status=400, mimetype='application/json')
+    newCust.submitToDB()
+
+    if request.json.get('addToBooking'):
+        sessionID = getSession()
+        booking = bs.Bookings.getBookingByID(sessionID)
+        booking.setCustomer(newCust)
 
     return Response(f'{{"body": "{str(newCust.getID())}"}}', status=200, mimetype='application/json')
 

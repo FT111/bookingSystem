@@ -94,9 +94,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let formValues = {
             Name: document.getElementById('newName').value,
             Email: document.getElementById('newEmail').value,
-            phoneNumber: document.getElementById('newPhone').value
+            phoneNumber: document.getElementById('newPhone').value,
+            addToBooking: true
         };
-        console.log(formValues);
 
         let response = fetch('/api/customers/new', {
             method: 'POST',
@@ -115,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             selectCustomer(newUser, 'userTable');
-            newError(data.body);
         })
         .catch(error => {
             newError('Error: ' + error);

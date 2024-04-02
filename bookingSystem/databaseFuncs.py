@@ -53,6 +53,7 @@ class Database:
         self.cursor = DBConnectionInstance
 
         self.acceptedCustomerColumns = ['ID', 'firstName', 'Surname', 'emailAddress', 'phoneNumber']
+        self.acceptedViewingColumns = ['ViewingID', 'viewingName', 'viewingDesc', 'viewingBanner', 'viewingDate', 'viewingRows', 'seatsPerRow']
 
     # def getRecords(self, table:str, column='*', where='') -> list:
     #     query = f'SELECT {column} FROM {table}' 
@@ -80,20 +81,20 @@ class Database:
 
     def getReservedSeats(self, viewingID) -> list:
         reservedSeatTuples = self.cursor.execute('SELECT seat FROM Tickets WHERE ViewingID = ?;', (viewingID,))
-        reservedSeatList = []
-        for seat in reservedSeatTuples:
-            reservedSeatList.append(seat[0])
+        reservedSeatList = [seat[0] for seat in reservedSeatTuples]
 
         return reservedSeatList
 
     def getUnavailableSeats(self, viewingID) -> list:
         unavailableSeatTuples = self.cursor.execute('SELECT seat FROM unavailableSeats WHERE ViewingID = ?;',
                                                     (viewingID,))
-        unavailableSeatList = []
-        for seat in unavailableSeatTuples:
-            unavailableSeatList.append(seat[0])
+        unavailableSeatList = [seat[0] for seat in unavailableSeatTuples]
 
         return unavailableSeatList
+
+    def getAllReservedSeats(self) -> list:
+        reservedSeats = self.cursor.execute('SELECT ViewingID FROM Tickets;')
+        return reservedSeats
 
     def getAllUnavailableSeats(self) -> list:
         unavailableSeats = self.cursor.execute('SELECT ViewingID FROM Tickets;')
@@ -121,6 +122,18 @@ class Database:
                 return []
         sqlColumns = ', '.join(columns)
         response = self.cursor.execute(f'SELECT {sqlColumns} FROM Customers;')
+        return self.zipColumnsToDict(columns, response)
+
+    def getAllViewingInfo(self, columns: list) -> list:
+        for column in columns:
+            if column not in self.acceptedViewingColumns:
+                return []
+        sqlColumns = ', '.join(columns)
+        response = self.cursor.execute(f'SELECT {sqlColumns} FROM Viewings;')
+        return self.zipColumnsToDict(columns, response)
+
+    @staticmethod
+    def zipColumnsToDict(columns, response):
         for index, record in enumerate(response):
             response[index] = dict(zip(columns, record))
         return response

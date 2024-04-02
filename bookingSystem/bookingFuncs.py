@@ -1,6 +1,7 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import qrcode
+import sqlite3
 import uuid
 from flask import render_template
 
@@ -97,7 +98,7 @@ class Booking:
     - selectedSeats: A list of seats selected for the booking.
 
     Methods:
-    - setTicketTypes: Classmethod - Sets the TicketTypes object for all booking instances.
+    - setTicketTypes: Class method - Sets the TicketTypes object for all booking instances.
 
     - getID: Returns the ID of the booking.
     - addTicket: Adds a ticket to the booking.
