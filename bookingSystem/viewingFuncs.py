@@ -1,12 +1,20 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, time
+import time
 import json
 
 
 class Viewings:
+    ticketTypes = None
+
+    @classmethod
+    def setTicketTypes(cls, TicketTypes) -> None:
+        cls.ticketTypes = TicketTypes
+
     def __init__(self, Database) -> None:
         self.allViewings = dict()
         self.Database = Database
+        self.stats = dict()
 
     def getAllViewingsFromDB(self) -> dict:
         viewings = self.Database.getAllViewings()
@@ -79,8 +87,15 @@ class Viewings:
         return upcomingViewingsList
 
     def getStats(self, viewingID: int = None, timePeriod: str = None) -> dict:
+
+        if self.stats:
+            if self.stats['lastUpdated'] < (time.time() + 1000):
+                return self.stats
+
+        print('Updating stats')
+
         viewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingDate', 'viewingRows', 'seatsPerRow'])
-        allTickets = self.Database.getAllReservedSeats()
+        allTickets = self.Database.getAllTickets()
         upcomingViewingIDs = self.Database.getUpcomingViewingIDs()
 
         # Filters the viewings based on the selected time period
@@ -94,18 +109,27 @@ class Viewings:
             viewingInfo = [viewing for viewing in viewingInfo if viewing['ViewingID'] == viewingID]
 
         viewingIDs = [viewing['ViewingID'] for viewing in viewingInfo]
-
-        allTickets = [ticket[0] for ticket in allTickets if ticket[0] in viewingIDs]
-
-        stats = dict()
-        stats['totalViewings'] = len(viewingInfo)
-        stats['totalTickets'] = len(allTickets)
-
-        print(stats)
-        print(viewingInfo)
         print(allTickets)
 
-        return stats
+        selectedTickets = [ticket for ticket in allTickets if int(ticket[4]) in viewingIDs]
+        ticketTypes = self.ticketTypes.getTypes()
+
+        # Calculating the statistics
+        self.stats['lastUpdated'] = time.time()
+        self.stats['totalViewings'] = len(viewingInfo)
+        self.stats['totalTickets'] = len(selectedTickets)
+        self.stats['totalRevenue'] = 0
+
+        for ticket in selectedTickets:
+            try:
+                price = [ticketType['Price'] for ticketType in ticketTypes if ticketType['ID'] == int(ticket[2])][0]
+            except IndexError:
+                price = 0
+            self.stats['totalRevenue'] += price
+
+        print(self.stats)
+
+        return self.stats
 
 
 class Viewing:

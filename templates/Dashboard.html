@@ -54,7 +54,7 @@ let stats = JSON.parse({{ stats | tojson | safe }});
         </div>
         <div class="stat">
             <div class="stat-title">Total Revenue</div>
-            <div class="stat-value">89,400</div>
+            <div class="stat-value">{{ "£%.2f"|format(stats['totalRevenue']) }}</div>
             <div class="stat-desc">21% more than last month</div>
         </div>
     </div>
@@ -73,38 +73,9 @@ let stats = JSON.parse({{ stats | tojson | safe }});
         </div> 
     </div>
 
-    <div class="sm:col-span-3 bg-base-300 card card-primary">
+    <div class="sm:col-span-4 bg-base-300 card card-primary">
     <div class="card-header">
         <h3 class="card-title">Card Title</h3>
-    </div>
-    </div>
-
-    <div class="sm:col-span-2 lg:col-span-1  bg-base-200 card card-primary order-first sm:order-none">
-    <div class="card-header">
-        <h3 class="card-title">Options</h3>
-    </div>
-    <div class="card-body p-3">
-        <div class="form-control">
-            <label class="cursor-pointer label">
-                <span class="label-text">Upcoming Viewings</span>
-                <input type="radio" class="radio radio-primary timeSelector" name="viewings" checked>
-            </label>
-            <label class="cursor-pointer label">
-                <span class="label-text">Past Viewings</span>
-                <input type="radio" class="radio radio-primary timeSelector" name="viewings">
-            </label>
-            <label class="cursor-pointer label">
-                <span><select id="viewingSelector" class="select select-sm select-bordered select-primary w-min">
-                    <option disabled selected>Select</option>
-                    <option>All</option>
-                    <option>Viewing 1</option>
-                    <option>Viewing 2</option>
-                    <option>Viewing 3</option>
-                </select></span>
-                <input type="radio" class="radio radio-primary timeSelector" name="viewings">
-            </label>
-
-        </div>
     </div>
     </div>
 

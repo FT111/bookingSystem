@@ -9,7 +9,7 @@ from flask import render_template
 class TicketTypes:
     """
     A class wrapping the ticket types in the booking system.
-    Retreives the ticket types from the database.
+    Retrieves the ticket types from the database.
     """
 
     def __init__(self, Database) -> None:
@@ -30,6 +30,21 @@ class TicketTypes:
                                   'Name': type[1],
                                   'Price': type[2]})
         return self.allTypes
+
+    def getTicketPrice(self, ticket: object) -> float:
+        """
+        Retrieves the price of a ticket based on its type.
+
+        Args:
+            ticket (object): The ticket object for which to retrieve the price.
+
+        Returns:
+            float: The price of the ticket.
+        """
+        for ticketType in self.allTypes:
+            if ticket.getType() == ticketType['ID']:
+
+                return ticketType['Price']
 
 
 ###

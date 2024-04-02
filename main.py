@@ -8,7 +8,7 @@ from routes.APIRoutes import apiRoutes
 
 class BookingSystemWebApp:
     """
-    Main class for the web application. This class is responsible for setting up the Flask app and registering the
+    Main class for the web application. Responsible for setting up the Flask app and registering the
     routes.
     """
 

@@ -108,6 +108,9 @@ class Database:
         self.cursor.execute('INSERT INTO Tickets VALUES (?, ?, ?, ?, ?);', (
             ticket.getID(), ticket.getSeatLocation(), ticket.getType(), customer.getID(), viewing.getID(),))
 
+    def getAllTickets(self) -> list:
+        return self.cursor.execute('SELECT * FROM Tickets;')
+
     def newCustomer(self, customer: object) -> None:
         self.cursor.execute('INSERT INTO Customers VALUES (?, ?, ?, ?, ?);', (
             customer.getID(), customer.getFirstName(), customer.getSurname(), customer.getEmail(),

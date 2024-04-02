@@ -34,5 +34,6 @@ class BookingSystem:
         self.TicketTypes = TicketTypes(self.Database)  # Ticket types
 
         Booking.setTicketTypes(self.TicketTypes)
+        Viewings.setTicketTypes(self.TicketTypes)
         Ticket.setDatabase(self.Database)
         Customer.setDatabase(self.Database)
