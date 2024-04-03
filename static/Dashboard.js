@@ -24,7 +24,12 @@ const getViewings = (searchElement) => {
         }
     }).then((response) => response.json())
         .then((data) => {
-            renderStats(data);
+            console.log(data);
+            window.ticketChart.data.labels = data.body.ticketsPerViewing.map(row => row.viewingName);
+            window.ticketChart.data.datasets[0].data = data.body.ticketsPerViewing.map(row => row.tickets);
+            window.ticketChart.update();
+
+            renderStats(data.body);
         })
         .catch((error) => {
             newError('Error :' + error);
@@ -32,9 +37,15 @@ const getViewings = (searchElement) => {
 }
 
 const renderStats = (stats) => {
-    document.getElementById('totalTickets').innerHTML = stats.totalTickets;
-    document.getElementById('totalRevenue').innerHTML = formatter.format(stats.totalRevenue);
-    document.getElementById('revenuePerViewing').innerHTML = stats.meanRevenuePerViewing;
+    console.log(stats);
+    let remainingSeatsSubtitle = `Most remaining: ${stats['mostRemaining']['viewingName']} - ${stats['mostRemaining']['remainingSeats']}`;
+
+    document.getElementById('totalTickets').innerHTML = stats['totalTickets'];
+    document.getElementById('totalRevenue').innerHTML = formatter.format(stats['totalRevenue']);
+    document.getElementById('revenuePerViewing').innerHTML = stats['meanRevenuePerViewing'];
+    document.getElementById('remainingSeats').innerHTML = stats['remainingSeats'];
+    document.getElementById('remainingSeatsSub').innerHTML = remainingSeatsSubtitle;
+
 
 
 }

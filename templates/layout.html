@@ -19,15 +19,25 @@
     <body class="min-h-screen max-w-full">
         <div class="navbar bg-base-100/30 sticky top-0 z-50 p-3 backdrop-blur-lg">
             <div class="flex-1">
-                <a href="/dashboard" class="btn btn-ghost text-xl">Booking System</a>
+                <a href="/dashboard" class="btn btn-ghost text-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+                    </svg>
+
+                    Booking System</a>
             </div>
             <div class="flex-none gap-5 mr-5">
 
-                <a href="/booking/new" class="btn btn-secondary btn-md text-white">New booking
+                <a href="/booking/new" class="btn sm:flex hidden btn-secondary btn-md text-white">New booking
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
-
+                </a>
+                <!-- Mobile button -->
+                <a href="/booking/new" class="btn btn-ghost sm:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
                 </a>
 
                 <label class="flex cursor-pointer gap-2">
@@ -38,11 +48,11 @@
             </div>
         </div>
         
-        <div class="content min-h-screen">
+        <div class="content min-h-screen ">
             {% block body %}{% endblock %}
         </div>
 
-        <footer class="footer bottom-0 bg-neutral text-neutral-content p-10">
+        <footer class="footer mt-32 bottom-0 bg-neutral text-neutral-content p-10">
             <nav>
                 <h6 class="footer-title">Services</h6>
                 <a class="link link-hover">Branding</a>

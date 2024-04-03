@@ -92,12 +92,11 @@ class Viewings:
         #     if self.stats['lastUpdated'] < (time.time() + 5):
         #         return self.stats
         #
-        # print('Updating stats')
 
         viewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingName', 'viewingDate',
                                                        'viewingRows', 'seatsPerRow'])
         allTickets = self.Database.getAllTickets()
-        upcomingViewingIDs = self.Database.getUpcomingViewingIDs()
+        upcomingViewingIDs = [viewingID[0] for viewingID in self.Database.getUpcomingViewingIDs()]
 
         # Filters the viewings based on the selected time period
         if timePeriod == 'upcoming':
@@ -109,16 +108,19 @@ class Viewings:
         elif viewingID:
             viewingInfo = [viewing for viewing in viewingInfo if viewing['ViewingID'] == viewingID]
 
+        # Filters the tickets and viewingIDs based on the selected viewings
         viewingIDs = [viewing['ViewingID'] for viewing in viewingInfo]
-        print(allTickets)
 
         selectedTickets = [ticket for ticket in allTickets if int(ticket[4]) in viewingIDs]
         ticketTypes = self.ticketTypes.getTypes()
 
         seatsPerViewing = {viewing['ViewingID']: viewing['viewingRows'] * viewing['seatsPerRow']
                            for viewing in viewingInfo}
+
         ticketsPerViewing = {viewing['ViewingID']: {'viewingName': viewing['viewingName'], 'tickets': 0} for viewing in
                              viewingInfo}
+
+        # Calculating the statistics
 
         self.stats['totalRevenue'] = 0
 
@@ -132,7 +134,6 @@ class Viewings:
             if int(ticket[4]) in ticketsPerViewing:
                 ticketsPerViewing[int(ticket[4])]['tickets'] += 1
 
-        # Calculating the statistics
         self.stats['lastUpdated'] = time.time()
         self.stats['totalViewings'] = len(viewingInfo)
         self.stats['totalTickets'] = len(selectedTickets)
@@ -141,6 +142,7 @@ class Viewings:
         self.stats['remainingSeats'] = 0
         self.stats['mostRemaining'] = {'viewingName': None, 'remainingSeats': 0}
 
+        # Calculates the remaining seats for each viewing
         for viewing in viewingInfo:
             seatsRemaining = seatsPerViewing[viewing['ViewingID']] - ticketsPerViewing[viewing['ViewingID']]['tickets']
             self.stats['remainingSeats'] += seatsRemaining
@@ -148,7 +150,7 @@ class Viewings:
                 self.stats['mostRemaining']['viewingName'] = viewing['viewingName']
                 self.stats['mostRemaining']['remainingSeats'] = seatsRemaining
 
-        self.stats['meanRevenuePerViewing'] = self.stats['totalRevenue'] / self.stats['totalViewings']
+        self.stats['meanRevenuePerViewing'] = round(self.stats['totalRevenue'] / self.stats['totalViewings'], 2)
 
         print(self.stats)
 

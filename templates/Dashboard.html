@@ -9,7 +9,7 @@
     <script src="../static/Dashboard.js"></script>
     <script>
     let stats = {{ stats | tojson | safe }};
-
+    let ticketChart;
 
     </script>
 
@@ -37,7 +37,7 @@
 <div class="m-4 sm:m-8 flex gap-5 flex-col">
   <div class="bg-base-300 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 flex justify-between">
 
-       <select id="orderSelector" onchange="getViewings(this)" class="select w-full max-w-xs rounded-box">
+       <select id="timePeriodSelector" onchange="getViewings(this)" class="select w-full max-w-xs rounded-box">
             <option value="all">All viewings</option>
             <option value="past">Past viewings</option>
             <option value="upcoming">Upcoming viewings</option>
@@ -48,33 +48,36 @@
   </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-6 gap-4 w-full auto-rows-min h-screen auto-columns-max">
-    <div class="sm:col-span-2 card w-full bg-base-300 card-primary flex-col gap-5 ">
-    <div class="stats h-min w-full stats-vertical lg:stats-horizontal">
-  
-        <div class="stat ">
-            <div class="stat-title">Total Tickets Sales</div>
-            <div class="stat-value viewingStat" id="totalTickets">{{ stats['totalTickets'] }}</div>
-            <div class="stat-desc viewingStat">21% more than last month</div>
+    <div class="sm:col-span-2 card w-full bg-base-300 card-primary flex-col gap-4 p-4 ">
+
+
+        <div class="stats h-min w-full stats-vertical lg:stats-horizontal">
+
+            <div class="stat ">
+                <div class="stat-title">Total Tickets Sales</div>
+                <div class="stat-value viewingStat" id="totalTickets">{{ stats['totalTickets'] }}</div>
+                <div class="stat-desc viewingStat">21% more than last month</div>
+            </div>
+            <div class="stat">
+                <div class="stat-title">Tickets Remaining</div>
+                <div class="stat-value viewingStat" id="remainingSeats">{{ stats['remainingSeats'] }}</div>
+                <div class="stat-desc text-wrap viewingStat" id="remainingSeatsSub">Most remaining: {{ stats['mostRemaining']['viewingName'] }} - {{ stats['mostRemaining']['remainingSeats'] }} </div>
+            </div>
+
         </div>
-        <div class="stat">
-            <div class="stat-title">Total Revenue</div>
-            <div class="stat-value viewingStat" id="totalRevenue">{{ "£%.2f"|format(stats['totalRevenue']) }}</div>
-            <div class="stat-desc viewingStat">21% more than last month</div>
+            <div class="stats stats-vertical lg:stats-horizontal">
+
+            <div class="stat">
+                <div class="stat-title">Revenue Per Viewing</div>
+                <div class="stat-value viewingStat" id="revenuePerViewing">{{ "£%.2f"|format(stats['meanRevenuePerViewing']) }}</div>
+                <div class="stat-desc viewingStat">Mean</div>
+            </div>
+            <div class="stat">
+                <div class="stat-title">Total Revenue</div>
+                <div class="stat-value sm:text-3xl viewingStat" id="totalRevenue">{{ "£%.2f"|format(stats['totalRevenue']) }}</div>
+                <div class="stat-desc viewingStat">21% more than last month</div>
+            </div>
         </div>
-    </div>
-        <div class="stats stats-vertical lg:stats-horizontal">
-  
-        <div class="stat">
-            <div class="stat-title">Revenue Per Viewing</div>
-            <div class="stat-value viewingStat" id="revenuePerViewing">{{ "£%.2f"|format(stats['meanRevenuePerViewing']) }}</div>
-            <div class="stat-desc viewingStat">Mean</div>
-        </div>
-        <div class="stat">
-            <div class="stat-title">Tickets Remaining</div>
-            <div class="stat-value viewingStat">{{ stats['remainingSeats'] }}</div>
-            <div class="stat-desc text-wrap viewingStat">Most remaining: {{ stats['mostRemaining']['viewingName'] }} - {{ stats['mostRemaining']['remainingSeats'] }} </div>
-        </div>
-        </div> 
     </div>
 
     <div class="sm:col-span-4 bg-base-300 card card-primary">
@@ -83,7 +86,7 @@
     </div>
     </div>
 
-    <div class="sm:col-span-3 bg-base-300 card card-primary">
+    <div class="sm:col-span-4 bg-base-300 card card-primary">
     <div class="card-header">
         <h3 class="card-title">Ticket Sales</h3>
 
@@ -92,7 +95,7 @@
 
     </div>
     </div>
-        <div class="sm:col-span-3 bg-base-300 card card-primary">
+        <div class="sm:col-span-2 bg-base-300 card card-primary">
     <div class="card-header">
         <h3 class="card-title">Card Title</h3>
     </div>

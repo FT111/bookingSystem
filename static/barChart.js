@@ -1,15 +1,8 @@
+
 (async function() {
-    const data = [
-      { year: 2010, count: 10 },
-      { year: 2011, count: 20 },
-      { year: 2012, count: 15 },
-      { year: 2013, count: 25 },
-      { year: 2014, count: 22 },
-      { year: 2015, count: 30 },
-      { year: 2016, count: 28 },
-    ];
+
     Chart.defaults.color = 'slategrey';
-    new Chart(
+    window.ticketChart = new Chart(
       document.getElementById('barChart1'),
       {
         type: 'bar',
@@ -26,9 +19,9 @@
         options: {
             elements: {
             bar: {
-                    backgroundColor: '#5fcfa4',
-                    borderRadius: 10,
-                    hoverBackgroundColor: '#4ea880',
+                    backgroundColor: '#5f95cf',
+                    borderRadius: 6,
+                    hoverBackgroundColor: '#3673b5',
                 }
             },
             plugins: {
@@ -47,3 +40,7 @@
       }
     );
   })();
+
+// document.getElementById('timePeriodSelector').addEventListener('change', (e) => {
+//     ticketChart.update();
+// })
