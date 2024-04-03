@@ -87,14 +87,15 @@ class Viewings:
         return upcomingViewingsList
 
     def getStats(self, viewingID: int = None, timePeriod: str = None) -> dict:
+        #
+        # if self.stats:
+        #     if self.stats['lastUpdated'] < (time.time() + 5):
+        #         return self.stats
+        #
+        # print('Updating stats')
 
-        if self.stats:
-            if self.stats['lastUpdated'] < (time.time() + 1000):
-                return self.stats
-
-        print('Updating stats')
-
-        viewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingDate', 'viewingRows', 'seatsPerRow'])
+        viewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingName', 'viewingDate',
+                                                       'viewingRows', 'seatsPerRow'])
         allTickets = self.Database.getAllTickets()
         upcomingViewingIDs = self.Database.getUpcomingViewingIDs()
 
@@ -113,6 +114,8 @@ class Viewings:
 
         selectedTickets = [ticket for ticket in allTickets if int(ticket[4]) in viewingIDs]
         ticketTypes = self.ticketTypes.getTypes()
+        seatsPerViewing = {viewing['ViewingID']: viewing['viewingRows'] * viewing['seatsPerRow']
+                           for viewing in viewingInfo}
 
         # Calculating the statistics
         self.stats['lastUpdated'] = time.time()
@@ -120,12 +123,24 @@ class Viewings:
         self.stats['totalTickets'] = len(selectedTickets)
         self.stats['totalRevenue'] = 0
 
+        self.stats['remainingSeats'] = 0
+        self.stats['mostRemaining'] = {'viewingName': None, 'remainingSeats': 0}
+
+        for viewing in viewingInfo:
+            seatsRemaining = seatsPerViewing[viewing['ViewingID']] - len(selectedTickets[viewing['ViewingID']])
+            self.stats['remainingSeats'] += seatsRemaining
+            if seatsRemaining > self.stats['mostRemaining']['remainingSeats']:
+                self.stats['mostRemaining']['viewingName'] = viewing['viewingName']
+                self.stats['mostRemaining']['remainingSeats'] = seatsRemaining
+
         for ticket in selectedTickets:
             try:
                 price = [ticketType['Price'] for ticketType in ticketTypes if ticketType['ID'] == int(ticket[2])][0]
             except IndexError:
                 price = 0
             self.stats['totalRevenue'] += price
+
+        self.stats['meanRevenuePerViewing'] = self.stats['totalRevenue'] / self.stats['totalViewings']
 
         print(self.stats)
 

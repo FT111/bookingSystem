@@ -34,7 +34,7 @@ let viewings = JSON.parse('{{ viewings| tojson | safe }}');
 
 <div class="flex flex-1 flex-col m-4 sm:m-8 gap-5">
 
-    <div class="bg-base-300 drop-shadow-md sticky top-16 z-50 rounded-box p-3 gap-5 flex justify-between">
+    <div class="bg-base-300 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 flex justify-between">
 
        <select id="orderSelector" onchange="getSort()" class="select w-full max-w-xs rounded-box">
             <option value="earliest">Earliest first</option>
@@ -67,7 +67,7 @@ let viewings = JSON.parse('{{ viewings| tojson | safe }}');
                     </span>
                     
                     <p>{{ viewing.Description }}</p>
-                    <button onclick="newBooking({{ viewing.viewingID }})" class="btn no-animation btn-primary text-base-100 text-lg" name="Select">Select</button>
+                    <button onclick="newBooking({{ viewing.viewingID }})" class="btn no-animation btn-primary text-white text-lg" name="Select">Select</button>
                 </div>
             </div>
         {% endfor %}

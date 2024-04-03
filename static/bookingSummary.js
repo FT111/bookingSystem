@@ -8,8 +8,12 @@ const submitBooking = () => {
     }).then(response => response.json()).then(data => {
         console.log(data);
         if (data.status === "200") {
-            window.location.href = '/booking/new';
-            newSuccessAlert('Booking submitted successfully');
+            document.getElementById('confirmationScreen').classList.remove('hidden', 'opacity-0', 'bg-base-100/0');
+            document.getElementById('confirmationScreen').classList.add('bg-base-100', 'opacity-100');
+
+            setTimeout(() => {
+                window.location.href = '/dashboard'
+            }, 2000);
         } else {
             newError('Error submitting booking');
         }

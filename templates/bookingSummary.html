@@ -16,154 +16,162 @@ let priceSum = {{ priceSum }};
 
 {% block body %}
 
-<!-- Content Container -->
-<div class="mx-4 mb-3 w-content flex flex-col gap-3 items-center">
-    <div class="text-sm breadcrumbs py-0">
-    <ul>
-        <li><a href="/booking/new">Viewings</a></li> 
-        <li><a href="/booking/tickets">Ticket Selection</a></li> 
-        <li><a href="/booking/seats">Seat Selection</a></li>
-        <li class="font-semibold">Summary</li>
-    </ul>
-
+    <div id="confirmationScreen" class="fixed hidden opacity-0 top-0 z-50 bg-base-100/0 w-screen h-lvh transition-all duration-500 ease-in-out">
+        <div class="flex flex-col items-center justify-center w-full h-full">
+            <h2 class="text-3xl sm:text-6xl text-center text-content font-bold">Booking Confirmed.</h2>
+        </div>
     </div>
 
-    <h1 class="text-3xl sm:text-6xl my-6 text-center text-bg-base-200 align-middle font-bold">{{ viewing.Name }} - Summary</h1>
 
-    <!-- Interaction box container -->
-    <div class="flex flex-col w-full sm:w-5/6 lg:w-7/12 ">
-        <!-- Main interaction card -->
-        <div class="card bg-base-300 min-h-96 w-full">
-            {% if viewing.Banner %}
-                <figure class="h-24"><img class="w-full" src="{{ viewing.Banner }}" alt="{{viewing.name}} banner" /></figure>
-            {% else %}
-                <figure></figure>
-            {% endif %}
-            <div class="card-body gap-8 p-3 sm:p-10">
-                <h2 class="card-title sm:p-0 p-3 text-2xl sm:text-4xl font-bold">{{ viewing.Name }}</h2>
-            
-                <div class="flex flex-col gap-4">
-                {% for ticket in tickets %}
-                    <div class="flex bg-base-200 rounded-box p-4 items-center">
-                        <p class="text-lg sm:text-2xl font-bold">{{ ticketTypes[ticket.ticketType-1].Name }}</p>
-                        <p class="text-lg sm:text-2xl font-semibold text-slate-400 grow-0 px-5">{{ "£%.2f"|format(ticketTypes[ticket.ticketType-1].Price) }}</p>
+
+    <!-- Content Container -->
+    <div class="mx-4 mb-3 w-content flex flex-col gap-3 items-center">
+        <div class="text-sm breadcrumbs py-0">
+        <ul>
+            <li><a href="/booking/new">Viewings</a></li>
+            <li><a href="/booking/tickets">Ticket Selection</a></li>
+            <li><a href="/booking/seats">Seat Selection</a></li>
+            <li class="font-semibold">Summary</li>
+        </ul>
+
+        </div>
+
+        <h1 class="text-3xl sm:text-6xl my-6 text-center text-bg-base-200 align-middle font-bold">{{ viewing.Name }} - Summary</h1>
+
+        <!-- Interaction box container -->
+        <div class="flex flex-col w-full sm:w-5/6 lg:w-7/12 ">
+            <!-- Main interaction card -->
+            <div class="card bg-base-300 min-h-96 w-full">
+                {% if viewing.Banner %}
+                    <figure class="h-24"><img class="w-full" src="{{ viewing.Banner }}" alt="{{viewing.name}} banner" /></figure>
+                {% else %}
+                    <figure></figure>
+                {% endif %}
+                <div class="card-body gap-8 p-3 sm:p-10">
+                    <h2 class="card-title sm:p-0 p-3 text-2xl sm:text-4xl font-bold">{{ viewing.Name }}</h2>
+
+                    <div class="flex flex-col gap-4">
+                    {% for ticket in tickets %}
+                        <div class="flex bg-base-200 rounded-box p-4 items-center">
+                            <p class="text-lg sm:text-2xl font-bold">{{ ticketTypes[ticket.ticketType-1].Name }}</p>
+                            <p class="text-lg sm:text-2xl font-semibold text-slate-400 grow-0 px-5">{{ "£%.2f"|format(ticketTypes[ticket.ticketType-1].Price) }}</p>
+                        </div>
+                    {% endfor %}
                     </div>
-                {% endfor %}
-                </div>
 
-                <div class="flex flex-col items-end w-full p-4 py-0">
-                <p class="text-lg sm:text-xl font-semibold text-primary grow-0">Total</p>
-                <p class="text-lg sm:text-4xl font-semibold grow-0" id="priceSumIndicator">{{ "£%.2f"|format(priceSum) }}</p>
-                </div>
-                  
-                <div class="divider my-0"></div> 
-                
-                <!-- User selection -->
-                <div class="flex flex-col w-full sm:flex-row ">
+                    <div class="flex flex-col items-end w-full p-4 py-0">
+                    <p class="text-lg sm:text-xl font-semibold text-primary grow-0">Total</p>
+                    <p class="text-lg sm:text-4xl font-semibold grow-0" id="priceSumIndicator">{{ "£%.2f"|format(priceSum) }}</p>
+                    </div>
 
-                    <!-- Select existing user -->
-                    <div class="drawer drawer-end">
-                    <input id="existingUserDraw" type="checkbox" class="drawer-toggle" />
-                    <div class="drawer-content">
-                        <label for="existingUserDraw" onclick="getAllCustomers('existingUserTable')"
-                               class="drawer-button btn flex-grow h-16 card bg-secondary hover:bg-slate-600
-                               transition-all duration-200 ease-in-out text-base-100 rounded-box">
-                            Select a user
-                        </label>
-                    </div> 
-                    <div class="drawer-side z-50">
-                        <label for="existingUserDraw" aria-label="close sidebar" class="drawer-overlay"></label>
+                    <div class="divider my-0"></div>
 
-                        <!-- Table of existing users / Draw Content -->
-                        <div class="overflow-x-auto flex flex-col gap-3  p-4 w-10/12 sm:w-1/2 min-h-full bg-base-300 text-base-content">
-                            <div class="bg-base-300 drop-shadow-md w-full top-16 z-50 rounded-box p-3 gap-5 flex justify-between">
-                                <div></div>
-                                <label class="input flex items-center gap-2 w-full rounded-box max-w-xs">
-                                    <input type="text" onkeyup="getCustomersByName('customerSearchBar', 'existingUserTable')" id="customerSearchBar" placeholder="Search users" class="grow w-full" />
-                                </label>
+                    <!-- User selection -->
+                    <div class="flex flex-col w-full sm:flex-row ">
+
+                        <!-- Select existing user -->
+                        <div class="drawer drawer-end">
+                        <input id="existingUserDraw" type="checkbox" class="drawer-toggle" />
+                        <div class="drawer-content">
+                            <label for="existingUserDraw" onclick="getAllCustomers('existingUserTable')"
+                                   class="drawer-button btn flex-grow h-16 card bg-secondary hover:bg-slate-600
+                                   transition-all duration-200 ease-in-out text-base-100 rounded-box">
+                                Select a user
+                            </label>
+                        </div>
+                        <div class="drawer-side z-50">
+                            <label for="existingUserDraw" aria-label="close sidebar" class="drawer-overlay"></label>
+
+                            <!-- Table of existing users / Draw Content -->
+                            <div class="overflow-x-auto flex flex-col gap-3  p-4 w-10/12 sm:w-1/2 min-h-full bg-base-300 text-base-content">
+                                <div class="bg-base-300 drop-shadow-md w-full top-16 z-50 rounded-box p-3 gap-5 flex justify-between">
+                                    <div></div>
+                                    <label class="input flex items-center gap-2 w-full rounded-box max-w-xs">
+                                        <input type="text" onkeyup="getCustomersByName('customerSearchBar', 'existingUserTable')" id="customerSearchBar" placeholder="Search users" class="grow w-full" />
+                                    </label>
+                                </div>
+
+                              <div class="border-base-200">
+                              <table class="table table-sm w-full" id="existingUserTable">
+                                <thead>
+                                  <tr class="bg-secondary text-base-100">
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                              </table>
                             </div>
-
-                          <div class="border-base-200">
-                          <table class="table table-sm w-full" id="existingUserTable">
-                            <thead>
-                              <tr class="bg-secondary text-base-100">
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone Number</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                          </table>
+                                <!-- End Draw Content -->
                         </div>
-                            <!-- End Draw Content -->
-                    </div>
-                    </div>
-                    </div>
-                    <!-- End select existing user -->         
-
-                    <div class="divider sm:divider-horizontal">OR</div> 
-
-                    <!-- Add new user -->
-                    <div class="drawer drawer-end">
-                    <input id="newUserDraw" type="checkbox" class="drawer-toggle" />
-                    <div class="drawer-content">
-                        <label for="newUserDraw" class="drawer-button btn flex-grow h-16 card bg-secondary hover:bg-slate-600 transition-all duration-200 ease-in-out text-base-100 rounded-box">Add a new user</label>
-                    </div> 
-                    <div class="drawer-side z-50">
-                        <label for="newUserDraw" aria-label="close sidebar" class="drawer-overlay"></label>
-
-                        <form id="newUserForm" class="menu p-6 w-10/12 sm:w-1/4 min-h-full bg-base-200 text-base-content gap-3">
-                            <input type="text" name="name" id="newName" placeholder="Name" class="input input-primary rounded-md input-bordered" required>
-                            <input type="text" name="email" id="newEmail" placeholder="Email" class="input input-primary rounded-md input-bordered" required>
-                            <input type="text" name="phone" id="newPhone" placeholder="Phone" class="input input-primary rounded-md input-bordered" required>
-                            <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200">Add User</button>
-                        </form>
                         </div>
-                    </div>
-                    <!-- End add new user -->
+                        </div>
+                        <!-- End select existing user -->
 
+                        <div class="divider sm:divider-horizontal">OR</div>
+
+                        <!-- Add new user -->
+                        <div class="drawer drawer-end">
+                        <input id="newUserDraw" type="checkbox" class="drawer-toggle" />
+                        <div class="drawer-content">
+                            <label for="newUserDraw" class="drawer-button btn flex-grow h-16 card bg-secondary hover:bg-slate-600 transition-all duration-200 ease-in-out text-base-100 rounded-box">Add a new user</label>
+                        </div>
+                        <div class="drawer-side z-50">
+                            <label for="newUserDraw" aria-label="close sidebar" class="drawer-overlay"></label>
+
+                            <form id="newUserForm" class="menu p-6 w-10/12 sm:w-1/4 min-h-full bg-base-200 text-base-content gap-3">
+                                <input type="text" name="name" id="newName" placeholder="Name" class="input input-primary rounded-md input-bordered" required>
+                                <input type="text" name="email" id="newEmail" placeholder="Email" class="input input-primary rounded-md input-bordered" required>
+                                <input type="text" name="phone" id="newPhone" placeholder="Phone" class="input input-primary rounded-md input-bordered" required>
+                                <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200">Add User</button>
+                            </form>
+                            </div>
+                        </div>
+                        <!-- End add new user -->
+
+                    </div>
+                    <div class="card card-outline bg-base-200 p-4 w-full">
+    {#                        <p class="text-lg sm:text-xl font-semibold text-primary">Selected User</p>#}
+
+                            <table class="table table-lg w-full" id="selectedUserTable">
+                                <tbody>
+                                    <tr>
+                                        <td class="font-semibold">Name</td>
+                                        <td id="selectedName">None</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold">Email</td>
+                                        <td id="selectedEmail">None</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold">Phone Number</td>
+                                        <td id="selectedPhone">None</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
                 </div>
-                <div class="card card-outline bg-base-200 p-4 w-full">
-{#                        <p class="text-lg sm:text-xl font-semibold text-primary">Selected User</p>#}
 
-                        <table class="table table-lg w-full" id="selectedUserTable">
-                            <tbody>
-                                <tr>
-                                    <td class="font-semibold">Name</td>
-                                    <td id="selectedName">None</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-semibold">Email</td>
-                                    <td id="selectedEmail">None</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-semibold">Phone Number</td>
-                                    <td id="selectedPhone">None</td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
+                <p class="text-center text-sm mb-6 text-neutral">A receipt will be sent to the customer's email address.</p>
             </div>
 
-            <p class="text-center text-sm mb-6 text-neutral">A receipt will be sent to the customer's email address.</p>
-        </div>
+            <div class="flex flex-col gap-4 sm:gap-0 my-3 px-0 p-3 sm:flex-row w-full items-center justify-between transition-full ease-in-out duration-100">
+                <div></div> <!-- Spacer -->
 
-        <div class="flex flex-col gap-4 sm:gap-0 my-3 px-0 p-3 sm:flex-row w-full items-center justify-between transition-full ease-in-out duration-100">
-            <div></div> <!-- Spacer -->
-
-            <div class="tooltip order-2 sm:tooltip-left tooltip-bottom tooltip-open" id="continueTooltip" data-tip="Select a user to submit">
-                <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200" onclick="submitBooking()" disabled="disabled" id="continueBtn">Submit
-                    <!-- prettier-ignore -->
-                    <svg class="stroke-base-200 transition-all ease-in-out duration-400" width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                </button>
+                <div class="tooltip order-2 sm:tooltip-left tooltip-bottom tooltip-open" id="continueTooltip" data-tip="Select a user to submit">
+                    <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200" onclick="submitBooking()" disabled="disabled" id="continueBtn">Submit
+                        <!-- prettier-ignore -->
+                        <svg class="stroke-base-200 transition-all ease-in-out duration-400" width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- End Content Container -->
+    <!-- End Content Container -->
 
 {% endblock %}

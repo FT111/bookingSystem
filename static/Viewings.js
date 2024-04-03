@@ -85,7 +85,7 @@ const renderViewings = (viewings) => {
             </span>
             
             <p>${ viewing.Description }</p>
-            <button onclick="newBooking(${ viewing.viewingID })" class="btn no-animation btn-primary text-base-100 text-lg" name="Select">Select</button>
+            <button onclick="newBooking(${ viewing.viewingID })" class="btn no-animation btn-primary text-white text-lg" name="Select">Select</button>
             </div>
         </div>
         `;

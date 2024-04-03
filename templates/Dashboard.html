@@ -13,7 +13,7 @@ let stats = JSON.parse({{ stats | tojson | safe }});
 <style>
 .card {
     padding: 1rem;
-    border-radius: 1.5rem;
+    {#border-radius: 1.5rem;#}
  }
  {#:root {#}
  {#   --rounded-box: 1.5rem;#}
@@ -31,7 +31,7 @@ let stats = JSON.parse({{ stats | tojson | safe }});
 
 <!-- Content container -->
 <div class="m-4 sm:m-8 flex gap-5 flex-col">
-  <div class="bg-base-300 drop-shadow-md sticky top-16 z-50 rounded-box p-3 gap-5 flex justify-between">
+  <div class="bg-base-300 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 flex justify-between">
 
        <select id="orderSelector" onchange="getViewings()" class="select w-full max-w-xs rounded-box">
             <option value="all">All viewings</option>
@@ -49,26 +49,26 @@ let stats = JSON.parse({{ stats | tojson | safe }});
   
         <div class="stat ">
             <div class="stat-title">Total Tickets Sales</div>
-            <div class="stat-value">{{ stats['totalTickets'] }}</div>
-            <div class="stat-desc">21% more than last month</div>
+            <div class="stat-value viewingStat">{{ stats['totalTickets'] }}</div>
+            <div class="stat-desc viewingStat">21% more than last month</div>
         </div>
         <div class="stat">
             <div class="stat-title">Total Revenue</div>
-            <div class="stat-value">{{ "£%.2f"|format(stats['totalRevenue']) }}</div>
-            <div class="stat-desc">21% more than last month</div>
+            <div class="stat-value viewingStat">{{ "£%.2f"|format(stats['totalRevenue']) }}</div>
+            <div class="stat-desc viewingStat">21% more than last month</div>
         </div>
     </div>
         <div class="stats stats-vertical lg:stats-horizontal">
   
         <div class="stat">
             <div class="stat-title">Revenue Per Viewing</div>
-            <div class="stat-value">89,400</div>
-            <div class="stat-desc">21% more than last month</div>
+            <div class="stat-value viewingStat">{{ "£%.2f"|format(stats['meanRevenuePerViewing']) }}</div>
+            <div class="stat-desc viewingStat">Mean</div>
         </div>
         <div class="stat">
-            <div class="stat-title">Seats Remaining</div>
-            <div class="stat-value">89,400</div>
-            <div class="stat-desc">21% more than last month</div>
+            <div class="stat-title">Tickets Remaining</div>
+            <div class="stat-value viewingStat">{{ stats['remainingSeats'] }}</div>
+            <div class="stat-desc text-wrap viewingStat">Most remaining: {{ stats['mostRemaining']['viewingName'] }} - {{ stats['mostRemaining']['remainingSeats'] }} </div>
         </div>
         </div> 
     </div>
