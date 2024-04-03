@@ -14,12 +14,12 @@
       {
         type: 'bar',
         data: {
-          labels: data.map(row => row.year),
+          labels: stats.ticketsPerViewing.map(row => row.viewingName),
           datasets: [   
             {
                 
               label: 'Tickets sales per performance',
-              data: data.map(row => row.count),
+              data: stats.ticketsPerViewing.map(row => row.tickets),
             }
           ]
         },

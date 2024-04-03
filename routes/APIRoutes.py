@@ -19,6 +19,30 @@ def getViewingData():
     selectedViewings = (bs.Viewings.getStoredViewingByID(viewingID) for viewingID in request.json.get('viewingIDs'))
 
 
+@apiRoutes.route('/viewings/getStats', methods=['POST'])
+def getAllStats():
+    stats = bs.Viewings.getStats()
+    return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
+
+
+@apiRoutes.route('/viewings/getStats/upcoming', methods=['POST'])
+def getUpcomingStats():
+    stats = bs.Viewings.getStats(timePeriod='upcoming')
+    return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
+
+
+@apiRoutes.route('/viewings/getStats/past', methods=['POST'])
+def getPastStats():
+    stats = bs.Viewings.getStats(timePeriod='past')
+    return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
+
+
+@apiRoutes.route('/viewings/getViewingStats', methods=['POST'])
+def getViewingStats():
+    stats = bs.Viewings.getStats(viewingID=request.json.get('viewingID'))
+    return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
+
+
 @apiRoutes.route('/customers/getAll', methods=['POST'])
 def getAllCustomers():
     customers = bs.Customers.getAllCustomerInfoFromDB('firstName', 'Surname', 'emailAddress', 'phoneNumber', 'ID')

@@ -1,39 +1,40 @@
 let category = 'all';
 let selectedViewing = null;
 
-const getViewings = (event) => {
-    category = event.target.value;
-}
+const getViewings = (searchElement) => {
+    category = searchElement.value;
 
-const getFilteredViewings = (viewings, category) => {
-    this.filteredViewings = [];
-    if (category === 'all') {
-        return viewings;
+    let url = '/api/viewings/getStats';
+
+    if (category === 'upcoming' || category === 'past') {
+        url = `/api/viewings/getStats/${category}`;
+    } else if (category === 'specific') {
+        document.getElementById('viewingSelector').style.display = 'block';
+        if (selectedViewing === null) {
+            return;
+        }
+        url = `/api/viewings/getSpecificStats/${selectedViewing}`;
     }
 
-    viewings.forEach(viewing => {
-        if (category === 'upcoming') {
-            if (viewing['date'] >= Date.now()) {
-                this.filteredViewings.push(viewing);
-            }
-        } else if (category === 'past') {
-            if (viewing["date"] < Date.now()) {
-                this.filteredViewings.push(viewing);
-            }
-        }
-    })
-}
 
-const renderData = (viewings) => {
-    let data = fetch('/api/viewings/getViewingDataByIDs', {
+    let response = fetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(viewings)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-    })
+            'Content-Type': 'application/json',
+        }
+    }).then((response) => response.json())
+        .then((data) => {
+            renderStats(data);
+        })
+        .catch((error) => {
+            newError('Error :' + error);
+        });
+}
+
+const renderStats = (stats) => {
+    document.getElementById('totalTickets').innerHTML = stats.totalTickets;
+    document.getElementById('totalRevenue').innerHTML = formatter.format(stats.totalRevenue);
+    document.getElementById('revenuePerViewing').innerHTML = stats.meanRevenuePerViewing;
+
+
 }

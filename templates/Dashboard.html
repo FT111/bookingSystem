@@ -2,24 +2,28 @@
 
 {% block head %}
 
-<title>Dashboard</title>
-<script src="
-https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js
-"></script>
-<script src="../static/Dashboard.js"></script>
-<script>
-let stats = JSON.parse({{ stats | tojson | safe }});
-</script>
-<style>
-.card {
-    padding: 1rem;
-    {#border-radius: 1.5rem;#}
- }
- {#:root {#}
- {#   --rounded-box: 1.5rem;#}
- {#}#}
+    <title>Dashboard</title>
+    <script src="
+    https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js
+    "></script>
+    <script src="../static/Dashboard.js"></script>
+    <script>
+    let stats = {{ stats | tojson | safe }};
 
-</style>
+
+    </script>
+
+
+    <style>
+    .card {
+        padding: 1rem;
+        {#border-radius: 1.5rem;#}
+     }
+     {#:root {#}
+     {#   --rounded-box: 1.5rem;#}
+     {#}#}
+
+    </style>
 
 {% endblock %}
 
@@ -33,7 +37,7 @@ let stats = JSON.parse({{ stats | tojson | safe }});
 <div class="m-4 sm:m-8 flex gap-5 flex-col">
   <div class="bg-base-300 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 flex justify-between">
 
-       <select id="orderSelector" onchange="getViewings()" class="select w-full max-w-xs rounded-box">
+       <select id="orderSelector" onchange="getViewings(this)" class="select w-full max-w-xs rounded-box">
             <option value="all">All viewings</option>
             <option value="past">Past viewings</option>
             <option value="upcoming">Upcoming viewings</option>
@@ -49,12 +53,12 @@ let stats = JSON.parse({{ stats | tojson | safe }});
   
         <div class="stat ">
             <div class="stat-title">Total Tickets Sales</div>
-            <div class="stat-value viewingStat">{{ stats['totalTickets'] }}</div>
+            <div class="stat-value viewingStat" id="totalTickets">{{ stats['totalTickets'] }}</div>
             <div class="stat-desc viewingStat">21% more than last month</div>
         </div>
         <div class="stat">
             <div class="stat-title">Total Revenue</div>
-            <div class="stat-value viewingStat">{{ "£%.2f"|format(stats['totalRevenue']) }}</div>
+            <div class="stat-value viewingStat" id="totalRevenue">{{ "£%.2f"|format(stats['totalRevenue']) }}</div>
             <div class="stat-desc viewingStat">21% more than last month</div>
         </div>
     </div>
@@ -62,7 +66,7 @@ let stats = JSON.parse({{ stats | tojson | safe }});
   
         <div class="stat">
             <div class="stat-title">Revenue Per Viewing</div>
-            <div class="stat-value viewingStat">{{ "£%.2f"|format(stats['meanRevenuePerViewing']) }}</div>
+            <div class="stat-value viewingStat" id="revenuePerViewing">{{ "£%.2f"|format(stats['meanRevenuePerViewing']) }}</div>
             <div class="stat-desc viewingStat">Mean</div>
         </div>
         <div class="stat">
@@ -82,9 +86,9 @@ let stats = JSON.parse({{ stats | tojson | safe }});
     <div class="sm:col-span-3 bg-base-300 card card-primary">
     <div class="card-header">
         <h3 class="card-title">Ticket Sales</h3>
-        <script type="module" src="../static/barChart.js"></script>
 
         <div class="w-full h-full"><canvas id="barChart1"></canvas></div>
+        <script type="module" src="../static/barChart.js"></script>
 
     </div>
     </div>
