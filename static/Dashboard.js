@@ -110,8 +110,12 @@ const renderStats = (stats) => {
     document.getElementById('mostPopularViewingSub').innerHTML = mostPopularViewingSubtitle;
 
     // Tickets per viewing chart
-    window.ticketChart.data.labels = stats.ticketsPerViewing.map(row => row.viewingName);
-    window.ticketChart.data.datasets[0].data = stats.ticketsPerViewing.map(row => row.tickets);
+    window.revenueChart.data.labels = stats.statsPerViewing.map(row => row.viewingName);
+    window.revenueChart.data.datasets[0].data = stats.statsPerViewing.map(row => row.revenue);
+
+    window.ticketChart.data.labels = stats.statsPerViewing.map(row => row.viewingName);
+    window.ticketChart.data.datasets[0].data = stats.statsPerViewing.map(row => row.tickets);
     window.ticketChart.update();
+    window.revenueChart.update();
 
 }

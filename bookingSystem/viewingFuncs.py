@@ -139,13 +139,12 @@ class Viewings:
         seatsPerViewing = {viewing['ViewingID']: viewing['viewingRows'] * viewing['seatsPerRow']
                            for viewing in filteredViewingInfo}
 
-        ticketsPerViewing = {viewing['ViewingID']: {'viewingName': viewing['viewingName'], 'tickets': 0} for viewing in
-                             filteredViewingInfo}
+        statsPerViewing = {viewing['ViewingID']: {'viewingName': viewing['viewingName'], 'tickets': 0, 'revenue': 0}
+                           for viewing in filteredViewingInfo}
 
         # Calculating the statistics
 
         self.stats['totalRevenue'] = 0
-        self.stats['revenuePerViewing'] = {viewing['ViewingID']: 0 for viewing in filteredViewingInfo}
 
         # Calculates the revenue for each viewing, and the total
         for ticket in selectedTickets:
@@ -153,27 +152,26 @@ class Viewings:
                 price = [ticketType['Price'] for ticketType in ticketTypes if ticketType['ID'] == int(ticket[2])][0]
                 ticketViewingID = int(ticket[4])
 
-                self.stats['revenuePerViewing'][ticketViewingID] = self.stats['revenuePerViewing'].get(ticketViewingID,
-                                                                                                       0) + price
+                statsPerViewing[ticketViewingID]['revenue'] += price
             except IndexError:
                 price = 0
             self.stats['totalRevenue'] += price
 
-            if int(ticket[4]) in ticketsPerViewing:
-                ticketsPerViewing[int(ticket[4])]['tickets'] += 1
+            if int(ticket[4]) in statsPerViewing:
+                statsPerViewing[int(ticket[4])]['tickets'] += 1
 
         # Adding basic statistics to the dictionary
         self.stats['lastUpdated'] = time.time()
         self.stats['totalViewings'] = len(filteredViewingInfo)
         self.stats['totalTickets'] = len(selectedTickets)
-        self.stats['ticketsPerViewing'] = list(ticketsPerViewing.values())
+        self.stats['statsPerViewing'] = list(statsPerViewing.values())
 
         self.stats['remainingSeats'] = 0
         self.stats['mostRemaining'] = {'viewingName': None, 'remainingSeats': 0}
 
         # Calculates the remaining seats for each viewing
         for viewing in filteredViewingInfo:
-            seatsRemaining = seatsPerViewing[viewing['ViewingID']] - ticketsPerViewing[viewing['ViewingID']]['tickets']
+            seatsRemaining = seatsPerViewing[viewing['ViewingID']] - statsPerViewing[viewing['ViewingID']]['tickets']
             self.stats['remainingSeats'] += seatsRemaining
             if seatsRemaining > self.stats['mostRemaining']['remainingSeats']:
                 self.stats['mostRemaining']['viewingName'] = viewing['viewingName']
@@ -184,7 +182,7 @@ class Viewings:
         self.stats['mostPopularViewing'] = {'viewingName': None, 'tickets': 0}
 
         # Finds the viewing with the most tickets sold
-        for viewing in ticketsPerViewing.values():
+        for viewing in statsPerViewing.values():
             if viewing['tickets'] > self.stats['mostPopularViewing']['tickets']:
                 self.stats['mostPopularViewing']['viewingName'] = viewing['viewingName']
                 self.stats['mostPopularViewing']['tickets'] = viewing['tickets']

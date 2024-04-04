@@ -7,12 +7,12 @@
       {
         type: 'bar',
         data: {
-          labels: stats.ticketsPerViewing.map(row => row.viewingName),
+          labels: stats.statsPerViewing.map(row => row.viewingName),
           datasets: [   
             {
                 
               label: 'Tickets sales per performance',
-              data: stats.ticketsPerViewing.map(row => row.tickets),
+              data: stats.statsPerViewing.map(row => row.tickets),
             }
           ]
         },
@@ -26,13 +26,7 @@
             },
             plugins: {
                 legend: {
-                    labels: {
-                        font: {
-                            size: 16,
-                            family: "'Inter','Helvetica Neue','Helvetica','Arial', sans-serif",
-                            weight: 'bold'
-                        }
-                    }
+                    display: false,
                 }
             }
         }
