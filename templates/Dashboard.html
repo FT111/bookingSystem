@@ -56,7 +56,7 @@
     <div class="sm:col-span-2 card w-full bg-base-300 card-primary flex-col gap-4 p-4 ">
 
 
-        <div class="stats h-min w-full stats-vertical lg:stats-horizontal">
+        <div class="stats stats-vertical lg:stats-horizontal">
 
             <div class="stat ">
                 <div class="stat-title">Total Tickets Sales</div>
@@ -85,10 +85,26 @@
         </div>
     </div>
 
-    <div class="sm:col-span-4 bg-base-300 card card-primary">
-    <div class="card-header">
-        <h3 class="card-title">Card Title</h3>
+    <div class="sm:col-span-2 bg-base-300 card card-primary">
+        <div class="stats overflow-x-hidden stats-vertical lg:stats-horizontal">
+
+            <div class="stat">
+                <div class="stat-title">Most popular viewing</div>
+                <div class="stat-value viewingStat text-wrap text-2xl" id="mostPopularViewing">{{ stats['mostPopularViewing']['viewingName'] }}</div>
+                <div class="stat-desc viewingStat" id="mostPopularViewingSub">with {{ stats['mostPopularViewing']['tickets'] }} tickets sold</div>
+            </div>
+            <div class="stat">
+                <div class="stat-title">Least popular viewing</div>
+                <div class="stat-value viewingStat text-wrap text-xl" id="leastPopularViewing">{{ stats['mostRemaining']['viewingName'] }}</div>
+                <div class="stat-desc viewingStat" id="leastPopularViewingSub">with {{ stats['mostRemaining']['remainingSeats']}} tickets unsold</div>
+            </div>
+        </div>
     </div>
+
+    <div class="sm:col-span-2 bg-base-300 card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Card Title</h3>
+        </div>
     </div>
 
     <div class="sm:col-span-4 bg-base-300 card card-primary">
@@ -101,23 +117,6 @@
     </div>
     </div>
         <div class="sm:col-span-2 bg-base-300 card card-primary">
-            <div class="card-header">
-                <h3 class="card-title pb-3">Viewing Stats</h3>
-            </div>
-
-
-            <div class="stats overflow-x-hidden stats-vertical lg:stats-horizontal">
-
-                <div class="stat">
-                    <div class="stat-title">Most popular viewing</div>
-                    <div class="stat-value viewingStat text-wrap text-2xl" id="mostPopularViewing">{{ stats['mostPopularViewing']['viewingName'] }}</div>
-                    <div class="stat-desc viewingStat" id="mostPopularViewingSub">with {{ stats['mostPopularViewing']['tickets'] }} tickets sold</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-title">Least popular viewing</div>
-                    <div class="stat-value viewingStat text-wrap text-xl" id="leastPopularViewing">{{ stats['mostRemaining']['viewingName'] }}</div>
-                    <div class="stat-desc viewingStat" id="leastPopularViewingSub">with {{ stats['mostRemaining']['remainingSeats']}} tickets unsold</div>
-                </div>
 
     </div>
 </div>

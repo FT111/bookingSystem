@@ -106,11 +106,10 @@ class Viewings:
         #
 
         allViewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingName', 'viewingDate',
-                                                       'viewingRows', 'seatsPerRow'])
+                                                          'viewingRows', 'seatsPerRow'])
         allTickets = self.Database.getAllTickets()
         upcomingViewingIDs = [viewingID[0] for viewingID in self.Database.getUpcomingViewingIDs()]
         ticketTypes = self.ticketTypes.getTypes()
-
 
         overallRevenue = 0
         for ticket in allTickets:
@@ -123,10 +122,10 @@ class Viewings:
         # Filters the viewings based on the selected time period
         if timePeriod == 'upcoming':
             filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] in
-                           upcomingViewingIDs]
+                                   upcomingViewingIDs]
         elif timePeriod == 'past':
             filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] not in
-                           upcomingViewingIDs]
+                                   upcomingViewingIDs]
         elif viewingID is not None:
             filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] == viewingID]
         else:
@@ -146,10 +145,16 @@ class Viewings:
         # Calculating the statistics
 
         self.stats['totalRevenue'] = 0
+        self.stats['revenuePerViewing'] = {viewing['ViewingID']: 0 for viewing in filteredViewingInfo}
 
+        # Calculates the revenue for each viewing, and the total
         for ticket in selectedTickets:
             try:
                 price = [ticketType['Price'] for ticketType in ticketTypes if ticketType['ID'] == int(ticket[2])][0]
+                ticketViewingID = int(ticket[4])
+
+                self.stats['revenuePerViewing'][ticketViewingID] = self.stats['revenuePerViewing'].get(ticketViewingID,
+                                                                                                       0) + price
             except IndexError:
                 price = 0
             self.stats['totalRevenue'] += price
@@ -157,6 +162,7 @@ class Viewings:
             if int(ticket[4]) in ticketsPerViewing:
                 ticketsPerViewing[int(ticket[4])]['tickets'] += 1
 
+        # Adding basic statistics to the dictionary
         self.stats['lastUpdated'] = time.time()
         self.stats['totalViewings'] = len(filteredViewingInfo)
         self.stats['totalTickets'] = len(selectedTickets)
@@ -183,21 +189,23 @@ class Viewings:
                 self.stats['mostPopularViewing']['viewingName'] = viewing['viewingName']
                 self.stats['mostPopularViewing']['tickets'] = viewing['tickets']
 
-        self.stats['percentageSold'] = round((self.stats['totalTickets'] / (self.stats['remainingSeats'] + self.stats['totalTickets'])) * 100, 2)
+        # Calculates the percentage of tickets sold
+        self.stats['percentageSold'] = round(
+            (self.stats['totalTickets'] / (self.stats['remainingSeats'] + self.stats['totalTickets'])) * 100, 2)
 
+        # Calculates the mean revenue for all viewings
         meanRevenueForAllViewings = round(overallRevenue / len(allViewingInfo), 2)
 
+        # Calculates the percentage of revenue for the selected viewings compared to all viewings
         self.stats['percentageToMean'] = (self.stats['meanRevenuePerViewing'] / meanRevenueForAllViewings) * 100
-
-        print(self.stats['meanRevenuePerViewing'], meanRevenueForAllViewings)
-
         if self.stats['meanRevenuePerViewing'] < meanRevenueForAllViewings:
-            self.stats['percentageToMean'] = f"<strong>{round(100 - self.stats['percentageToMean'],2)}%</strong> below mean revenue"
+            self.stats[
+                'percentageToMean'] = f"<strong>{round(100 - self.stats['percentageToMean'], 2)}%</strong> below mean revenue"
         elif self.stats['meanRevenuePerViewing'] == meanRevenueForAllViewings:
             self.stats['percentageToMean'] = "Equal to mean revenue"
         else:
-            self.stats['percentageToMean'] = f"<strong>{round(self.stats['percentageToMean'] - 100, 2)}%</strong> above mean revenue"
-
+            self.stats[
+                'percentageToMean'] = f"<strong>{round(self.stats['percentageToMean'] - 100, 2)}%</strong> above mean revenue"
 
         print(self.stats)
 
