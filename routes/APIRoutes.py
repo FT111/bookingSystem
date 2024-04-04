@@ -37,11 +37,16 @@ def getPastStats():
     return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
 
 
-@apiRoutes.route('/viewings/getViewingStats', methods=['POST'])
-def getViewingStats():
-    stats = bs.Viewings.getStats(viewingID=request.json.get('viewingID'))
+@apiRoutes.route('/viewings/getStats/viewing/<int:viewingID>', methods=['POST'])
+def getSpecificStats(viewingID):
+    stats = bs.Viewings.getStats(viewingID=viewingID)
     return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
 
+
+@apiRoutes.route('/viewings/getAll', methods=['POST'])
+def getAllViewings():
+    viewings = bs.Viewings.getAllViewingsAsList()
+    return Response(f'{{"body": {json.dumps(viewings)}}}', status=200, mimetype='application/json')
 
 @apiRoutes.route('/customers/getAll', methods=['POST'])
 def getAllCustomers():

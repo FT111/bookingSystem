@@ -35,15 +35,20 @@
 
 <!-- Content container -->
 <div class="m-4 sm:m-8 flex gap-5 flex-col">
-  <div class="bg-base-300 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 flex justify-between">
+  <div id="optionBar" class="bg-base-200 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 transition-all duration-200 ease-in-out flex flex-col justify-between">
 
-       <select id="timePeriodSelector" onchange="getViewings(this)" class="select w-full max-w-xs rounded-box">
-            <option value="all">All viewings</option>
-            <option value="past">Past viewings</option>
-            <option value="upcoming">Upcoming viewings</option>
-            <option value="specific">Specific viewing</option>
-       </select>
+           <select id="timePeriodSelector" onchange="getViewings(searchElement=this)" class="select w-full max-w-xs rounded-box">
+                <option value="all">All viewings</option>
+                <option value="past">Past viewings</option>
+                <option value="upcoming">Upcoming viewings</option>
+                <option value="specific">Specific viewing</option>
+           </select>
 
+
+          <!-- Specific viewing selector using badges -->
+          <div id="viewingSelector" class="flex flex-wrap p-2 flex-row gap-3 transition-all ease-in-out blur-lg duration-300 translate-y-1/2 opacity-0 hidden">
+
+          </div>
 
   </div>
 
@@ -56,12 +61,12 @@
             <div class="stat ">
                 <div class="stat-title">Total Tickets Sales</div>
                 <div class="stat-value viewingStat" id="totalTickets">{{ stats['totalTickets'] }}</div>
-                <div class="stat-desc viewingStat">21% more than last month</div>
+                <div class="stat-desc viewingStat"></div>
             </div>
             <div class="stat">
                 <div class="stat-title">Tickets Remaining</div>
                 <div class="stat-value viewingStat" id="remainingSeats">{{ stats['remainingSeats'] }}</div>
-                <div class="stat-desc text-wrap viewingStat" id="remainingSeatsSub">Most remaining: {{ stats['mostRemaining']['viewingName'] }} - {{ stats['mostRemaining']['remainingSeats'] }} </div>
+                <div class="stat-desc text-wrap viewingStat" id="remainingSeatsSub">{{ stats['percentageSold'] }}% of seats sold</div>
             </div>
 
         </div>
@@ -70,12 +75,12 @@
             <div class="stat">
                 <div class="stat-title">Revenue Per Viewing</div>
                 <div class="stat-value viewingStat" id="revenuePerViewing">{{ "£%.2f"|format(stats['meanRevenuePerViewing']) }}</div>
-                <div class="stat-desc viewingStat">Mean</div>
+                <div class="stat-desc viewingStat" id="revenuePerViewingSub">{{ stats['percentageToMean']  }}</div>
             </div>
             <div class="stat">
                 <div class="stat-title">Total Revenue</div>
                 <div class="stat-value sm:text-3xl viewingStat" id="totalRevenue">{{ "£%.2f"|format(stats['totalRevenue']) }}</div>
-                <div class="stat-desc viewingStat">21% more than last month</div>
+                <div class="stat-desc viewingStat"></div>
             </div>
         </div>
     </div>
@@ -96,9 +101,24 @@
     </div>
     </div>
         <div class="sm:col-span-2 bg-base-300 card card-primary">
-    <div class="card-header">
-        <h3 class="card-title">Card Title</h3>
-    </div>
+            <div class="card-header">
+                <h3 class="card-title pb-3">Viewing Stats</h3>
+            </div>
+
+
+            <div class="stats overflow-x-hidden stats-vertical lg:stats-horizontal">
+
+                <div class="stat">
+                    <div class="stat-title">Most popular viewing</div>
+                    <div class="stat-value viewingStat text-wrap text-2xl" id="mostPopularViewing">{{ stats['mostPopularViewing']['viewingName'] }}</div>
+                    <div class="stat-desc viewingStat" id="mostPopularViewingSub">with {{ stats['mostPopularViewing']['tickets'] }} tickets sold</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-title">Least popular viewing</div>
+                    <div class="stat-value viewingStat text-wrap text-xl" id="leastPopularViewing">{{ stats['mostRemaining']['viewingName'] }}</div>
+                    <div class="stat-desc viewingStat" id="leastPopularViewingSub">with {{ stats['mostRemaining']['remainingSeats']}} tickets unsold</div>
+                </div>
+
     </div>
 </div>
 </div>

@@ -67,6 +67,24 @@ class Viewings:
 
         return seatCounts
 
+    @staticmethod
+    def formatViewing(viewing) -> dict:
+        viewingFormatted = {'Name': viewing['Name'], 'Date': viewing['Date'],
+                            'Time': viewing['Time'], 'Description': viewing['Description'],
+                            'Banner': viewing['Banner'], 'viewingID': viewing['viewingID'],
+                            'remainingSeatCount': viewing['remainingSeatCount']}
+        viewingFormatted['Date'] = viewingFormatted['Date'].strftime('%Y-%m-%d')
+        viewingFormatted['Time'] = viewingFormatted['Time'].strftime('%H:%M')
+
+        return viewingFormatted
+
+    def getAllViewingsAsList(self) -> list:
+        self.getAllViewingsFromDB()
+
+        viewingsList = [self.formatViewing(vars(viewing)) for viewing in self.allViewings.values()]
+
+        return viewingsList
+
     def getUpcomingViewingsAsList(self) -> list:
         upcomingViewingIDs = self.Database.getUpcomingViewingIDs()
         upcomingViewingsList = []
@@ -74,13 +92,7 @@ class Viewings:
 
         # Format the viewings for Jinja to render
         for viewingID in upcomingViewingIDs:
-            viewing = vars(self.getStoredViewingByID(viewingID[0]))
-            viewingFormatted = {'Name': viewing['Name'], 'Date': viewing['Date'],
-                                'Time': viewing['Time'], 'Description': viewing['Description'],
-                                'Banner': viewing['Banner'], 'viewingID': viewing['viewingID'],
-                                'remainingSeatCount': viewing['remainingSeatCount']}
-            viewingFormatted['Date'] = viewingFormatted['Date'].strftime('%Y-%m-%d')
-            viewingFormatted['Time'] = viewingFormatted['Time'].strftime('%H:%M')
+            viewingFormatted = self.formatViewing(vars(self.getStoredViewingByID(viewingID[0])))
 
             upcomingViewingsList.append(viewingFormatted)
 
@@ -93,32 +105,43 @@ class Viewings:
         #         return self.stats
         #
 
-        viewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingName', 'viewingDate',
+        allViewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingName', 'viewingDate',
                                                        'viewingRows', 'seatsPerRow'])
         allTickets = self.Database.getAllTickets()
         upcomingViewingIDs = [viewingID[0] for viewingID in self.Database.getUpcomingViewingIDs()]
+        ticketTypes = self.ticketTypes.getTypes()
+
+
+        overallRevenue = 0
+        for ticket in allTickets:
+            try:
+                price = [ticketType['Price'] for ticketType in ticketTypes if ticketType['ID'] == int(ticket[2])][0]
+            except IndexError:
+                price = 0
+            overallRevenue += price
 
         # Filters the viewings based on the selected time period
         if timePeriod == 'upcoming':
-            viewingInfo = [viewing for viewing in viewingInfo if viewing['ViewingID'] in
+            filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] in
                            upcomingViewingIDs]
         elif timePeriod == 'past':
-            viewingInfo = [viewing for viewing in viewingInfo if viewing['ViewingID'] not in
+            filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] not in
                            upcomingViewingIDs]
-        elif viewingID:
-            viewingInfo = [viewing for viewing in viewingInfo if viewing['ViewingID'] == viewingID]
+        elif viewingID is not None:
+            filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] == viewingID]
+        else:
+            filteredViewingInfo = allViewingInfo
 
         # Filters the tickets and viewingIDs based on the selected viewings
-        viewingIDs = [viewing['ViewingID'] for viewing in viewingInfo]
+        viewingIDs = [viewing['ViewingID'] for viewing in filteredViewingInfo]
 
         selectedTickets = [ticket for ticket in allTickets if int(ticket[4]) in viewingIDs]
-        ticketTypes = self.ticketTypes.getTypes()
 
         seatsPerViewing = {viewing['ViewingID']: viewing['viewingRows'] * viewing['seatsPerRow']
-                           for viewing in viewingInfo}
+                           for viewing in filteredViewingInfo}
 
         ticketsPerViewing = {viewing['ViewingID']: {'viewingName': viewing['viewingName'], 'tickets': 0} for viewing in
-                             viewingInfo}
+                             filteredViewingInfo}
 
         # Calculating the statistics
 
@@ -135,7 +158,7 @@ class Viewings:
                 ticketsPerViewing[int(ticket[4])]['tickets'] += 1
 
         self.stats['lastUpdated'] = time.time()
-        self.stats['totalViewings'] = len(viewingInfo)
+        self.stats['totalViewings'] = len(filteredViewingInfo)
         self.stats['totalTickets'] = len(selectedTickets)
         self.stats['ticketsPerViewing'] = list(ticketsPerViewing.values())
 
@@ -143,7 +166,7 @@ class Viewings:
         self.stats['mostRemaining'] = {'viewingName': None, 'remainingSeats': 0}
 
         # Calculates the remaining seats for each viewing
-        for viewing in viewingInfo:
+        for viewing in filteredViewingInfo:
             seatsRemaining = seatsPerViewing[viewing['ViewingID']] - ticketsPerViewing[viewing['ViewingID']]['tickets']
             self.stats['remainingSeats'] += seatsRemaining
             if seatsRemaining > self.stats['mostRemaining']['remainingSeats']:
@@ -151,6 +174,30 @@ class Viewings:
                 self.stats['mostRemaining']['remainingSeats'] = seatsRemaining
 
         self.stats['meanRevenuePerViewing'] = round(self.stats['totalRevenue'] / self.stats['totalViewings'], 2)
+
+        self.stats['mostPopularViewing'] = {'viewingName': None, 'tickets': 0}
+
+        # Finds the viewing with the most tickets sold
+        for viewing in ticketsPerViewing.values():
+            if viewing['tickets'] > self.stats['mostPopularViewing']['tickets']:
+                self.stats['mostPopularViewing']['viewingName'] = viewing['viewingName']
+                self.stats['mostPopularViewing']['tickets'] = viewing['tickets']
+
+        self.stats['percentageSold'] = round((self.stats['totalTickets'] / (self.stats['remainingSeats'] + self.stats['totalTickets'])) * 100, 2)
+
+        meanRevenueForAllViewings = round(overallRevenue / len(allViewingInfo), 2)
+
+        self.stats['percentageToMean'] = (self.stats['meanRevenuePerViewing'] / meanRevenueForAllViewings) * 100
+
+        print(self.stats['meanRevenuePerViewing'], meanRevenueForAllViewings)
+
+        if self.stats['meanRevenuePerViewing'] < meanRevenueForAllViewings:
+            self.stats['percentageToMean'] = f"<strong>{round(100 - self.stats['percentageToMean'],2)}%</strong> below mean revenue"
+        elif self.stats['meanRevenuePerViewing'] == meanRevenueForAllViewings:
+            self.stats['percentageToMean'] = "Equal to mean revenue"
+        else:
+            self.stats['percentageToMean'] = f"<strong>{round(self.stats['percentageToMean'] - 100, 2)}%</strong> above mean revenue"
+
 
         print(self.stats)
 
@@ -162,6 +209,7 @@ class Viewing:
                  Date, Time, rowCount, seatsPerRow,
                  Description='', viewingBanner=None,
                  remainingSeatCount=None, inDB=False) -> None:
+
         self.Database = Database
         self.viewingID = viewingID
         self.Name = Name
@@ -223,7 +271,7 @@ class Viewing:
 
     def submitToDB(self) -> None:
         self.Database.addRecords('Viewings', (
-        self.viewingID, self.Name, self.Description, self.Banner, self.Date, self.rowCount, self.seatsPerRow))
+            self.viewingID, self.Name, self.Description, self.Banner, self.Date, self.rowCount, self.seatsPerRow))
         self.inDB = True
 
     def submitTicket(self, Ticket: object, Customer: object) -> None:
