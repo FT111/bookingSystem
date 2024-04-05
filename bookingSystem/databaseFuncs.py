@@ -101,6 +101,9 @@ class Database:
         unavailableSeats += self.cursor.execute('SELECT ViewingID FROM unavailableSeats;')
         return unavailableSeats
 
+    def getTicketsByViewingID(self, viewingID) -> list:
+        return self.cursor.execute('SELECT * FROM Tickets WHERE ViewingID = ?;', (viewingID,))
+
     def getTicketByID(self, ticketID) -> list:
         return self.cursor.execute('SELECT * FROM Tickets WHERE ID = ?;', (ticketID,))
 

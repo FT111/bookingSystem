@@ -7,6 +7,7 @@ let viewStatsLabel;
 let viewUsersLabel;
 
 let customerTable;
+let customerTableHeader;
 
 const getViewings = (searchElement=undefined, ID= undefined) => {
     let url = '/api/viewings/getStats';
@@ -17,6 +18,7 @@ const getViewings = (searchElement=undefined, ID= undefined) => {
 
         if (category !== 'specific') {
             closeViewings();
+            resetCustomers();
         }
 
         if (category === 'upcoming' || category === 'past') {
@@ -38,6 +40,7 @@ const getViewings = (searchElement=undefined, ID= undefined) => {
                     newError('Error :' + error);
                 });
         }} else {
+            showCustomersForViewing(ID);
             url = `/api/viewings/getStats/viewing/${ID}`;
             [... document.getElementsByClassName('viewingButton')].forEach(element => {
                 element.classList.remove('bg-secondary');
@@ -84,7 +87,7 @@ const showViewings = (viewings) => {
     viewings.forEach(viewing => {
         viewingSelector.innerHTML += `
         <div class='tooltip tooltip-top' data-tip="${viewing.Date} ${viewing.Time}">
-        <div id="${viewing.viewingID}" class="viewingButton badge badge-primary badge-lg p-5 text-base-100 cursor-pointer hover:bg-secondary hover:border-secondary" onclick="getViewings(undefined, ${viewing.viewingID})">${viewing.Name}</div>
+        <div id="${viewing.viewingID}" class="viewingButton badge badge-primary badge-lg p-5 text-white cursor-pointer hover:bg-secondary hover:border-secondary" onclick="getViewings(undefined, ${viewing.viewingID})">${viewing.Name}</div>
         </div>
         `
     });
@@ -134,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
     viewUsersLabel = document.getElementById('viewUsersLabel');  
 
     customerTable = document.getElementById('customerTable');
+    customerTableHeader = document.getElementById('customerTableHeader');
 
     viewStatistics();
 });
@@ -177,32 +181,43 @@ const toggleView = () => {
 
 const showCustomersForViewing = (viewingID) => {
 
-    response = fetch(`/api/customers/getCustomersByViewing/${viewingID}`, {
+    response = fetch(`/api/bookings/getTicketsByViewing/${viewingID}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         }
     }).then((response) => response.json())
         .then((data) => {
+            console.log(data.body);
             renderCustomers(data.body);
         })
         .catch((error) => {
-            newError('Error :' + error);
+            renderCustomers([])
         });
 }
 
 const renderCustomers = (customers) => {
-    
-        customerTable.innerHTML = '';
-    
-        customers.forEach(customer => {
-            customerTable.innerHTML += `
-            <tr>
-                ${ customer.map(data => `<td>${data}</td>`).join('')}
-            </tr>
-            `
-        });
-    }
+
+    customerTableHeader.innerHTML = '';
+
+    Object.keys(customers[0]).forEach(key => {
+        customerTableHeader.innerHTML += `<th>${key}</th>`;
+    });
+
+    customerTable.innerHTML = '';
+
+    customers.forEach(customer => {
+        customerTable.innerHTML += `
+
+        <tr>
+            ${Object.keys(customer).map(key => { 
+                return '<td>'+customer[key]+'</td>'
+            }).join('')}
+        </tr>
+        
+        `
+    });
+}
 
 const resetCustomers = () => {
     renderCustomers(customers);

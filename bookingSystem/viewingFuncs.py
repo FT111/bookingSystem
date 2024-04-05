@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime, time
 import time
-import json
 
 
 class Viewings:
@@ -271,6 +270,13 @@ class Viewing:
     def getUnavailableSeats(self) -> int:
         self.unavailableSeats = self.Database.getUnavailableSeats(self.viewingID)
         return self.unavailableSeats
+    
+    def getTicketInfo(self) -> list:
+        ticketInfo = self.Database.getTicketsByViewingID(self.viewingID)
+
+        formattedTickets = [{'TicketID': ticket[0], 'Seat': ticket[1], 'Type': ticket[2], 'CustomerID': ticket[3] } for ticket in ticketInfo]
+
+        return formattedTickets
 
     def getRowLength(self) -> int:
         return self.seatsPerRow

@@ -47,10 +47,10 @@
            </select>
         
         <div class="flex flex-row join">
-            <label class="btn text-base-100 btn-secondary join-item" for="viewStats" id="viewStatsLabel">Statistics</label>
+            <label class="btn text-white btn-secondary join-item" for="viewStats" id="viewStatsLabel">Statistics</label>
             <input type="radio" name="viewOptions" id="viewStats" value="viewStats" onclick="toggleView()" checked hidden>
             <input type="radio" name="viewOptions" id="viewUsers" value="viewUsers" onclick="toggleView()" hidden>
-            <label class="btn text-base-100 btn-secondary join-item" for="viewUsers" id="viewUsersLabel">Users</label>
+            <label class="btn text-white btn-secondary join-item" for="viewUsers" id="viewUsersLabel">Customers</label>
 
         </div>
     </div>
@@ -140,10 +140,12 @@
 
 <div id="usersPage">
 
+    <p class="text-2xl w-full text-center p-5 text-slate-500 align-center">Select a specific viewing to see ticket information</p>
+
     <div class="border-base-200">
         <table class="table table-sm w-full" id="">
             <thead>
-                <tr class="bg-secondary text-base-100">
+                <tr class="bg-secondary text-white" id="customerTableHeader">
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone Number</th>

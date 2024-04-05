@@ -57,17 +57,20 @@ def getAllCustomers():
 
     return Response(f'{{"body": {customers}}}', status=200, mimetype='application/json')
 
-@apiRoutes.route('/customers/getCustomersByViewing/<int:viewingID>', methods=['POST'])
+@apiRoutes.route('/bookings/getTicketsByViewing/<int:viewingID>', methods=['POST'])
 def getCustomersByViewing(viewingID):
-    customers = bs.Customers.getAllCustomerInfoFromDB(viewingID)
+    customers = bs.Customers.getAllCustomerInfoFromDB('firstName', 'Surname', 'emailAddress', 'phoneNumber', 'ID')
     customerDictByID = {customer['ID']: customer for customer in customers}
-    tickets = bs.Tickets.getTicketsByViewing(viewingID)
+    tickets = bs.Viewings.getStoredViewingByID(viewingID).getTicketInfo()
+    ticketsDictByID = {ticket['TicketID']: ticket for ticket in tickets}
 
-    for ticket in tickets:
-        if ticket['customerID'] in customerDictByID.keys():
-            ticket.append(customerDictByID[ticket['customerID']])
+    for ticket in ticketsDictByID.values():
+        if ticket['CustomerID'] in customerDictByID.keys():
+            ticketsDictByID[ticket['TicketID']] = {**ticket, **customerDictByID[ticket['CustomerID']]}
 
-    return Response(f'{{"body": {json.dumps(tickets)}}}', status=200, mimetype='application/json')
+    ticketList = list(ticketsDictByID.values())
+
+    return Response(f'{{"body": {json.dumps(ticketList)}}}', status=200, mimetype='application/json')
 
 
 @apiRoutes.route('/customers/new', methods=['POST'])
