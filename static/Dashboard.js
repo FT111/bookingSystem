@@ -1,6 +1,13 @@
 let category = 'all';
 let selectedViewing = null;
 
+let statsPage;
+let usersPage;
+let viewStatsLabel;
+let viewUsersLabel;
+
+let customerTable;
+
 const getViewings = (searchElement=undefined, ID= undefined) => {
     let url = '/api/viewings/getStats';
 
@@ -118,4 +125,85 @@ const renderStats = (stats) => {
     window.ticketChart.update();
     window.revenueChart.update();
 
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    statsPage = document.getElementById('statsPage');
+    usersPage = document.getElementById('usersPage');
+    viewStatsLabel = document.getElementById('viewStatsLabel');
+    viewUsersLabel = document.getElementById('viewUsersLabel');  
+
+    customerTable = document.getElementById('customerTable');
+
+    viewStatistics();
+});
+
+const viewStatistics = () => {
+        
+    usersPage.classList.add('hidden');
+    statsPage.classList.remove('hidden');
+
+    viewStatsLabel.classList.add('bg-primary');
+    viewUsersLabel.classList.remove('bg-primary');
+
+}
+
+const viewUsers = () => {
+
+    statsPage.classList.add('hidden');
+    usersPage.classList.remove('hidden');
+
+    viewUsersLabel.classList.add('bg-primary');
+    viewStatsLabel.classList.remove('bg-primary');
+}
+
+const toggleView = () => {
+    let radios = document.getElementsByName('viewOptions');
+    let selectedView = 'statistics';
+
+    radios.forEach(radio => {
+        if (radio.checked) {
+            selectedView = radio.value;
+        }
+    });
+
+    if (selectedView === 'viewStats') {
+        viewStatistics();
+    }
+    else {
+        viewUsers();
+    }
+};
+
+const showCustomersForViewing = (viewingID) => {
+
+    response = fetch(`/api/customers/getCustomersByViewing/${viewingID}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }).then((response) => response.json())
+        .then((data) => {
+            renderCustomers(data.body);
+        })
+        .catch((error) => {
+            newError('Error :' + error);
+        });
+}
+
+const renderCustomers = (customers) => {
+    
+        customerTable.innerHTML = '';
+    
+        customers.forEach(customer => {
+            customerTable.innerHTML += `
+            <tr>
+                ${ customer.map(data => `<td>${data}</td>`).join('')}
+            </tr>
+            `
+        });
+    }
+
+const resetCustomers = () => {
+    renderCustomers(customers);
 }

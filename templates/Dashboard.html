@@ -9,6 +9,7 @@
     <script src="../static/Dashboard.js"></script>
     <script>
     let stats = {{ stats | tojson | safe }};
+    let customers = {{ customers | tojson | safe }};
     let ticketChart;
 
     </script>
@@ -35,25 +36,35 @@
 
 <!-- Content container -->
 <div class="m-4 sm:m-8 flex gap-5 flex-col">
-  <div id="optionBar" class="bg-base-200 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 transition-all duration-200 ease-in-out flex flex-col justify-between">
+  <div id="optionBar" class="bg-base-300 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 transition-all duration-200 ease-in-out flex flex-col justify-between">
 
+    <div class="flex flex-row justify-between">   
            <select id="timePeriodSelector" onchange="getViewings(searchElement=this)" class="select w-full max-w-xs rounded-box">
                 <option value="all">All viewings</option>
                 <option value="past">Past viewings</option>
                 <option value="upcoming">Upcoming viewings</option>
                 <option value="specific">Specific viewing</option>
            </select>
+        
+        <div class="flex flex-row join">
+            <label class="btn text-base-100 btn-secondary join-item" for="viewStats" id="viewStatsLabel">Statistics</label>
+            <input type="radio" name="viewOptions" id="viewStats" value="viewStats" onclick="toggleView()" checked hidden>
+            <input type="radio" name="viewOptions" id="viewUsers" value="viewUsers" onclick="toggleView()" hidden>
+            <label class="btn text-base-100 btn-secondary join-item" for="viewUsers" id="viewUsersLabel">Users</label>
+
+        </div>
+    </div>
 
 
-          <!-- Specific viewing selector using badges -->
-          <div id="viewingSelector" class="flex flex-wrap p-2 flex-row gap-3 transition-all ease-in-out blur-lg duration-300 translate-y-1/2 opacity-0 hidden">
+        <!-- Specific viewing selector using badges -->
+        <div id="viewingSelector" class="flex flex-wrap p-2 flex-row gap-3 transition-all ease-in-out blur-lg duration-200 translate-y-1/2 opacity-0 hidden">
 
-          </div>
-
+        </div>
   </div>
 
+<div id="statsPage">
 <div class="grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-6 gap-4 w-full auto-rows-min h-screen auto-columns-max">
-    <div class="sm:col-span-2 card w-full bg-base-300 card-primary flex-col gap-4 p-4 ">
+    <div class="sm:col-span-2 card w-full bg-base-200 card-primary flex-col gap-4 p-4 ">
 
 
         <div class="stats stats-vertical lg:stats-horizontal">
@@ -85,7 +96,7 @@
         </div>
     </div>
 
-    <div class="sm:col-span-2 bg-base-300 card card-primary">
+    <div class="sm:col-span-2 bg-base-200 card card-primary">
         <div class="stats overflow-x-hidden stats-vertical lg:stats-horizontal">
 
             <div class="stat">
@@ -101,13 +112,13 @@
         </div>
     </div>
 
-    <div class="sm:col-span-2 bg-base-300 card card-primary">
+    <div class="sm:col-span-2 bg-base-200 card card-primary">
         <div class="card-header">
             <h3 class="card-title">Card Title</h3>
         </div>
     </div>
 
-    <div class="sm:col-span-4 bg-base-300 card card-primary">
+    <div class="sm:col-span-4 bg-base-200 card card-primary">
     <div class="card-header">
         <h3 class="card-title pb-5">Ticket Sales per Viewing</h3>
 
@@ -116,7 +127,7 @@
 
     </div>
     </div>
-        <div class="sm:col-span-2 bg-base-300 card card-primary">
+        <div class="sm:col-span-2 bg-base-200 card card-primary">
         <div class="card-header">
             <h3 class="card-title">Revenue per Viewing</h3>
 
@@ -124,6 +135,34 @@
             <script type="module" src="../static/pieChart.js"></script>
     </div>
 </div>
+</div>
+</div>
+
+<div id="usersPage">
+
+    <div class="border-base-200">
+        <table class="table table-sm w-full" id="">
+            <thead>
+                <tr class="bg-secondary text-base-100">
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                </tr>
+            </thead>
+            <tbody id="customerTable">
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ customer['firstName'] }} {{ customer['Surname'] }}</td>
+                    <td>{{ customer['emailAddress'] }}</td>
+                    <td>{{ customer['phoneNumber'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
 </div>
 
 {% endblock %}

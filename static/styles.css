@@ -56,3 +56,7 @@ body {
 table > tbody > tr > td {
     transition: all 0.2s ease-in-out !important;
 }
+
+.btnRadio:checked + label {
+    color: white;
+}

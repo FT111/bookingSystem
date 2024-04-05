@@ -10,8 +10,9 @@ pageRoutes = Blueprint('pageRoutes', __name__)
 @pageRoutes.route('/dashboard')
 def index():
     allStats = bs.Viewings.getStats()
+    customers = bs.Customers.getAllCustomerInfoFromDB('firstName','Surname', 'emailAddress', 'phoneNumber')
 
-    return render_template('dashboard.html', stats=allStats)
+    return render_template('dashboard.html', stats=allStats, customers=customers)
 
 
 # Shows the upcoming viewings to the user and allows selection

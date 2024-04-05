@@ -57,6 +57,18 @@ def getAllCustomers():
 
     return Response(f'{{"body": {customers}}}', status=200, mimetype='application/json')
 
+@apiRoutes.route('/customers/getCustomersByViewing/<int:viewingID>', methods=['POST'])
+def getCustomersByViewing(viewingID):
+    customers = bs.Customers.getAllCustomerInfoFromDB(viewingID)
+    customerDictByID = {customer['ID']: customer for customer in customers}
+    tickets = bs.Tickets.getTicketsByViewing(viewingID)
+
+    for ticket in tickets:
+        if ticket['customerID'] in customerDictByID.keys():
+            ticket.append(customerDictByID[ticket['customerID']])
+
+    return Response(f'{{"body": {json.dumps(tickets)}}}', status=200, mimetype='application/json')
+
 
 @apiRoutes.route('/customers/new', methods=['POST'])
 def newCustomer():
