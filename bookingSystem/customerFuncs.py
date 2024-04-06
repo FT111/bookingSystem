@@ -65,6 +65,9 @@ class Customers:
             args.insert(args.index('firstName') + 1, 'Surname')
 
         info = self.Database.getAllCustomerInfo(args)
+        print(info)
+
+
         return info
 
     def addCustomer(self, customer: object) -> None:

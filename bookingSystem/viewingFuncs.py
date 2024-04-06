@@ -37,11 +37,13 @@ class Viewings:
 
         return self.allViewings
 
-    def newViewing(self, Name, DateTime: datetime, rowCount, seatsPerRow) -> object:
-        Date = DateTime.date()
-        Time = DateTime.time()
-        newViewing = Viewing(self.Database, None, Name, Date, Time, rowCount, seatsPerRow)
-        # newViewing.submitToDB()
+    def newViewing(self, Name, Date: str, Time:str, rowCount, seatsPerRow, BannerURL=None, Description:str=None) -> object:
+        Date = datetime.strptime(Date, '%d-%m-%Y')
+        Date = Date.strftime('%Y-%m-%d')
+        Time = datetime.strptime(Time, '%H:%M')
+        newViewing = Viewing(self.Database, None, Name, Date, Time, rowCount, seatsPerRow, Description, BannerURL)
+        newViewing.submitToDB()
+
         return newViewing
 
     def getStoredViewings(self) -> dict:
@@ -282,8 +284,8 @@ class Viewing:
         return self.seatsPerRow
 
     def submitToDB(self) -> None:
-        self.Database.addRecords('Viewings', (
-            self.viewingID, self.Name, self.Description, self.Banner, self.Date, self.rowCount, self.seatsPerRow))
+        self.Database.newViewing(self)
+
         self.inDB = True
 
     def submitTicket(self, Ticket: object, Customer: object) -> None:

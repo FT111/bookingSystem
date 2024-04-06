@@ -137,6 +137,11 @@ class Database:
         sqlColumns = ', '.join(columns)
         response = self.cursor.execute(f'SELECT {sqlColumns} FROM Viewings;')
         return self.zipColumnsToDict(columns, response)
+    
+    def newViewing(self, viewing: object) -> None:
+        self.cursor.execute('INSERT INTO Viewings VALUES (?, ?, ?, ?, ?, ?, ?);', (
+            viewing.getID(), viewing.getName(), viewing.getDesc(), viewing.getBanner(), viewing.getDate(),
+            viewing.getRows(), viewing.getSeatsPerRow(),))
 
     @staticmethod
     def zipColumnsToDict(columns, response):

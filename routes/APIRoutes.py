@@ -43,6 +43,26 @@ def getSpecificStats(viewingID):
     return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
 
 
+@apiRoutes.route('/viewings/submit', methods=['POST'])
+def newViewing():
+    requiredFields = ['viewingName', 'Date', 'Time', 'rowCount', 'seatsPerRow']
+    missingFields = [field for field in requiredFields if field not in request.json.keys()]
+
+    if missingFields:
+        return Response(f'{{"body": "Missing required fields: {", ".join(missingFields)}"}}', status=400,
+                        mimetype='application/json')
+
+    viewing = bs.Viewings.newViewing(request.json.get('viewingName'),
+                                      request.json.get('Date'),
+                                      request.json.get('Time'),
+                                      request.json.get('rowCount'),
+                                      request.json.get('seatsPerRow'),
+                                      request.json.get('Description') if 'Description' in request.json.keys() else None,
+                                      )
+    viewing.submitToDB()
+    return Response(f'{{"body": "{str(viewing.getID())}"}}', status=200, mimetype='application/json')
+
+
 @apiRoutes.route('/viewings/getAll', methods=['POST'])
 def getAllViewings():
     viewings = bs.Viewings.getAllViewingsAsList()
@@ -52,7 +72,6 @@ def getAllViewings():
 def getAllCustomers():
     customers = bs.Customers.getAllCustomerInfoFromDB('firstName', 'Surname', 'emailAddress', 'phoneNumber', 'ID')
 
-    print(customers)
     customers = json.dumps(customers)
 
     return Response(f'{{"body": {customers}}}', status=200, mimetype='application/json')
