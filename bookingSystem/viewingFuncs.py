@@ -94,6 +94,7 @@ class Viewings:
         # Format the viewings for Jinja to render
         for viewingID in upcomingViewingIDs:
             viewingFormatted = self.formatViewing(vars(self.getStoredViewingByID(viewingID[0])))
+            viewingFormatted['dateFormatted'] = datetime.strptime(viewingFormatted['Date'], '%Y-%m-%d').strftime('%d/%m/%Y')
 
             upcomingViewingsList.append(viewingFormatted)
 
