@@ -1,6 +1,6 @@
 import bookingSystem as bSystem
 
 
-bs = bSystem.BookingSystem(dbPath='./database/bookingDatabase.db')
+bs = bSystem.BookingSystem(dbPath='./instance/bookingDatabase.db')
 
 
