@@ -144,8 +144,8 @@ class Database:
 
         self.cursor.execute('INSERT INTO Viewings VALUES (?, ?, ?, ?, ?, ?, ?);', (viewing.getID(),
                                                                                    viewing.getName(),
-                                                                                   viewing.getBanner(),
                                                                                    viewing.getDescription(),
+                                                                                   viewing.getBanner(),
                                                                                    viewingDateTime,
                                                                                    viewing.getRowCount(),
                                                                                    viewing.getRowLength(),))

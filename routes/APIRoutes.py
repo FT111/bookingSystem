@@ -45,7 +45,6 @@ def getSpecificStats(viewingID):
 
 @apiRoutes.route('/viewings/submit', methods=['POST'])
 def newViewing():
-
     # Validation
     requiredFields = ['viewingName', 'Date', 'Time', 'rowCount', 'seatsPerRow']
     missingFields = [field for field in requiredFields if field not in request.form.keys()]
@@ -59,6 +58,7 @@ def newViewing():
                                      request.form.get('Time'),
                                      request.form.get('rowCount'),
                                      request.form.get('seatsPerRow'),
+                                     request.form.get('Banner') if 'Banner' in request.form.keys() else None,
                                      request.form.get('Description') if 'Description' in request.form.keys() else None,
                                      )
 
@@ -70,6 +70,7 @@ def getAllViewings():
     viewings = bs.Viewings.getAllViewingsAsList()
     return Response(f'{{"body": {json.dumps(viewings)}}}', status=200, mimetype='application/json')
 
+
 @apiRoutes.route('/customers/getAll', methods=['POST'])
 def getAllCustomers():
     customers = bs.Customers.getAllCustomerInfoFromDB('firstName', 'Surname', 'emailAddress', 'phoneNumber', 'ID')
@@ -77,6 +78,7 @@ def getAllCustomers():
     customers = json.dumps(customers)
 
     return Response(f'{{"body": {customers}}}', status=200, mimetype='application/json')
+
 
 @apiRoutes.route('/bookings/getTicketsByViewing/<int:viewingID>', methods=['POST'])
 def getCustomersByViewing(viewingID):
