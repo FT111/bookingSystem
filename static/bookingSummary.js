@@ -13,7 +13,7 @@ const submitBooking = () => {
 
             setTimeout(() => {
                 window.location.href = '/dashboard'
-            }, 2000);
+            }, 500);
         } else {
             newError('Error submitting booking');
         }

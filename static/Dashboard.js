@@ -94,7 +94,7 @@ const showViewings = (viewings) => {
 
     setTimeout(() => {
         viewingSelector.classList.remove('-translate-y-1/2', 'opacity-0', 'blur-lg');
-    }, 10);
+    }, 1);
     
 }
 
