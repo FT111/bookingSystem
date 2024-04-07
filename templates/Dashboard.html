@@ -30,15 +30,16 @@
 
 {% block body %}
 
+
 <div class="flex flex-col items-center px-8 py-2 justify-center w-full h-full">
     <h1 class="text-3xl sm:text-6xl font-bold">Dashboard</h1>
 </div>
 
 <!-- Content container -->
 <div class="m-4 sm:m-8 flex gap-5 flex-col">
-  <div id="optionBar" class="bg-base-300 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 transition-all duration-200 ease-in-out flex flex-col justify-between">
+  <div id="optionBar" class="bg-base-300 drop-shadow-md h-fit sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 transition-all duration-200 ease-in-out flex flex-col justify-between">
 
-    <div class="flex flex-row justify-between">   
+    <div class="flex flex-row justify-between transition-all">
            <select id="timePeriodSelector" onchange="getViewings(searchElement=this)" class="select w-full max-w-xs rounded-box">
                 <option value="all">All viewings</option>
                 <option value="past">Past viewings</option>
@@ -46,7 +47,7 @@
                 <option value="specific">Specific viewing</option>
            </select>
         
-        <div class="flex flex-row join rounded-md">
+        <div class="flex flex-row join rounded-md transition-all">
             <label class="btn text-white btn-secondary join-item" for="viewStats" id="viewStatsLabel">
             
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -70,7 +71,7 @@
 
 
         <!-- Specific viewing selector using badges -->
-        <div id="viewingSelector" class="flex flex-wrap p-2 flex-row gap-3 transition-all ease-in-out blur-lg duration-200 translate-y-1/2 opacity-0 hidden">
+        <div id="viewingSelector" class="flex flex-wrap p-2 flex-row gap-3 transition-all ease-in-out blur-lg duration-200 -translate-y-1/2 opacity-0 hidden">
 
         </div>
   </div>

@@ -53,7 +53,8 @@ class Database:
         self.cursor = DBConnectionInstance
 
         self.acceptedCustomerColumns = ['ID', 'firstName', 'Surname', 'emailAddress', 'phoneNumber']
-        self.acceptedViewingColumns = ['ViewingID', 'viewingName', 'viewingDesc', 'viewingBanner', 'viewingDate', 'viewingRows', 'seatsPerRow']
+        self.acceptedViewingColumns = ['ViewingID', 'viewingName', 'viewingDesc', 'viewingBanner', 'viewingDate',
+                                       'viewingRows', 'seatsPerRow']
 
     # def getRecords(self, table:str, column='*', where='') -> list:
     #     query = f'SELECT {column} FROM {table}' 
@@ -137,11 +138,17 @@ class Database:
         sqlColumns = ', '.join(columns)
         response = self.cursor.execute(f'SELECT {sqlColumns} FROM Viewings;')
         return self.zipColumnsToDict(columns, response)
-    
+
     def newViewing(self, viewing: object) -> None:
-        self.cursor.execute('INSERT INTO Viewings VALUES (?, ?, ?, ?, ?, ?, ?);', (
-            viewing.getID(), viewing.getName(), viewing.getDesc(), viewing.getBanner(), viewing.getDate(),
-            viewing.getRows(), viewing.getSeatsPerRow(),))
+        viewingDateTime = f'{viewing.getDate().strftime("%Y-%m-%d")} {viewing.getTime().strftime("%H:%M")}:00'
+
+        self.cursor.execute('INSERT INTO Viewings VALUES (?, ?, ?, ?, ?, ?, ?);', (viewing.getID(),
+                                                                                   viewing.getName(),
+                                                                                   viewing.getBanner(),
+                                                                                   viewing.getDescription(),
+                                                                                   viewingDateTime,
+                                                                                   viewing.getRowCount(),
+                                                                                   viewing.getRowLength(),))
 
     @staticmethod
     def zipColumnsToDict(columns, response):

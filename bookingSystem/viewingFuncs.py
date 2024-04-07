@@ -17,6 +17,7 @@ class Viewings:
 
     def getAllViewingsFromDB(self) -> dict:
         viewings = self.Database.getAllViewings()
+        self.allViewings = dict()
 
         for viewing in viewings:
             # Format YY/MM/DD
@@ -37,10 +38,18 @@ class Viewings:
 
         return self.allViewings
 
-    def newViewing(self, Name, Date: str, Time:str, rowCount, seatsPerRow, BannerURL=None, Description:str=None) -> object:
-        Date = datetime.strptime(Date, '%d-%m-%Y')
-        Date = Date.strftime('%Y-%m-%d')
-        Time = datetime.strptime(Time, '%H:%M')
+    def newViewing(self, Name, Date: str, Time:str, rowCount, seatsPerRow, BannerURL=None, Description: str = None) -> object:
+        try:
+            Date = datetime.strptime(Date, '%Y-%m-%d')
+            Time = datetime.strptime(Time, '%H:%M')
+        except ValueError:
+            raise ValueError("Invalid date/time format, please use YYYY-MM-DD and HH:MM.")
+        try:
+            rowCount = int(rowCount)
+            seatsPerRow = int(seatsPerRow)
+        except ValueError:
+            raise ValueError("Invalid row count or seats per row, please use strings or integers.")
+
         newViewing = Viewing(self.Database, None, Name, Date, Time, rowCount, seatsPerRow, Description, BannerURL)
         newViewing.submitToDB()
 
@@ -256,6 +265,18 @@ class Viewing:
 
     def getDate(self) -> datetime.date:
         return self.Date
+
+    def getTime(self) -> datetime.time:
+        return self.Time
+
+    def getBanner(self) -> str:
+        return self.Banner
+
+    def getDescription(self) -> str:
+        return self.Description
+
+    def getRowCount(self) -> int:
+        return self.rowCount
 
     def getSeatNames(self) -> list:
         return self.seatNames

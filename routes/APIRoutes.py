@@ -45,22 +45,24 @@ def getSpecificStats(viewingID):
 
 @apiRoutes.route('/viewings/submit', methods=['POST'])
 def newViewing():
+
+    # Validation
     requiredFields = ['viewingName', 'Date', 'Time', 'rowCount', 'seatsPerRow']
-    missingFields = [field for field in requiredFields if field not in request.json.keys()]
+    missingFields = [field for field in requiredFields if field not in request.form.keys()]
 
     if missingFields:
         return Response(f'{{"body": "Missing required fields: {", ".join(missingFields)}"}}', status=400,
                         mimetype='application/json')
 
-    viewing = bs.Viewings.newViewing(request.json.get('viewingName'),
-                                      request.json.get('Date'),
-                                      request.json.get('Time'),
-                                      request.json.get('rowCount'),
-                                      request.json.get('seatsPerRow'),
-                                      request.json.get('Description') if 'Description' in request.json.keys() else None,
-                                      )
-    viewing.submitToDB()
-    return Response(f'{{"body": "{str(viewing.getID())}"}}', status=200, mimetype='application/json')
+    viewing = bs.Viewings.newViewing(request.form.get('viewingName'),
+                                     request.form.get('Date'),
+                                     request.form.get('Time'),
+                                     request.form.get('rowCount'),
+                                     request.form.get('seatsPerRow'),
+                                     request.form.get('Description') if 'Description' in request.form.keys() else None,
+                                     )
+
+    return redirect(url_for('pageRoutes.index'))
 
 
 @apiRoutes.route('/viewings/getAll', methods=['POST'])
