@@ -201,12 +201,21 @@ const renderCustomers = (customers) => {
     customerTableHeader.innerHTML = '';
 
     Object.keys(customers[0]).forEach(key => {
+        if (key === 'Surname') {
+            key = 'Name';
+        } else if (key === 'firstName') {
+            return;
+        }
         customerTableHeader.innerHTML += `<th>${key}</th>`;
     });
 
     customerTable.innerHTML = '';
 
     customers.forEach(customer => {
+        if (customer['firstName'] && customer['Surname']) {
+            customer['Surname'] = customer['firstName'] + ' ' + customer['Surname'];
+            delete customer['firstName'];
+        }
         customerTable.innerHTML += `
 
         <tr>

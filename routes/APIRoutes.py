@@ -279,7 +279,5 @@ def testEndpoint():
     return '200'
 
 
-@apiRoutes.route('/testEndpoint2')
-def testEndpoint2():
-    print(session['uuid'])
-    return str(session['uuid'])
+
+

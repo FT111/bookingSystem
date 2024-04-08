@@ -85,6 +85,7 @@ class Viewings:
                             'remainingSeatCount': viewing['remainingSeatCount']}
         viewingFormatted['Date'] = viewingFormatted['Date'].strftime('%Y-%m-%d')
         viewingFormatted['Time'] = viewingFormatted['Time'].strftime('%H:%M')
+        viewingFormatted['dateFormatted'] = datetime.strptime(viewingFormatted['Date'], '%Y-%m-%d').strftime('%d/%m/%Y')
 
         return viewingFormatted
 
@@ -103,7 +104,6 @@ class Viewings:
         # Format the viewings for Jinja to render
         for viewingID in upcomingViewingIDs:
             viewingFormatted = self.formatViewing(vars(self.getStoredViewingByID(viewingID[0])))
-            viewingFormatted['dateFormatted'] = datetime.strptime(viewingFormatted['Date'], '%Y-%m-%d').strftime('%d/%m/%Y')
 
             upcomingViewingsList.append(viewingFormatted)
 

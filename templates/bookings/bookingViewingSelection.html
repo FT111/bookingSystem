@@ -1,9 +1,13 @@
 {% extends "layout.html" %}
 
+{% block newBooking %}
+active
+{% endblock %}
+
 {% block head %}
 
 <title>Viewings</title>
-<script src="../static/Viewings.js"></script>
+<script src="../../static/Viewings.js"></script>
 
 <script>
 let viewings = JSON.parse('{{ viewings| tojson | safe }}');

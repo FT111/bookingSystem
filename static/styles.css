@@ -19,6 +19,10 @@ body {
 
 }
 
+.card {
+    @apply rounded-md;
+}
+
 .availableSeatCbx:hover > label > .openSeatIcon {
   fill: #0891b2;
   transition-duration: 100;
@@ -59,4 +63,14 @@ table > tbody > tr > td {
 
 .btnRadio:checked + label {
     color: white;
+}
+
+@keyframes fadeinX {
+    0% { opacity: 0; transform: translateX(4px); }
+
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+.fadeInTranslateX {
+    animation: fadeinX 0.25s ease-in-out forwards;
 }

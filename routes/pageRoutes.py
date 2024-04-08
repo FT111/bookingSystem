@@ -15,12 +15,18 @@ def index():
     return render_template('dashboard.html', stats=allStats, customers=customers)
 
 
+@pageRoutes.route('/viewings/manage')
+def manageViewings():
+    viewings = bs.Viewings.getAllViewingsAsList()
+    return render_template('viewings/manage.html', viewings=viewings)
+
+
 # Shows the upcoming viewings to the user and allows selection
 @pageRoutes.route('/booking/new')
 def viewingsPage():
     viewings = bs.Viewings.getUpcomingViewingsAsList()
 
-    return render_template('viewings.html', viewings=viewings)
+    return render_template('bookings/bookingViewingSelection.html', viewings=viewings)
 
 
 # Allows the user to select the number of tickets they want to purchase
@@ -38,7 +44,7 @@ def newBookingPage():
     ticketSum = sum(ticketCounts.values())
     priceSum = currentBooking.getPriceSum()
 
-    return render_template('newBooking.html', booking=currentBooking, ticketSum=ticketSum, priceSum=priceSum,
+    return render_template('bookings/bookingNew.html', booking=currentBooking, ticketSum=ticketSum, priceSum=priceSum,
                            ticketCounts=ticketCounts, viewing=currentViewing, ticketTypes=ticketTypes)
 
 
@@ -66,7 +72,7 @@ def chooseSeatsPage():
     viewingName = viewing.getName()
     bookingID = booking.getID()
 
-    return render_template('seatSelector.html', bookingID=bookingID, viewingName=viewingName, seatNames=seatNames,
+    return render_template('bookings/seatSelector.html', bookingID=bookingID, viewingName=viewingName, seatNames=seatNames,
                            reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow,
                            maxSeats=maxSeats)
 
@@ -95,14 +101,14 @@ def bookingSummary():
     priceSum = currentBooking.getPriceSum()
     tickets = currentBooking.getTickets()
 
-    return render_template('bookingSummary.html', booking=currentBooking, tickets=tickets, ticketSum=ticketSum,
+    return render_template('bookings/bookingSummary.html', booking=currentBooking, tickets=tickets, ticketSum=ticketSum,
                            priceSum=priceSum, ticketCounts=ticketCounts, viewing=currentViewing,
                            ticketTypes=ticketTypes)
 
 
 @pageRoutes.route('/viewings/new')
 def newViewingPage():
-    return render_template('newViewing.html')
+    return render_template('viewings/newViewing.html')
 
 
 @pageRoutes.before_request
