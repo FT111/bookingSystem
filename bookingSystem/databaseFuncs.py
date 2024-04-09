@@ -128,7 +128,7 @@ class Database:
             if column not in self.acceptedCustomerColumns:
                 return []
         sqlColumns = ', '.join(columns)
-        response = self.cursor.execute(f'SELECT {sqlColumns} FROM Customers;')
+        response = self.cursor.execute(f'SELECT {sqlColumns} FROM Customers ORDER BY Surname ASC;')
         return self.zipColumnsToDict(columns, response)
 
     def getAllViewingInfo(self, columns: list) -> list:
@@ -138,6 +138,9 @@ class Database:
         sqlColumns = ', '.join(columns)
         response = self.cursor.execute(f'SELECT {sqlColumns} FROM Viewings;')
         return self.zipColumnsToDict(columns, response)
+
+    def deleteViewing(self, viewingID: int) -> None:
+        self.cursor.execute('DELETE FROM Viewings WHERE ViewingID = ?;', (viewingID,))
 
     def newViewing(self, viewing: object) -> None:
         viewingDateTime = f'{viewing.getDate().strftime("%Y-%m-%d")} {viewing.getTime().strftime("%H:%M")}:00'

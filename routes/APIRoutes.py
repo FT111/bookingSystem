@@ -14,6 +14,14 @@ def checkTicket():
     pass
 
 
+@apiRoutes.route('/viewings/manage/<int:viewingID>', methods=['DELETE'])
+def deleteViewing(viewingID):
+    bs.Viewings.getAllViewingsFromDB()
+    bs.Viewings.deleteViewing(viewingID)
+
+    return Response('{"status": "200"}', status=200, mimetype='application/json')
+
+
 @apiRoutes.route('/viewings/getViewingDataByIDs', methods=['POST'])
 def getViewingData():
     selectedViewings = (bs.Viewings.getStoredViewingByID(viewingID) for viewingID in request.json.get('viewingIDs'))
@@ -62,7 +70,7 @@ def newViewing():
                                      request.form.get('Description') if 'Description' in request.form.keys() else None,
                                      )
 
-    return redirect(url_for('pageRoutes.index'))
+    return redirect(url_for('pageRoutes.manageViewings'))
 
 
 @apiRoutes.route('/viewings/getAll', methods=['POST'])

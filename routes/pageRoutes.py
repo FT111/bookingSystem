@@ -106,10 +106,6 @@ def bookingSummary():
                            ticketTypes=ticketTypes)
 
 
-@pageRoutes.route('/viewings/new')
-def newViewingPage():
-    return render_template('viewings/newViewing.html')
-
 
 @pageRoutes.before_request
 def handle_preflight():

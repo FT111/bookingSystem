@@ -109,6 +109,11 @@ class Viewings:
 
         return upcomingViewingsList
 
+    def deleteViewing(self, viewingID) -> None:
+        viewing = self.getStoredViewingByID(viewingID)
+        viewing.delete()
+        self.allViewings.pop(viewingID)
+
     def getStats(self, viewingID: int = None, timePeriod: str = None) -> dict:
         #
         # if self.stats:
@@ -304,6 +309,9 @@ class Viewing:
 
     def getRowLength(self) -> int:
         return self.seatsPerRow
+
+    def delete(self) -> None:
+        self.Database.deleteViewing(self.viewingID)
 
     def submitToDB(self) -> None:
         self.Database.newViewing(self)
