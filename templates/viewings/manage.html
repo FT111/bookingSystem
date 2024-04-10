@@ -35,93 +35,13 @@
 
         <div id="viewingsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 min-[2000px]:grid-cols-5 gap-5">
 
-            <div class="drawer drawer-end">
-              <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
-              <div class="drawer-content">
-                  <label for="my-drawer-4" class="viewingCard card w-full drawer-button bg-base-200 hover:bg-base-300 hover:scale-[1.02] hover:shadow-lg cursor-pointer transition-all h-80 flex-1 items-center p-20">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                  </label>
-              </div>
-              <div class="drawer-side z-50">
-                <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
-                  <div class="w-full sm:w-11/12 lg:w-7/12 bg-base-100 p-12">
-                <form action="/api/viewings/submit" method="POST" class="flex flex-col w-full">
-                    <div class="flex flex-col gap-5 w-full p-5 bg-base-300 card sm:p-10">
-                        <label for="name" class="flex flex-row gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                            </svg>
-
-                            Name</label>
-                        <input type="text" name="viewingName" id="name" class="input input-bordered rounded-box" required>
-
-                        <label for="date" class="flex flex-row gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
-                            </svg>
-
-                            Date</label>
-                        <input type="date" name="Date" id="date" class="input input-bordered rounded-box" required>
-
-                        <label for="time" class="flex flex-row gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-
-
-                            Time</label>
-                        <input type="time" name="Time" id="time" class="input input-bordered rounded-box" required >
-
-                        <label for="banner" class="flex flex-row gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
-                        </svg>
-                        Banner URL
-                        </label>
-                        <input type="text" name="Banner" id="banner" class="input input-bordered rounded-box">
-
-                        <div class="flex flex-col sm:flex-row flex-1 gap-4">
-                            <div class="flex flex-col gap-3 grow">
-                                <label for="rows" class="flex flex-row gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
-                                </svg>
-                                Number of rows
-                                </label>
-
-                                <input type="number" name="rowCount" id="rows" class="input input-bordered rounded-box" required>
-                            </div>
-                            <div class="flex flex-col gap-3 grow">
-                                <label for="seatsPerRow" class="flex flex-row gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                                </svg>
-                                    Seats in each row
-                                </label>
-                                <input type="number" name="seatsPerRow" id="seatsPerRow" class="input input-bordered rounded-box" required>
-                            </div>
-                        </div>
-
-                        <label for="Description">Description</label>
-                        <textarea name="Description" id="description" class="textarea textarea-bordered rounded-box"></textarea>
-
-                    </div>
-                    <div class="flex flex-col gap-4 sm:gap-0 my-3 px-0 p-3 sm:flex-row w-full items-center justify-between transition-full ease-in-out duration-100">
-                        <div></div> <!-- Spacer -->
-
-                            <button formaction="/api/viewings/submit" class="btn btn-primary items-center btn-block sm:btn-md sm:w-auto flex-end rounded-md text-white transition-all ease-in-out duration-200" id="submitBtn">Submit
-                                <!-- prettier-ignore -->
-                                <svg class="stroke-base-200 transition-all ease-in-out duration-400" width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                            </button>
-                        </div>
-                </form>
-                  </div>
-              </div>
-            </div>
-
+            <div class="skeleton w-full h-80"></div>
+            <div class="skeleton w-full h-80"></div>
+            <div class="skeleton w-full h-80"></div>
+            <div class="skeleton w-full h-80"></div>
+            <div class="skeleton w-full h-80"></div>
+            <div class="skeleton w-full h-80"></div>
+            <div class="skeleton w-full h-80"></div>
 
             </div>
         {% else %}
@@ -135,12 +55,16 @@
 
     <dialog id="confirmDeletionModal" class="modal">
       <div class="modal-box">
-        <h3 class="font-bold text-lg">Hello!</h3>
+        <h3 class="font-bold text-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
+        </h3>
         <p class="py-4">Are you sure you would like to delete this viewing?</p>
         <div class="modal-action">
           <form method="dialog">
             <button class="btn">Close</button>
-            <button class="btn btn-error" onclick="deleteViewing()">Delete</button>
+            <button class="btn btn-error text-white" onclick="deleteViewing()">Delete</button>
           </form>
         </div>
       </div>
