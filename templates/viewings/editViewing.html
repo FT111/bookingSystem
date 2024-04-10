@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+    <!-- Content Container -->
+<div class="sm:mx-6 mb-8 w-content flex flex-col gap-3 items-center">
+
+    <h1 class="text-3xl sm:text-6xl my-6 text-center align-middle font-bold">{{ viewingName }} - Edit Viewing</h1>
+
+    <!-- Screen -->
+    <div class="w-1/2 rounded-md text-primary align-middle text-center text-slate-200 font-bold p-1 sm:p-2 bg-slate-700">Screen</div>
+    <!-- End Screen -->
+
+    <div class="flex flex-col">
+        <div class="card bg-base-300 p-3 sm:p-10 sm:w-fit w-full m-1 sm:m-3">
+            <!-- Seating Grid -->
+            <div class="h-fit duration-50 grid items-start " style="grid-template-columns: repeat({{ seatsPerRow }}, minmax(0, 1fr));">
+                {% for seat in seatNames %}
+                {% if seat in reservedSeats %}
+                    <div class="tooltip availableSeatCbx" data-tip="{{seat}}">
+                        <label class="swap">
+                            <input type="checkbox" class="inline Seat duration-25" ontouchstart="toggle('{{seat}}')" onclick="toggleSeat('{{seat}}')" name="seat" id="{{seat}}"/>
+                            <!-- prettier-ignore -->
+                            <svg class="swap-off opacity-50" width="48px" height="48px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M16.8203 2H7.18031C5.05031 2 3.32031 3.74 3.32031 5.86V19.95C3.32031 21.75 4.61031 22.51 6.19031 21.64L11.0703 18.93C11.5903 18.64 12.4303 18.64 12.9403 18.93L17.8203 21.64C19.4003 22.52 20.6903 21.76 20.6903 19.95V5.86C20.6803 3.74 18.9503 2 16.8203 2ZM14.5003 11.4H9.50031C9.09031 11.4 8.75031 11.06 8.75031 10.65C8.75031 10.24 9.09031 9.9 9.50031 9.9H14.5003C14.9103 9.9 15.2503 10.24 15.2503 10.65C15.2503 11.06 14.9103 11.4 14.5003 11.4Z" fill="#5c6c80"></path></g></svg>
+                            <!-- prettier-ignore -->
+                            <svg class="swap-on w-full h-auto fill-red-500" width="48px" height="48px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20.1203 3.88L3.39031 20.61C3.34031 20.41 3.32031 20.19 3.32031 19.95V5.86C3.32031 3.74 5.05031 2 7.18031 2H16.8203C18.2203 2 19.4503 2.75 20.1203 3.88Z" fill="#0e7490"></path> <path d="M21.7709 2.22891C21.4709 1.92891 20.9809 1.92891 20.6809 2.22891L2.23086 20.6889C1.93086 20.9889 1.93086 21.4789 2.23086 21.7789C2.38086 21.9189 2.57086 21.9989 2.77086 21.9989C2.97086 21.9989 3.16086 21.9189 3.31086 21.7689L21.7709 3.30891C22.0809 3.00891 22.0809 2.52891 21.7709 2.22891Z" fill="#155e75"></path> <path d="M19.2902 7.71054L11.9001 15.1005C11.4401 15.5605 11.5301 16.3305 12.0901 16.6605L19.4801 21.0905C20.1501 21.4905 20.9901 21.0105 20.9901 20.2305V8.41054C21.0001 7.52054 19.9201 7.08054 19.2902 7.71054Z" fill="#0e7490"></path> </g></svg>
+                        </label>
+                {% elif seat in unavailableSeats %}
+                    <div class="tooltip availableSeatCbx" data-tip="{{seat}}">
+                        <label class="swap">
+                            <input type="checkbox" class="inline Seat duration-25" ontouchstart="toggle('{{seat}}')" onclick="toggleSeat('{{seat}}')" name="seat" id="{{seat}}"/>
+                            <!-- prettier-ignore -->
+                            <svg class="swap-off w-full h-auto fill-red-500" width="48px" height="48px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20.1203 3.88L3.39031 20.61C3.34031 20.41 3.32031 20.19 3.32031 19.95V5.86C3.32031 3.74 5.05031 2 7.18031 2H16.8203C18.2203 2 19.4503 2.75 20.1203 3.88Z" fill="#0e7490"></path> <path d="M21.7709 2.22891C21.4709 1.92891 20.9809 1.92891 20.6809 2.22891L2.23086 20.6889C1.93086 20.9889 1.93086 21.4789 2.23086 21.7789C2.38086 21.9189 2.57086 21.9989 2.77086 21.9989C2.97086 21.9989 3.16086 21.9189 3.31086 21.7689L21.7709 3.30891C22.0809 3.00891 22.0809 2.52891 21.7709 2.22891Z" fill="#155e75"></path> <path d="M19.2902 7.71054L11.9001 15.1005C11.4401 15.5605 11.5301 16.3305 12.0901 16.6605L19.4801 21.0905C20.1501 21.4905 20.9901 21.0105 20.9901 20.2305V8.41054C21.0001 7.52054 19.9201 7.08054 19.2902 7.71054Z" fill="#0e7490"></path> </g></svg>
+                            <!-- prettier-ignore -->
+                            <svg class="swap-on w-full openSeatIcon h-auto fill-cyan-700" width="48px" height="48px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16.8203 2H7.18031C5.05031 2 3.32031 3.74 3.32031 5.86V19.95C3.32031 21.75 4.61031 22.51 6.19031 21.64L11.0703 18.93C11.5903 18.64 12.4303 18.64 12.9403 18.93L17.8203 21.64C19.4003 22.52 20.6903 21.76 20.6903 19.95V5.86C20.6803 3.74 18.9503 2 16.8203 2ZM14.5003 11.4H9.50031C9.09031 11.4 9.9 9.50031 9.9H14.5003C14.9103 9.9 15.2503 10.24 15.2503 10.65C15.2503 11.06 14.9103 11.4 14.5003 11.4Z"></path> </g></svg>
+                        </label>
+                {% else %}
+                <div class="tooltip availableSeatCbx" data-tip="{{seat}}">
+                    <label class="swap">
+                        <input type="checkbox" class="inline Seat duration-25" ontouchstart="toggle('{{seat}}')" onclick="toggleSeat('{{seat}}')" name="seat" id="{{seat}}"/>
+                        <!-- prettier-ignore -->
+                        <svg class="swap-off w-full openSeatIcon h-auto fill-cyan-700" width="48px" height="48px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16.8203 2H7.18031C5.05031 2 3.32031 3.74 3.32031 5.86V19.95C3.32031 21.75 4.61031 22.51 6.19031 21.64L11.0703 18.93C11.5903 18.64 12.4303 18.64 12.9403 18.93L17.8203 21.64C19.4003 22.52 20.6903 21.76 20.6903 19.95V5.86C20.6803 3.74 18.9503 2 16.8203 2ZM14.5003 11.4H9.50031C9.09031 11.4 9.9 9.50031 9.9H14.5003C14.9103 9.9 15.2503 10.24 15.2503 10.65C15.2503 11.06 14.9103 11.4 14.5003 11.4Z"></path> </g></svg>
+                        <!-- prettier-ignore -->
+                        <svg class="swap-on w-full h-auto fill-red-500" width="48px" height="48px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20.1203 3.88L3.39031 20.61C3.34031 20.41 3.32031 20.19 3.32031 19.95V5.86C3.32031 3.74 5.05031 2 7.18031 2H16.8203C18.2203 2 19.4503 2.75 20.1203 3.88Z" fill="#0e7490"></path> <path d="M21.7709 2.22891C21.4709 1.92891 20.9809 1.92891 20.6809 2.22891L2.23086 20.6889C1.93086 20.9889 1.93086 21.4789 2.23086 21.7789C2.38086 21.9189 2.57086 21.9989 2.77086 21.9989C2.97086 21.9989 3.16086 21.9189 3.31086 21.7689L21.7709 3.30891C22.0809 3.00891 22.0809 2.52891 21.7709 2.22891Z" fill="#155e75"></path> <path d="M19.2902 7.71054L11.9001 15.1005C11.4401 15.5605 11.5301 16.3305 12.0901 16.6605L19.4801 21.0905C20.1501 21.4905 20.9901 21.0105 20.9901 20.2305V8.41054C21.0001 7.52054 19.9201 7.08054 19.2902 7.71054Z" fill="#0e7490"></path> </g></svg>
+                    </label>
+                {% endif %}
+                </div>
+                {% endfor %}
+                </div>
+                <!-- End Seating Grid -->
+
+                <!-- Seat Legend -->
+                <div class="flex flex-col rounded-md sm:flex-row gap-3 card sm:gap-6 justify-center items-center text-slate-600 mt-6">
+                    <div class="badge gap-1 p-4 py-5 space-x-1.5">
+                        <svg class="swap-off w-auto openSeatIcon h-auto fill-cyan-700" width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M16.8203 2H7.18031C5.05031 2 3.32031 3.74 3.32031 5.86V19.95C3.32031 21.75 4.61031 22.51 6.19031 21.64L11.0703 18.93C11.5903 18.64 12.4303 18.64 12.9403 18.93L17.8203 21.64C19.4003 22.52 20.6903 21.76 20.6903 19.95V5.86C20.6803 3.74 18.9503 2 16.8203 2ZM14.5003 11.4H12.7503V13.21C12.7503 13.62 12.4103 13.96 12.0003 13.96C11.5903 13.96 11.2503 13.62 11.2503 13.21V11.4H9.50031C9.09031 11.4 8.75031 11.06 8.75031 10.65C8.75031 10.24 9.09031 9.9 9.50031 9.9H11.2503V8.21C11.2503 7.8 11.5903 7.46 12.0003 7.46C12.4103 7.46 12.7503 7.8 12.7503 8.21V9.9H14.5003C14.9103 9.9 15.2503 10.24 15.2503 10.65C15.2503 11.06 14.9103 11.4 14.5003 11.4Z"></path></g></svg>
+                        <p>Available Seat</p>
+                    </div>
+                    <div class="badge gap-1 p-4 py-5 space-x-1.5">
+                        <svg class="swap-on w-auto h-auto fill-emerald-600" width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16.8203 1.91016H7.18031C5.06031 1.91016 3.32031 3.65016 3.32031 5.77016V19.8602C3.32031 21.6602 4.61031 22.4202 6.19031 21.5502L11.0703 18.8402C11.5903 18.5502 12.4303 18.5502 12.9403 18.8402L17.8203 21.5502C19.4003 22.4302 20.6903 21.6702 20.6903 19.8602V5.77016C20.6803 3.65016 18.9503 1.91016 16.8203 1.91016ZM15.6203 9.03016L11.6203 13.0302C11.4703 13.1802 11.2803 13.2502 11.0903 13.2502C10.9003 13.2502 10.7103 13.1802 10.5603 13.0302L9.06031 11.5302C8.77031 11.2402 8.77031 10.7602 9.06031 10.4702C9.35031 10.1802 9.83031 10.1802 10.1203 10.4702L11.0903 11.4402L14.5603 7.97016C14.8503 7.68016 15.3303 7.68016 15.6203 7.97016C15.9103 8.26016 15.9103 8.74016 15.6203 9.03016Z"></path> </g></svg>
+                        <p>Selected Seat</p>
+                    </div>
+                    <div class="badge gap-1 p-4 py-5 space-x-1.5">
+                        <svg class="w-auto h-auto opacity-50" width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M16.8203 2H7.18031C5.05031 2 3.32031 3.74 3.32031 5.86V19.95C3.32031 21.75 4.61031 22.51 6.19031 21.64L11.0703 18.93C11.5903 18.64 12.4303 18.64 12.9403 18.93L17.8203 21.64C19.4003 22.52 20.6903 21.76 20.6903 19.95V5.86C20.6803 3.74 18.9503 2 16.8203 2ZM14.5003 11.4H9.50031C9.09031 11.4 8.75031 11.06 8.75031 10.65C8.75031 10.24 9.09031 9.9 9.50031 9.9H14.5003C14.9103 9.9 15.2503 10.24 15.2503 10.65C15.2503 11.06 14.9103 11.4 14.5003 11.4Z" fill="#5c6c80"></path></g></svg>
+                        <p>Reserved Seat</p>
+                    </div>
+                </div>
+                <!-- End Seat Legend -->
+
+            </div>
+            <!-- End Seating Grid -->
+
+            <div class="flex flex-col gap-4 sm:gap-0 p-3 sm:flex-row w-full items-center justify-between transition-full ease-in-out duration-100">
+                <div></div>
+                <div class="tooltip order-2 tooltip-bottom tooltip-open" id="continueTooltip" data-tip="Select your seats to continue">
+                    <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-100 transition-all ease-in-out duration-200" onclick="window.location.href='/booking/summary'" disabled="disabled" id="continueBtn">Continue
+                        <!-- prettier-ignore -->
+                        <svg class="stroke-cyan-200 transition-all ease-in-out duration-400" width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<!-- End Content Container -->
+
+
+{% endblock %}

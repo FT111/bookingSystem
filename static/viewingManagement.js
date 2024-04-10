@@ -21,4 +21,3 @@ const deleteViewing = async () => {
         newError('Failed to delete viewing');
     }
 }
-

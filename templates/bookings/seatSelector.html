@@ -36,10 +36,10 @@ let bookingID = '{{ bookingID }}';
     <div class="w-1/2 rounded-md text-primary align-middle text-center text-slate-200 font-bold p-1 sm:p-2 bg-slate-700">Screen</div>
     <!-- End Screen -->
 
-    <div class="flex flex-col">
-        <div class="card bg-base-300 p-3 sm:p-10 sm:w-fit w-full m-1 sm:m-3">
+    <div class="flex flex-col w-3/4">
+        <div class="card bg-base-300 p-3 sm:p-10 w-full m-1 sm:m-3 items-center">
             <!-- Seating Grid -->
-            <div class="h-fit duration-50 grid items-start " style="grid-template-columns: repeat({{ seatsPerRow }}, minmax(0, 1fr));">
+            <div class="h-fit w-fit duration-50 grid items-start " style="grid-template-columns: repeat({{ seatsPerRow }}, minmax(0, 1fr));">
                 {% for seat in seatNames %} 
                 {% if seat in reservedSeats %}
                 <div class="tooltip flex flex-row justify-center" data-tip="{{seat}}">

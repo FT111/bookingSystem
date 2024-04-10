@@ -21,6 +21,21 @@ def manageViewings():
     return render_template('viewings/manage.html', viewings=viewings)
 
 
+@pageRoutes.route('/viewings/edit/<int:viewingID>')
+def editViewing(viewingID):
+    bs.Viewings.getAllViewingsFromDB()
+    viewing = bs.Viewings.getStoredViewingByID(viewingID)
+
+    seatNames = viewing.getSeatNames()
+    reservedNames = viewing.getReservedSeats()
+    unavailableNames = viewing.getUnavailableSeats()
+    seatsPerRow = viewing.getRowLength()
+    viewingName = viewing.getName()
+
+    return render_template('viewings/editViewing.html', viewingName=viewingName, seatNames=seatNames,
+                           reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow)
+
+
 # Shows the upcoming viewings to the user and allows selection
 @pageRoutes.route('/booking/new')
 def viewingsPage():

@@ -88,7 +88,7 @@ const renderViewings = (viewings) => {
               </div>
               <div class="drawer-side z-50">
                 <label for="newViewingDrawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                  <div class="w-11/12 sm:w-11/12 lg:w-11/12 bg-base-100 p-12">
+                  <div class="w-11/12 sm:w-10/12 lg:w-9/12 bg-base-100 p-3 sm:p-12">
                 <form action="/api/viewings/submit" method="POST" class="flex flex-col w-full">
                     <div class="flex flex-col gap-5 w-full p-5 bg-base-300 card sm:p-10">
                         <label for="name" class="flex flex-row gap-2">
@@ -192,12 +192,18 @@ const renderViewings = (viewings) => {
                     </svg>
     
                     </button>
-                    <button onclick="" class="btn grow no-animation btn-primary text-white text-lg" name="Select">Edit</button>
+                    
+                    
+                    <button onclick="window.location.href='/viewings/edit/${viewing.viewingID}'" class="btn grow no-animation btn-primary text-white text-lg" name="Select">Edit</button>
     
                 </div>
                 </div>
             </div>
             `;
+
+
+
+
         } else {
             viewingsContainer.innerHTML += `
             <div class="viewingCard card w-full bg-base-300 h-80" id="${viewing.viewingID}">
@@ -221,6 +227,7 @@ const renderViewings = (viewings) => {
         }
     });
 };
+
 
 document.addEventListener('keydown', (event) => {
     if (event.metaKey && event.key === 'k' || event.ctrlKey && event.key === 'k') {
