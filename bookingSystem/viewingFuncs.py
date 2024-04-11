@@ -296,9 +296,28 @@ class Viewing:
         self.reservedSeats = self.Database.getReservedSeats(self.viewingID)
         return self.reservedSeats
 
-    def getUnavailableSeats(self) -> int:
+    def getUnavailableSeats(self) -> list:
         self.unavailableSeats = self.Database.getUnavailableSeats(self.viewingID)
         return self.unavailableSeats
+
+    def setUnavailableSeats(self, seats: list) -> bool:
+        alreadyUnavailableSeats = self.getUnavailableSeats()
+        addedSeats = []
+        removedSeats = []
+        for seat in seats:
+            if seat not in alreadyUnavailableSeats:
+                addedSeats.append(seat)
+
+        for seat in alreadyUnavailableSeats:
+            if seat not in seats:
+                removedSeats.append(seat)
+
+        if addedSeats:
+            self.Database.addUnavailableSeats(self.viewingID, addedSeats)
+        if removedSeats:
+            self.Database.removeUnavailableSeats(self.viewingID, removedSeats)
+
+        return True
     
     def getTicketInfo(self) -> list:
         ticketInfo = self.Database.getTicketsByViewingID(self.viewingID)

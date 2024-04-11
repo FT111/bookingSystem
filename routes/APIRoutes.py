@@ -51,6 +51,18 @@ def getSpecificStats(viewingID):
     return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
 
 
+@apiRoutes.route('/viewings/editAvailableSeats/<int:viewingID>', methods=['POST'])
+def editAvailableSeats(viewingID):
+    viewing = bs.Viewings.getStoredViewingByID(viewingID)
+    print(request.json.get('unavailableSeats'))
+
+    # Ensures the process is completed
+    if viewing.setUnavailableSeats(request.json.get('unavailableSeats')):
+        return Response('{"status": "200"}', status=200, mimetype='application/json')
+    else:
+        return Response('{"status": "400"}', status=400, mimetype='application/json')
+
+
 @apiRoutes.route('/viewings/submit', methods=['POST'])
 def newViewing():
     # Validation

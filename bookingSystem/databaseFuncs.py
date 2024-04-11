@@ -102,6 +102,24 @@ class Database:
         unavailableSeats += self.cursor.execute('SELECT ViewingID FROM unavailableSeats;')
         return unavailableSeats
 
+    def addUnavailableSeats(self, viewingID, seats: list) -> None:
+        baseQuery = 'INSERT INTO unavailableSeats '
+        wildCards = []
+        for index, seat in enumerate(seats):
+            wildCards += [seat, viewingID]
+            baseQuery += f'SELECT ?, ? {"UNION ALL" if index != len(seats)-1 else ';'} '
+
+        print(baseQuery, wildCards)
+
+        self.cursor.execute(baseQuery, (*wildCards,))
+
+    def removeUnavailableSeats(self, viewingID, seats: list) -> None:
+        seatsPlaceholders = ",".join("?" * len(seats))
+        baseQuery = f'DELETE FROM unavailableSeats WHERE ViewingID = ? AND Seat IN ({seatsPlaceholders})'
+        wildCards = [viewingID] + seats
+
+        self.cursor.execute(baseQuery, wildCards)
+
     def getTicketsByViewingID(self, viewingID) -> list:
         return self.cursor.execute('SELECT * FROM Tickets WHERE ViewingID = ?;', (viewingID,))
 

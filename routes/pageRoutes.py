@@ -32,7 +32,7 @@ def editViewing(viewingID):
     seatsPerRow = viewing.getRowLength()
     viewingName = viewing.getName()
 
-    return render_template('viewings/editViewing.html', viewingName=viewingName, seatNames=seatNames,
+    return render_template('viewings/editViewing.html', viewingID=viewingID, viewingName=viewingName, seatNames=seatNames,
                            reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow)
 
 
