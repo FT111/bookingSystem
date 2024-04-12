@@ -3,7 +3,7 @@ from datetime import datetime, time
 import time
 
 from functools import wraps
-from time import time
+
 
 
 def getTiming(f):
@@ -317,7 +317,6 @@ class Viewing:
         self.unavailableSeats = self.Database.getUnavailableSeats(self.viewingID)
         return self.unavailableSeats
 
-    @getTiming
     def setUnavailableSeats(self, seats: list) -> bool:
         alreadyUnavailableSeats = self.getUnavailableSeats()
         addedSeats = []
@@ -335,6 +334,11 @@ class Viewing:
         if removedSeats:
             self.Database.removeUnavailableSeats(self.viewingID, removedSeats)
 
+        self.removeTickets(seats)
+
+        return True
+
+    def removeTickets(self, seats):
         # Remove tickets for reserved seats that are made unavailable
         ticketsForViewing = self.Database.getTicketsByViewingID(self.viewingID, 'CustomerID', 'Seat')
 
@@ -345,8 +349,6 @@ class Viewing:
         for seat in seats:
             if ticketSeats.get(seat) is not None:
                 self.Database.removeTicket(self.viewingID, ticketSeats[seat])
-
-        return True
 
     def getTicketInfo(self) -> list:
         ticketInfo = self.Database.getTicketsByViewingID(self.viewingID)

@@ -94,7 +94,7 @@ active
             <div class="stat">
                 <div class="stat-title">Tickets Remaining</div>
                 <div class="stat-value viewingStat" id="remainingSeats">{{ stats['remainingSeats'] }}</div>
-                <div class="stat-desc text-wrap viewingStat" id="remainingSeatsSub">{{ stats['percentageSold'] }}% of seats sold</div>
+                <div class="stat-desc text-wrap viewingStat" id="remainingSeatsSub"><strong>{{ stats['percentageSold'] }}%</strong> of seats sold</div>
             </div>
 
         </div>
@@ -103,7 +103,7 @@ active
             <div class="stat">
                 <div class="stat-title">Revenue Per Viewing</div>
                 <div class="stat-value viewingStat" id="revenuePerViewing">{{ "£%.2f"|format(stats['meanRevenuePerViewing']) }}</div>
-                <div class="stat-desc viewingStat" id="revenuePerViewingSub">{{ stats['percentageToMean']  }}</div>
+                <div class="stat-desc viewingStat" id="revenuePerViewingSub">{{ stats['percentageToMean'] | safe }}</div>
             </div>
             <div class="stat">
                 <div class="stat-title">Total Revenue</div>
@@ -119,12 +119,12 @@ active
             <div class="stat">
                 <div class="stat-title">Most popular viewing</div>
                 <div class="stat-value viewingStat text-wrap text-2xl" id="mostPopularViewing">{{ stats['mostPopularViewing']['viewingName'] }}</div>
-                <div class="stat-desc viewingStat" id="mostPopularViewingSub">with {{ stats['mostPopularViewing']['tickets'] }} tickets sold</div>
+                <div class="stat-desc viewingStat" id="mostPopularViewingSub">with <strong>{{ stats['mostPopularViewing']['tickets'] }}</strong> tickets sold</div>
             </div>
             <div class="stat">
                 <div class="stat-title">Least popular viewing</div>
                 <div class="stat-value viewingStat text-wrap text-xl" id="leastPopularViewing">{{ stats['mostRemaining']['viewingName'] }}</div>
-                <div class="stat-desc viewingStat" id="leastPopularViewingSub">with {{ stats['mostRemaining']['remainingSeats']}} tickets unsold</div>
+                <div class="stat-desc viewingStat" id="leastPopularViewingSub">with <strong>{{ stats['mostRemaining']['remainingSeats']}}</strong> tickets unsold</div>
             </div>
         </div>
     </div>
