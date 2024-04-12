@@ -231,3 +231,9 @@ const renderCustomers = (customers) => {
 const resetCustomers = () => {
     renderCustomers(customers);
 }
+
+const forceCustomerView = () => {
+    let usersRadio = document.getElementById('viewUsers');
+    usersRadio.checked = true;
+    viewUsers();
+}

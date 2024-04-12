@@ -5,13 +5,12 @@ import time
 from functools import wraps
 
 
-
 def getTiming(f):
     @wraps(f)
     def wrap(*args, **kw):
-        ts = time()
+        ts = time.time()
         result = f(*args, **kw)
-        te = time()
+        te = time.time()
         print('func:%r args:[%r, %r] took: %2.4f sec' % \
               (f.__name__, args, kw, te - ts))
         return result
@@ -131,12 +130,8 @@ class Viewings:
         viewing.delete()
         self.allViewings.pop(viewingID)
 
+    @getTiming
     def getStats(self, viewingID: int = None, timePeriod: str = None) -> dict:
-        #
-        # if self.stats:
-        #     if self.stats['lastUpdated'] < (time.time() + 5):
-        #         return self.stats
-        #
 
         allViewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingName', 'viewingDate',
                                                           'viewingRows', 'seatsPerRow'])
@@ -144,25 +139,9 @@ class Viewings:
         upcomingViewingIDs = [viewingID[0] for viewingID in self.Database.getUpcomingViewingIDs()]
         ticketTypes = self.ticketTypes.getTypes()
 
-        overallRevenue = 0
-        for ticket in allTickets:
-            try:
-                price = [ticketType['Price'] for ticketType in ticketTypes if ticketType['ID'] == int(ticket[2])][0]
-            except IndexError:
-                price = 0
-            overallRevenue += price
+        overallRevenue = self.getOverallRevenue(allTickets, ticketTypes)
 
-        # Filters the viewings based on the selected time period
-        if timePeriod == 'upcoming':
-            filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] in
-                                   upcomingViewingIDs]
-        elif timePeriod == 'past':
-            filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] not in
-                                   upcomingViewingIDs]
-        elif viewingID is not None:
-            filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] == viewingID]
-        else:
-            filteredViewingInfo = allViewingInfo
+        filteredViewingInfo = self.filterViewingsByTimePeriod(allViewingInfo, timePeriod, upcomingViewingIDs, viewingID)
 
         # Filters the tickets and viewingIDs based on the selected viewings
         viewingIDs = [viewing['ViewingID'] for viewing in filteredViewingInfo]
@@ -177,8 +156,66 @@ class Viewings:
 
         # Calculating the statistics
 
-        self.stats['totalRevenue'] = 0
+        self.getRevenueForTickets(selectedTickets, statsPerViewing, ticketTypes)
 
+        # Adding basic statistics to the dictionary
+        self.stats['lastUpdated'] = time.time()
+        self.stats['totalViewings'] = len(filteredViewingInfo)
+        self.stats['totalTickets'] = len(selectedTickets)
+        self.stats['statsPerViewing'] = list(statsPerViewing.values())
+
+        self.stats['remainingSeats'] = 0
+        self.stats['mostRemaining'] = {'viewingName': None, 'remainingSeats': 0}
+
+        self.getRemainingSeatsForViewings(filteredViewingInfo, seatsPerViewing, statsPerViewing)
+
+        self.stats['meanRevenuePerViewing'] = round(self.stats['totalRevenue'] / self.stats['totalViewings'], 2)
+
+        self.stats['mostPopularViewing'] = {'viewingName': None, 'tickets': 0}
+
+        self.getMostSoldViewingForViewings(statsPerViewing)
+
+        # Calculates the percentage of tickets sold
+        self.stats['percentageSold'] = round(
+            (self.stats['totalTickets'] / (self.stats['remainingSeats'] + self.stats['totalTickets'])) * 100, 2)
+
+        # Calculates the mean revenue for all viewings
+        meanRevenueForAllViewings = round(overallRevenue / len(allViewingInfo), 2)
+
+        self.getPercentageTicketsSoldToMeanSold(meanRevenueForAllViewings)
+
+        return self.stats
+
+    def getPercentageTicketsSoldToMeanSold(self, meanRevenueForAllViewings):
+        # Calculates the percentage of revenue for the selected viewings compared to all viewings
+        self.stats['percentageToMean'] = (self.stats['meanRevenuePerViewing'] / meanRevenueForAllViewings) * 100
+        if self.stats['meanRevenuePerViewing'] < meanRevenueForAllViewings:
+            self.stats[
+                'percentageToMean'] = f"<strong>{round(100 - self.stats['percentageToMean'], 2)}%</strong> below mean revenue"
+        elif self.stats['meanRevenuePerViewing'] == meanRevenueForAllViewings:
+            self.stats['percentageToMean'] = "Equal to mean revenue"
+        else:
+            self.stats[
+                'percentageToMean'] = f"<strong>{round(self.stats['percentageToMean'] - 100, 2)}%</strong> above mean revenue"
+
+    def getMostSoldViewingForViewings(self, statsPerViewing):
+        # Finds the viewing with the most tickets sold
+        for viewing in statsPerViewing.values():
+            if viewing['tickets'] > self.stats['mostPopularViewing']['tickets']:
+                self.stats['mostPopularViewing']['viewingName'] = viewing['viewingName']
+                self.stats['mostPopularViewing']['tickets'] = viewing['tickets']
+
+    def getRemainingSeatsForViewings(self, filteredViewingInfo, seatsPerViewing, statsPerViewing):
+        # Calculates the remaining seats for each viewing
+        for viewing in filteredViewingInfo:
+            seatsRemaining = seatsPerViewing[viewing['ViewingID']] - statsPerViewing[viewing['ViewingID']]['tickets']
+            self.stats['remainingSeats'] += seatsRemaining
+            if seatsRemaining > self.stats['mostRemaining']['remainingSeats']:
+                self.stats['mostRemaining']['viewingName'] = viewing['viewingName']
+                self.stats['mostRemaining']['remainingSeats'] = seatsRemaining
+
+    def getRevenueForTickets(self, selectedTickets, statsPerViewing, ticketTypes):
+        self.stats['totalRevenue'] = 0
         # Calculates the revenue for each viewing, and the total
         for ticket in selectedTickets:
             try:
@@ -193,54 +230,31 @@ class Viewings:
             if int(ticket[4]) in statsPerViewing:
                 statsPerViewing[int(ticket[4])]['tickets'] += 1
 
-        # Adding basic statistics to the dictionary
-        self.stats['lastUpdated'] = time.time()
-        self.stats['totalViewings'] = len(filteredViewingInfo)
-        self.stats['totalTickets'] = len(selectedTickets)
-        self.stats['statsPerViewing'] = list(statsPerViewing.values())
-
-        self.stats['remainingSeats'] = 0
-        self.stats['mostRemaining'] = {'viewingName': None, 'remainingSeats': 0}
-
-        # Calculates the remaining seats for each viewing
-        for viewing in filteredViewingInfo:
-            seatsRemaining = seatsPerViewing[viewing['ViewingID']] - statsPerViewing[viewing['ViewingID']]['tickets']
-            self.stats['remainingSeats'] += seatsRemaining
-            if seatsRemaining > self.stats['mostRemaining']['remainingSeats']:
-                self.stats['mostRemaining']['viewingName'] = viewing['viewingName']
-                self.stats['mostRemaining']['remainingSeats'] = seatsRemaining
-
-        self.stats['meanRevenuePerViewing'] = round(self.stats['totalRevenue'] / self.stats['totalViewings'], 2)
-
-        self.stats['mostPopularViewing'] = {'viewingName': None, 'tickets': 0}
-
-        # Finds the viewing with the most tickets sold
-        for viewing in statsPerViewing.values():
-            if viewing['tickets'] > self.stats['mostPopularViewing']['tickets']:
-                self.stats['mostPopularViewing']['viewingName'] = viewing['viewingName']
-                self.stats['mostPopularViewing']['tickets'] = viewing['tickets']
-
-        # Calculates the percentage of tickets sold
-        self.stats['percentageSold'] = round(
-            (self.stats['totalTickets'] / (self.stats['remainingSeats'] + self.stats['totalTickets'])) * 100, 2)
-
-        # Calculates the mean revenue for all viewings
-        meanRevenueForAllViewings = round(overallRevenue / len(allViewingInfo), 2)
-
-        # Calculates the percentage of revenue for the selected viewings compared to all viewings
-        self.stats['percentageToMean'] = (self.stats['meanRevenuePerViewing'] / meanRevenueForAllViewings) * 100
-        if self.stats['meanRevenuePerViewing'] < meanRevenueForAllViewings:
-            self.stats[
-                'percentageToMean'] = f"<strong>{round(100 - self.stats['percentageToMean'], 2)}%</strong> below mean revenue"
-        elif self.stats['meanRevenuePerViewing'] == meanRevenueForAllViewings:
-            self.stats['percentageToMean'] = "Equal to mean revenue"
+    @staticmethod
+    def filterViewingsByTimePeriod(allViewingInfo, timePeriod, upcomingViewingIDs, viewingID):
+        # Filters the viewings based on the selected time period
+        if timePeriod == 'upcoming':
+            filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] in
+                                   upcomingViewingIDs]
+        elif timePeriod == 'past':
+            filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] not in
+                                   upcomingViewingIDs]
+        elif viewingID is not None:
+            filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] == viewingID]
         else:
-            self.stats[
-                'percentageToMean'] = f"<strong>{round(self.stats['percentageToMean'] - 100, 2)}%</strong> above mean revenue"
+            filteredViewingInfo = allViewingInfo
+        return filteredViewingInfo
 
-        print(self.stats)
-
-        return self.stats
+    @staticmethod
+    def getOverallRevenue(allTickets, ticketTypes):
+        overallRevenue = 0
+        for ticket in allTickets:
+            try:
+                price = [ticketType['Price'] for ticketType in ticketTypes if ticketType['ID'] == int(ticket[2])][0]
+            except IndexError:
+                price = 0
+            overallRevenue += price
+        return overallRevenue
 
 
 class Viewing:
@@ -264,9 +278,6 @@ class Viewing:
         self.remainingSeatCount = remainingSeatCount
         self.reservedSeats = None
         self.unavailableSeats = None
-
-        # if self.inDB and self.remainingSeatCount == None:
-        # self.getRemainingSeats()
 
         # Generate seat names - 'A1', 'A2', 'A3', etc.
         for SeatRow in range(1, rowCount + 1):
