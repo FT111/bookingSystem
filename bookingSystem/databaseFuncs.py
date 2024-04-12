@@ -120,7 +120,12 @@ class Database:
 
         self.cursor.execute(baseQuery, wildCards)
 
-    def getTicketsByViewingID(self, viewingID) -> list:
+    def getTicketsByViewingID(self, viewingID, *columns) -> iter:
+        if columns:
+            sqlColumns = ', '.join(columns)
+            tickets = self.cursor.execute(f'SELECT {sqlColumns} FROM Tickets WHERE ViewingID = ?;', (viewingID,))
+            return self.zipColumnsToDict(columns, tickets)
+
         return self.cursor.execute('SELECT * FROM Tickets WHERE ViewingID = ?;', (viewingID,))
 
     def getTicketByID(self, ticketID) -> list:
@@ -129,6 +134,9 @@ class Database:
     def newTicket(self, ticket: object, customer: object, viewing: object) -> None:
         self.cursor.execute('INSERT INTO Tickets VALUES (?, ?, ?, ?, ?);', (
             ticket.getID(), ticket.getSeatLocation(), ticket.getType(), customer.getID(), viewing.getID(),))
+
+    def removeTicket(self, viewingID, ticketID: int) -> None:
+        self.cursor.execute('DELETE FROM Tickets WHERE ViewingID = ? AND CustomerID = ?;', (viewingID, ticketID,))
 
     def getAllTickets(self) -> list:
         return self.cursor.execute('SELECT * FROM Tickets;')
@@ -172,7 +180,7 @@ class Database:
                                                                                    viewing.getRowLength(),))
 
     @staticmethod
-    def zipColumnsToDict(columns, response):
+    def zipColumnsToDict(columns, response) -> list:
         for index, record in enumerate(response):
             response[index] = dict(zip(columns, record))
         return response

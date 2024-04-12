@@ -2,6 +2,22 @@ import uuid
 from datetime import datetime, time
 import time
 
+from functools import wraps
+from time import time
+
+
+def getTiming(f):
+    @wraps(f)
+    def wrap(*args, **kw):
+        ts = time()
+        result = f(*args, **kw)
+        te = time()
+        print('func:%r args:[%r, %r] took: %2.4f sec' % \
+              (f.__name__, args, kw, te - ts))
+        return result
+
+    return wrap
+
 
 class Viewings:
     ticketTypes = None
@@ -38,7 +54,8 @@ class Viewings:
 
         return self.allViewings
 
-    def newViewing(self, Name, Date: str, Time:str, rowCount, seatsPerRow, BannerURL=None, Description: str = None) -> object:
+    def newViewing(self, Name, Date: str, Time: str, rowCount, seatsPerRow, BannerURL=None,
+                   Description: str = None) -> object:
         try:
             Date = datetime.strptime(Date, '%Y-%m-%d')
             Time = datetime.strptime(Time, '%H:%M')
@@ -300,6 +317,7 @@ class Viewing:
         self.unavailableSeats = self.Database.getUnavailableSeats(self.viewingID)
         return self.unavailableSeats
 
+    @getTiming
     def setUnavailableSeats(self, seats: list) -> bool:
         alreadyUnavailableSeats = self.getUnavailableSeats()
         addedSeats = []
@@ -317,12 +335,24 @@ class Viewing:
         if removedSeats:
             self.Database.removeUnavailableSeats(self.viewingID, removedSeats)
 
+        # Remove tickets for reserved seats that are made unavailable
+        ticketsForViewing = self.Database.getTicketsByViewingID(self.viewingID, 'CustomerID', 'Seat')
+
+        # Compiles a list of all seat locations that are reserved for the viewing
+        ticketSeats = {ticket['Seat']: ticket['CustomerID'] for ticket in ticketsForViewing}
+
+        # Removes the ticket for the seat if it is made unavailable
+        for seat in seats:
+            if ticketSeats.get(seat) is not None:
+                self.Database.removeTicket(self.viewingID, ticketSeats[seat])
+
         return True
-    
+
     def getTicketInfo(self) -> list:
         ticketInfo = self.Database.getTicketsByViewingID(self.viewingID)
 
-        formattedTickets = [{'TicketID': ticket[0], 'Seat': ticket[1], 'Type': ticket[2], 'CustomerID': ticket[3] } for ticket in ticketInfo]
+        formattedTickets = [{'TicketID': ticket[0], 'Seat': ticket[1], 'Type': ticket[2], 'CustomerID': ticket[3]} for
+                            ticket in ticketInfo]
 
         return formattedTickets
 
