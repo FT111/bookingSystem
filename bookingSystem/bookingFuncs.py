@@ -12,9 +12,10 @@ class TicketTypes:
     Retrieves the ticket types from the database.
     """
 
-    def __init__(self, Database) -> None:
+    def __init__(self, Database, Viewings) -> None:
         self.allTypes = list()
         self.Database = Database
+        self.Viewings = Viewings
 
     def getTypes(self) -> list:
         """
@@ -25,11 +26,19 @@ class TicketTypes:
         """
         typesTuple = self.Database.getTicketTypes()
         self.allTypes = []
+
         for type in typesTuple:
             self.allTypes.append({'ID': type[0],
                                   'Name': type[1],
                                   'Price': type[2]})
         return self.allTypes
+
+    def getTypesForViewing(self, viewingID: str) -> list:
+        self.getTypes()
+
+        ticketsSold = len(self.Database.getReservedSeats(viewingID))
+        timeTillViewing = self.Viewings.getViewingByID(viewingID).getTimeTillViewing()
+
 
     def getTicketPrice(self, ticket: object) -> float:
         """
@@ -278,20 +287,26 @@ class Booking:
 
         print('Stage 6')
 
-        # self.confirmBooking()
+        #self.confirmBooking()
         return True
 
     def confirmBooking(self) -> None:
 
-        # Send Email
-        msg = MIMEMultipart()
         msg['From'] = ''
         msg['To'] = self.Customer.getEmail()
         msg['Subject'] = 'Booking Confirmation'
 
+        viewing = vars(self.Viewing)
+
         # Renders the email body from Jinja template
-        emailBody = render_template('confEmailBody.html', booking=self)
-        msg.attach(MIMEText(emailBody, 'html'))
+        emailBody = render_template('./emailFormats/bookingConfirmed.html', booking=self, viewing=viewing)
+        msg = MIMEText(emailBody, 'html')
+
+        # Sends the email
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login('', '')
+            server.sendmail('', self.Customer.getEmail(), msg.as_string())
 
 
 class Bookings:
