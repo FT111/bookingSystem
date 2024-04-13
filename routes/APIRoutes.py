@@ -271,7 +271,8 @@ def submitBooking():
 
 @apiRoutes.route('/testEmail')
 def testEmail():
-    return render_template('./confEmailBody.html', booking=None)
+    viewing = bs.Viewings.getAllViewingsAsList()[0]
+    return render_template('./emailFormats/bookingConfirmed.html', viewing=viewing)
 
 
 @apiRoutes.route('/testEndpoint')
