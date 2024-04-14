@@ -88,7 +88,7 @@ const renderViewings = (viewings) => {
               </div>
               <div class="drawer-side z-50">
                 <label for="newViewingDrawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                  <div class="w-11/12 sm:w-10/12 lg:w-9/12 bg-base-100 p-3 sm:p-12">
+                  <div class="w-11/12 sm:w-1/2 lg:w-1/2 bg-base-100 p-1 sm:p-12">
                 <form action="/api/viewings/submit" method="POST" class="flex flex-col w-full">
                     <div class="flex flex-col gap-5 w-full p-5 bg-base-300 card sm:p-10">
                         <label for="name" class="flex flex-row gap-2">
