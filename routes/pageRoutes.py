@@ -54,7 +54,7 @@ def newBookingPage():
     except AttributeError:
         return redirect(url_for('pageRoutes.viewingsPage'))
 
-    ticketTypes = bs.TicketTypes.getTypes()
+    ticketTypes = bs.TicketTypes.getTypesForViewing(currentViewing.getID())
     ticketCounts = currentBooking.getTicketCountPerType()
     ticketSum = sum(ticketCounts.values())
     priceSum = currentBooking.getPriceSum()
@@ -109,7 +109,7 @@ def bookingSummary():
     if len(seats) != len(tickets):
         return redirect(url_for('pageRoutes.chooseSeatsPage'))
 
-    ticketTypes = bs.TicketTypes.getTypes()
+    ticketTypes = bs.TicketTypes.getTypesForViewing(currentViewing.getID())
     ticketCounts = currentBooking.getTicketCountPerType()
     print(ticketCounts)
     ticketSum = sum(ticketCounts.values())

@@ -314,6 +314,11 @@ class Viewing:
     def getSeatNames(self) -> list:
         return self.seatNames
 
+    def getTimeTillViewing(self) -> float:
+        viewingTime = datetime.combine(self.Date, self.Time)
+        timeDifference = viewingTime - datetime.now()
+        return timeDifference.total_seconds()
+
     def getRemainingSeats(self) -> int:
         self.remainingSeatCount = self.seatsPerRow * self.rowCount
         self.remainingSeatCount -= len(self.getReservedSeats())

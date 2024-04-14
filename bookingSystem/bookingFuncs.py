@@ -3,6 +3,7 @@ from email.mime.text import MIMEText
 import qrcode
 import sqlite3
 import uuid
+import math
 from flask import render_template
 
 
@@ -37,8 +38,19 @@ class TicketTypes:
         self.getTypes()
 
         ticketsSold = len(self.Database.getReservedSeats(viewingID))
-        timeTillViewing = self.Viewings.getViewingByID(viewingID).getTimeTillViewing()
+        timeTillViewing = self.Viewings.getStoredViewingByID(viewingID).getTimeTillViewing()
 
+        for ticketType in self.allTypes:
+            ticketType['Price'] = self.calculatePriceForTicket(ticketType['Price'], ticketsSold, timeTillViewing)
+
+        return self.allTypes
+
+    @staticmethod
+    def calculatePriceForTicket(ticketPrice, ticketsSold, timeTillViewing):
+        if timeTillViewing - 604800 < 0 and ticketPrice != 0:
+            ticketPrice += (604800-timeTillViewing)*0.00003
+
+        return ticketPrice
 
     def getTicketPrice(self, ticket: object) -> float:
         """
