@@ -47,8 +47,11 @@ class TicketTypes:
 
     @staticmethod
     def calculatePriceForTicket(ticketPrice, ticketsSold, timeTillViewing):
-        if timeTillViewing - 604800 < 0 and ticketPrice != 0:
-            ticketPrice += (604800-timeTillViewing)*0.00003
+        if ticketPrice != 0:
+            if timeTillViewing - 604800 < 0:
+                ticketPrice += (604800-timeTillViewing)*0.00003
+            if ticketsSold > 0:
+                ticketPrice += 0.3 * math.log(ticketsSold)
 
         return ticketPrice
 
@@ -214,7 +217,7 @@ class Booking:
 
     def getTicketCountPerType(self) -> dict:
         ticketCounts = dict()
-        ticketTypes = self.TicketTypes.getTypes()
+        ticketTypes = self.TicketTypes.getTypesForViewing(self.Viewing.getID())
 
         # Fill the dictionary with ticket types
         for type in ticketTypes:
@@ -227,7 +230,7 @@ class Booking:
         return ticketCounts
 
     def getPriceSum(self) -> float:
-        ticketTypes = self.TicketTypes.getTypes()
+        ticketTypes = self.TicketTypes.getTypesForViewing(self.Viewing.getID())
         priceSum = 0
 
         for ticket in self.Tickets:

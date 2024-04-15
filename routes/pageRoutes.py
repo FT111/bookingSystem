@@ -111,7 +111,6 @@ def bookingSummary():
 
     ticketTypes = bs.TicketTypes.getTypesForViewing(currentViewing.getID())
     ticketCounts = currentBooking.getTicketCountPerType()
-    print(ticketCounts)
     ticketSum = sum(ticketCounts.values())
     priceSum = currentBooking.getPriceSum()
     tickets = currentBooking.getTickets()

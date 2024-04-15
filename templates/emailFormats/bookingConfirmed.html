@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Booking Confirmed Email</title>
     <style>
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
         html {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -12,14 +18,14 @@
         }
 
         .container {
-            width: 50%;
+            width: 100%;
             margin: 100px;
             text-align: center;
             justify-content: center;
             align-items: center;
             padding: 20px;
             border-radius: 10px;
-            background-color: #f9f9f9;
+            background-color: #d9dee8;
         }>
         .card {
             width: 100%;
@@ -29,11 +35,20 @@
             align-items: center;
             padding: 20px;
             border-radius: 10px;
-            background-color: #f8f8c9;
         }
+         li {
+            list-style-type: none;
+            padding: 10px;
+             background-color: #e6e9ef;
+             border-radius: 5px;
+             margin: 10px;
+             font-weight: bold;
+
+         }
     </style>
 </head>
 <body>
+<div class="content">
 <div class="container">
 
     <h1>Booking Confirmed.</h1>
@@ -46,8 +61,14 @@
             <li>Viewing Date: {{ viewing.dateFormatted }}</li>
             <li>Viewing Time: {{ viewing.Time }}</li>
         </ul>
-    </div>
 
+        <div class="card">
+            <h3>Booking Details</h3>
+{#            <ul>Total Cost: {{ booking. }}</ul>#}
+        </div>
+
+    </div>
+</div>
 </div>
 
 
