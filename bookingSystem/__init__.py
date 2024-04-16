@@ -7,7 +7,7 @@ from .databaseFuncs import DatabaseConnection, Database
 from .customerFuncs import Customer, Customers
 from .viewingFuncs import Viewing, Viewings
 from .bookingFuncs import Ticket, Booking, Bookings, TicketTypes
-
+from .emailFuncs import EmailFuncs
 
 class BookingSystem:
     """
@@ -18,7 +18,7 @@ class BookingSystem:
            :param dbPath: The path to the SQLite database file.
     """
 
-    def __init__(self, dbPath: str) -> None:
+    def __init__(self, dbPath: str, emailAddress: str, emailAuth: str, emailProvider: str, emailPort: int) -> None:
         self.Ticket = Ticket
         self.Booking = Booking
         self.Viewing = Viewing
@@ -31,6 +31,7 @@ class BookingSystem:
         self.Bookings = Bookings(self.Database)  # Booking management container
         self.Viewings = Viewings(self.Database)  # Viewing management container
         self.Customers = Customers(self.Database)  # Customer management container
+        self.EmailFuncs = EmailFuncs(emailAddress, emailAuth, emailProvider, emailPort)  # Email functions
         self.TicketTypes = TicketTypes(self.Database, self.Viewings)  # Ticket types
 
         Booking.setTicketTypes(self.TicketTypes)

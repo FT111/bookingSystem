@@ -149,6 +149,9 @@ class Database:
     def getCustomerInfoByID(self, ID: int) -> list:
         return self.cursor.execute('SELECT * FROM Customers WHERE ID = ?;', (ID,))
 
+    def getAllCustomers(self) -> list:
+        return self.cursor.execute('SELECT * FROM Customers;')
+
     def getAllCustomerInfo(self, columns: list) -> list:
         for column in columns:
             if column not in self.acceptedCustomerColumns:

@@ -7,8 +7,7 @@
         .content {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
         html {
             font-family: Arial, sans-serif;
@@ -19,34 +18,48 @@
 
         .container {
             width: 100%;
-            margin: 100px;
+            margin: 75px;
             text-align: center;
             justify-content: center;
             align-items: center;
             padding: 20px;
             border-radius: 10px;
             background-color: #d9dee8;
-        }>
-        .card {
-            width: 100%;
-            margin: 30px;
-            text-align: center;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            border-radius: 10px;
         }
          li {
             list-style-type: none;
             padding: 10px;
              background-color: #e6e9ef;
              border-radius: 5px;
-             margin: 10px;
+             margin-top: 10px;
+             font-weight: normal;
+         }
+         ul {
+             padding: 0;
+             margin: 0;
+         }
+         h1{
+             font-size: 40px;
              font-weight: bold;
-
+         }
+         h3 {
+             margin: 25px 0 0;
+         }
+         .seat {
+            display: inline-block;
+            padding: 2px;
+            padding-inline: 15px;
+            background-color: oklch(0.45229 0.035214 264.131);
+            color: white;
+            border-radius: 6.4px;
+            margin: 2px;
+             font-weight: bold;
          }
     </style>
 </head>
+
+
+
 <body>
 <div class="content">
 <div class="container">
@@ -54,23 +67,44 @@
     <h1>Booking Confirmed.</h1>
     <h2>Thank you for booking with us.</h2>
 
-    <div class="card">
-        <h3>Viewing Details</h3>
+    <div style="padding:15px;">
+        <h3 style="text-align: left;font-size: 25px;">Viewing Details</h3>
         <ul>
-            <li>Viewing Name: {{ viewing.Name }}</li>
-            <li>Viewing Date: {{ viewing.dateFormatted }}</li>
-            <li>Viewing Time: {{ viewing.Time }}</li>
+            <li>Viewing Name: <strong>{{ viewing.Name }}</strong></li>
+            <li>Viewing Date: <strong>{{ viewing.dateFormatted }}</strong></li>
+            <li>Viewing Time: <strong>{{ viewing.Time }}</strong></li>
         </ul>
 
         <div class="card">
-            <h3>Booking Details</h3>
-{#            <ul>Total Cost: {{ booking. }}</ul>#}
+            <h3 style="text-align: left;font-size: 25px;">Booking Details</h3>
+            <ul>
+                <li>Booked by: <strong>{{ customer['Name'] }}</strong></li>
+                <li>Total Cost: <strong>{{  "£%.2f"|format(priceSum) }}</strong></li>
+                <li>Seats booked: {% for seat in seats %}<div class="seat">{{ seat }}</div> {% endfor %}</li>
+            </ul>
         </div>
 
     </div>
 </div>
 </div>
 
+<div class="content">
+<div class="container" style="margin-top: 0;">
+
+    <div style="padding:15px;">
+
+        <div class="card">
+            <h3 style="text-align: left;font-size: 25px;">Ticket Details</h3>
+            <ul>
+                <li>Booked by: <strong>{{ customer['Name'] }}</strong></li>
+                <li>Total Cost: <strong>{{  "£%.2f"|format(priceSum) }}</strong></li>
+                <li>Seats booked: {% for seat in seats %}<div class="seat">{{ seat }}</div> {% endfor %}</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+</div>
 
 </body>
 </html>

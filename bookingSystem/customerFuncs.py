@@ -65,10 +65,14 @@ class Customers:
             args.insert(args.index('firstName') + 1, 'Surname')
 
         info = self.Database.getAllCustomerInfo(args)
-        print(info)
-
 
         return info
+
+    def getCustomerByID(self, customerID: int) -> object:
+        customer = Customer(id=customerID)
+        self.allCustomers[customerID] = customer
+
+        return customer
 
     def addCustomer(self, customer: object) -> None:
         self.allCustomers[customer.id] = customer

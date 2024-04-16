@@ -271,8 +271,18 @@ def submitBooking():
 
 @apiRoutes.route('/testEmail')
 def testEmail():
+    sessionID = getSession()
+
     viewing = bs.Viewings.getAllViewingsAsList()[0]
-    return render_template('./emailFormats/bookingConfirmed.html', viewing=viewing)
+    bookingObj = bs.Bookings.getBookingByID(sessionID)
+    priceSum = bookingObj.getPriceSum()
+    customer = bs.Customers.getCustomerByID(5)
+    customer.Name = customer.getName()
+    booking = vars(bookingObj)
+    seats = bookingObj.getSelectedSeats()
+
+    return render_template('./emailFormats/bookingConfirmed.html', viewing=viewing, seats=seats,
+                           customer=customer, booking=booking, priceSum=priceSum)
 
 
 @apiRoutes.route('/testEndpoint')

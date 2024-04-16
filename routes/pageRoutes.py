@@ -120,7 +120,6 @@ def bookingSummary():
                            ticketTypes=ticketTypes)
 
 
-
 @pageRoutes.before_request
 def handle_preflight():
     if request.method == "OPTIONS":
