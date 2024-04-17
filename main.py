@@ -1,7 +1,5 @@
 from flask import Flask
 import secrets
-from flask_cors import CORS
-import socket
 
 from routes.pageRoutes import pageRoutes
 from routes.APIRoutes import apiRoutes
@@ -15,7 +13,6 @@ class BookingSystemWebApp:
 
     def __init__(self):
         self.app = Flask(__name__)
-        CORS(self.app)
 
         # Used to sign cookies
         self.app.secret_key = secrets.token_urlsafe(16)

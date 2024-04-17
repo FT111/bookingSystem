@@ -1,7 +1,5 @@
 flask
-requests
 qrcode
-flask_cors
 regex
 werkzeug>=2.3.8 # not directly required, pinned by Snyk to avoid a vulnerability
 python-dotenv

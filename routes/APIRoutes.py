@@ -13,14 +13,13 @@ apiRoutes = Blueprint('apiRoutes', __name__)
 def checkTicket(ticketID):
     bs.Viewings.getAllViewingsFromDB()
 
-    ticket = bs.Database.getTicketByID(ticketID)[0]
+    ticket = bs.Database.getTicketByID(ticketID)
     if not ticket:
         return render_template('ticketCheck.html', status='Invalid Ticket')
-    print(ticket)
 
-    viewing = bs.Viewings.getStoredViewingByID(ticket[4])
+    viewing = bs.Viewings.getStoredViewingByID(ticket[0][4])
 
-    return render_template('ticketCheck.html', status='Valid Ticket', ticket=ticket, viewing=viewing)
+    return render_template('ticketCheck.html', status='Valid Ticket', ticket=ticket[0], viewing=viewing)
 
 
 @apiRoutes.route('/viewings/manage/<int:viewingID>', methods=['DELETE'])

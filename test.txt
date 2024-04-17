@@ -1,9 +1,0 @@
-INSERT INTO "Viewings" ("ViewingID", "viewingName", "viewingDesc", "viewingBanner", "viewingDate", "viewingRows", "seatsPerRow") VALUES
-('0', 'The Imitation Game', 'Film', NULL, '2025-02-04 18:00:00', '20', '25'),
-('1', 'Test Film', 'Film. For testing.', 'https://dl6pgk4f88hky.cloudfront.net/2021/12/2ATHYW0-1038x778.jpg', '2024-04-06 19:30:00', '15', '20'),
-('2', 'Test Film: The Sequel', 'Film. 2. For testing.', NULL, '2024-04-08 20:15:00', '15', '20'),
-('3', 'Test Film: Revolutions', 'The worse Film. For testing.', 'https://cms-assets.webediamovies.pro/cdn-cgi/image/dpr=1,fit=scale-down,gravity=auto,metadata=none,quality=85,width=545/production/279/3f827110af2fb95360607fcaa2283397.jpg', '2024-04-23 17:45:00', '12', '15'),
-('4', 'Test Film: Ressurections', 'The even worse Film. For testing.', NULL, '2024-02-26 21:00:00', '12', '10'),
-('5', 'Test Film: Reloaded', 'Eh. For Testing', '', '2024-05-20 18:30:00', '13', '20'),
-('6', 'Old Test Film: The Original', 'Old. For Testing', 'https://www.originalfilmart.com/cdn/shop/files/Spellbound-hitchcock_1600x.webp?v=1687017608', '1979-10-18 20:00:00', '10', '12'),
-('7', 'Test Film: Parallel', 'For Testing.', 'https://media.istockphoto.com/id/1277772615/vector/parallel-stripes-passing-a-corner-like-running-tracks-shadow-effect.jpg?s=612x612&w=0&k=20&c=t2Gsvw4zmXhW6xlsbelWu0_cf1ghdi5OZB6lZrge_rM=', '2024-04-08 17:15:00', '20', '12');
