@@ -56,17 +56,6 @@ class Database:
         self.acceptedViewingColumns = ['ViewingID', 'viewingName', 'viewingDesc', 'viewingBanner', 'viewingDate',
                                        'viewingRows', 'seatsPerRow']
 
-    # def getRecords(self, table:str, column='*', where='') -> list:
-    #     query = f'SELECT {column} FROM {table}' 
-    #     where = where.split(' ') if where else ''
-    #     query += f' WHERE {where[0]} {where[1]} ?' if where else ''
-    #     records = self.cursor.execute(query, (where[2] if where[2] else '',))
-    #     return records if records is not None else []
-
-    # def addRecords(self, table:str, values:tuple) -> None:
-    #     query = f'INSERT INTO {table} VALUES (?);'
-    #     self.cursor.execute(query, values)
-
     def getAllViewings(self) -> list:
         return self.cursor.execute('SELECT * FROM Viewings;')
 

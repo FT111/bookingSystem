@@ -1,5 +1,6 @@
 """
 This package handles the logic for a booking system.
+All objects are UI agnostic.
 The database is safe to use in a multi-threaded environment.
 """
 
@@ -9,6 +10,7 @@ from .viewingFuncs import Viewing, Viewings
 from .bookingFuncs import Ticket, Booking, Bookings, TicketTypes
 from .emailFuncs import EmailFuncs
 
+
 class BookingSystem:
     """
            Initialises the BookingSystem with a database connection and sets up the main entities.
@@ -16,9 +18,16 @@ class BookingSystem:
            Assigns all instanced entities to the database connection.
 
            :param dbPath: The path to the SQLite database file.
+
+           :param emailAddress: The email address the system will use to send emails.
+           :param emailAuth: The password for the email address.
+           :param emailProvider: The email provider's SMTP server.
+           :param emailPort: The email provider's SMTP port.
+
     """
 
-    def __init__(self, dbPath: str, emailAddress: str, emailAuth: str, emailProvider: str, emailPort: int) -> None:
+    def __init__(self, dbPath: str, emailAddress: str = None, emailAuth: str = None,
+                 emailProvider: str = None, emailPort: int = None) -> None:
         self.Ticket = Ticket
         self.Booking = Booking
         self.Viewing = Viewing
@@ -34,7 +43,9 @@ class BookingSystem:
         self.EmailFuncs = EmailFuncs(emailAddress, emailAuth, emailProvider, emailPort)  # Email functions
         self.TicketTypes = TicketTypes(self.Database, self.Viewings)  # Ticket types
 
+        # Dependency injection using class methods
         Booking.setTicketTypes(self.TicketTypes)
+        Booking.setEmailFuncs(self.EmailFuncs)
         Viewings.setTicketTypes(self.TicketTypes)
         Ticket.setDatabase(self.Database)
         Customer.setDatabase(self.Database)

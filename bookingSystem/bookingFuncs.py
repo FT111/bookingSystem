@@ -1,10 +1,6 @@
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 import qrcode
-import sqlite3
 import uuid
 import math
-from flask import render_template
 
 
 class TicketTypes:
@@ -164,6 +160,10 @@ class Booking:
     def setTicketTypes(cls, TicketTypes: object) -> None:
         cls.TicketTypes = TicketTypes
 
+    @classmethod
+    def setEmailFuncs(cls, EmailFuncs: object) -> None:
+        cls.EmailFuncs = EmailFuncs
+
     def __init__(self, Database: object, ViewingObj: object) -> None:
         self.Database = Database
         self.Customer = None
@@ -302,27 +302,13 @@ class Booking:
 
         print('Stage 6')
 
-        #self.confirmBooking()
+        self.EmailFuncs.sendBookingConfirmation(self.Customer.getEmail(), self, self.Customer,
+                                                self.Viewing, self.Tickets)
+
         return True
 
     def confirmBooking(self) -> None:
-
-        msg['From'] = ''
-        msg['To'] = self.Customer.getEmail()
-        msg['Subject'] = 'Booking Confirmation'
-
-        viewing = vars(self.Viewing)
-
-        # Renders the email body from Jinja template
-        emailBody = render_template('./emailFormats/bookingConfirmed.html', booking=self, viewing=viewing)
-        msg = MIMEText(emailBody, 'html')
-
-        # Sends the email
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            server.starttls()
-            server.login('', '')
-            server.sendmail('', self.Customer.getEmail(), msg.as_string())
-
+        pass
 
 class Bookings:
     """
