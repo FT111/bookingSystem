@@ -9,9 +9,12 @@ from routes.webAppFunctions import getSession
 apiRoutes = Blueprint('apiRoutes', __name__)
 
 
-@apiRoutes.route('/tickets/checkQR', methods=['POST'])
-def checkTicket():
-    pass
+@apiRoutes.route('/tickets/validate/<int:ticketID>')
+def checkTicket(ticketID):
+    ticket = bs.Database.getTicketByID(ticketID)
+    if not ticket:
+        return Response('{"status": "400"}', status=400, mimetype='application/json')
+    return Response('{"status": "200"}', status=200, mimetype='application/json')
 
 
 @apiRoutes.route('/viewings/manage/<int:viewingID>', methods=['DELETE'])

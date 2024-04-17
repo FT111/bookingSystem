@@ -45,7 +45,7 @@ class TicketTypes:
     def calculatePriceForTicket(ticketPrice, ticketsSold, timeTillViewing):
         if ticketPrice != 0:
             if timeTillViewing - 604800 < 0:
-                ticketPrice += (604800-timeTillViewing)*0.00003
+                ticketPrice += (604800 - timeTillViewing) * 0.00003
             if ticketsSold > 0:
                 ticketPrice += 0.3 * math.log(ticketsSold)
 
@@ -63,16 +63,18 @@ class TicketTypes:
         """
         for ticketType in self.allTypes:
             if ticket.getType() == ticketType['ID']:
-
                 return ticketType['Price']
 
-
-###
 ### Container pattern heirachy: Bookings -> Booking -> Ticket
-###
+
 
 class Ticket:
     Database = None
+    qrDomain = None
+
+    @classmethod
+    def setHostName(cls, qrDomain: str) -> None:
+        cls.qrDomain = qrDomain
 
     @classmethod
     def setDatabase(cls, Database: object) -> None:
@@ -83,7 +85,9 @@ class Ticket:
         self.seatLocation = seatLocation
         self.qrCodeURL = None
 
-        self.id = str(uuid.uuid4().int)
+        self.id = uuid.uuid4().int
+        self.id = str(self.id)[:16]
+        print(self.id)
 
     def getID(self) -> str:
         return self.id
@@ -107,11 +111,17 @@ class Ticket:
             box_size=10,
             border=4,
         )
-        qr.add_data(self.id)
+
+        if self.qrDomain:
+            self.qrCodeURL = f'{self.qrDomain}/{self.id}'
+        else:
+            self.qrCodeURL = self.id
+
+        qr.add_data(self.qrCodeURL)
         qr.make(fit=True)
         img = qr.make_image(fill_color="black", back_color="white")
-        self.qrCodeURL = f'./static/assets/codes/{self.id}.png'
-        img.save(self.qrCodeURL)
+
+        img.save(f'./static/assets/codes/{self.id}.png')
         return self.qrCodeURL
 
     def getQR(self) -> str:
@@ -251,12 +261,9 @@ class Booking:
         return self.Customer
 
     def Submit(self, seats=None) -> bool:
-        print('Stage 0')
         # Validate that the booking has a customer
         if self.Customer is None:
             return False
-
-        print('Stage 1')
 
         # Validate that the requested seats are available
         unavailableSeats = self.Viewing.getUnavailableSeats()
@@ -264,13 +271,9 @@ class Booking:
         if seats is not None:
             seats = list(seats)
 
-        print('Stage 2')
-
         # Validate that the booking has tickets
         if len(self.Tickets) == 0:
             return False
-
-        print('Stage 3')
 
         # Handles assigning seats to tickets if they are not already assigned
         if seats:
@@ -279,8 +282,6 @@ class Booking:
 
             for ticket in self.Tickets:
                 ticket.setSeatLocation(seats.pop(0))
-
-        print('Stage 4')
 
         if not seats:
             for ticket in self.Tickets:
@@ -293,14 +294,10 @@ class Booking:
                     self.Tickets = []
                     return False
 
-        print('Stage 5')
-
         # If the seats are available, submit the booking
         for ticket in self.Tickets:
             self.Viewing.submitTicket(ticket, self.Customer)
             ticket.generateQR()
-
-        print('Stage 6')
 
         self.EmailFuncs.sendBookingConfirmation(self.Customer.getEmail(), self, self.Customer,
                                                 self.Viewing, self.Tickets)
@@ -309,6 +306,7 @@ class Booking:
 
     def confirmBooking(self) -> None:
         pass
+
 
 class Bookings:
     """

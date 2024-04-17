@@ -24,10 +24,12 @@ class BookingSystem:
            :param emailProvider: The email provider's SMTP server.
            :param emailPort: The email provider's SMTP port.
 
+           :param hostName: Optional - The hostname of the server. Used for generating ticket QR codes.
+
     """
 
     def __init__(self, dbPath: str, emailAddress: str = None, emailAuth: str = None,
-                 emailProvider: str = None, emailPort: int = None) -> None:
+                 emailProvider: str = None, emailPort: int = None, hostName: str = None) -> None:
         self.Ticket = Ticket
         self.Booking = Booking
         self.Viewing = Viewing
@@ -48,4 +50,8 @@ class BookingSystem:
         Booking.setEmailFuncs(self.EmailFuncs)
         Viewings.setTicketTypes(self.TicketTypes)
         Ticket.setDatabase(self.Database)
+        if hostName:
+            print(f'Host name set to {hostName}')
+            Ticket.setHostName(hostName)
+
         Customer.setDatabase(self.Database)

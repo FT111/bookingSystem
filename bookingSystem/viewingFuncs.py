@@ -188,15 +188,18 @@ class Viewings:
 
     def getPercentageTicketsSoldToMeanSold(self, meanRevenueForAllViewings):
         # Calculates the percentage of revenue for the selected viewings compared to all viewings
-        self.stats['percentageToMean'] = (self.stats['meanRevenuePerViewing'] / meanRevenueForAllViewings) * 100
-        if self.stats['meanRevenuePerViewing'] < meanRevenueForAllViewings:
-            self.stats[
-                'percentageToMean'] = f"<strong>{round(100 - self.stats['percentageToMean'], 2)}%</strong> below mean revenue"
-        elif self.stats['meanRevenuePerViewing'] == meanRevenueForAllViewings:
-            self.stats['percentageToMean'] = "Equal to mean revenue"
-        else:
-            self.stats[
-                'percentageToMean'] = f"<strong>{round(self.stats['percentageToMean'] - 100, 2)}%</strong> above mean revenue"
+        try:
+            self.stats['percentageToMean'] = (self.stats['meanRevenuePerViewing'] / meanRevenueForAllViewings) * 100
+            if self.stats['meanRevenuePerViewing'] < meanRevenueForAllViewings:
+                self.stats[
+                    'percentageToMean'] = f"<strong>{round(100 - self.stats['percentageToMean'], 2)}%</strong> below mean revenue"
+            elif self.stats['meanRevenuePerViewing'] == meanRevenueForAllViewings:
+                self.stats['percentageToMean'] = "Equal to mean revenue"
+            else:
+                self.stats[
+                    'percentageToMean'] = f"<strong>{round(self.stats['percentageToMean'] - 100, 2)}%</strong> above mean revenue"
+        except ZeroDivisionError:
+            self.stats['percentageToMean'] = "No tickets or viewings available"
 
     def getMostSoldViewingForViewings(self, statsPerViewing):
         # Finds the viewing with the most tickets sold

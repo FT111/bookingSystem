@@ -118,7 +118,7 @@ class Database:
         return self.cursor.execute('SELECT * FROM Tickets WHERE ViewingID = ?;', (viewingID,))
 
     def getTicketByID(self, ticketID) -> list:
-        return self.cursor.execute('SELECT * FROM Tickets WHERE ID = ?;', (ticketID,))
+        return self.cursor.execute('SELECT * FROM Tickets WHERE ticketID = ?;', (ticketID,))
 
     def newTicket(self, ticket: object, customer: object, viewing: object) -> None:
         self.cursor.execute('INSERT INTO Tickets VALUES (?, ?, ?, ?, ?);', (
