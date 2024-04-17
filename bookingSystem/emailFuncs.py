@@ -18,10 +18,13 @@ class EmailFuncs:
         msg['Subject'] = subject
         msg.attach(MIMEText(body, 'html'))
 
-        with smtplib.SMTP(self.emailProvider, self.emailPort) as server:
-            server.starttls()
-            server.login(self.emailAddress, self.emailAuth)
-            server.sendmail(self.emailAddress, toAddress, msg.as_string())
+        try:
+            with smtplib.SMTP(self.emailProvider, self.emailPort) as server:
+                server.starttls()
+                server.login(self.emailAddress, self.emailAuth)
+                server.sendmail(self.emailAddress, toAddress, msg.as_string())
+        except smtplib.SMTPRecipientsRefused:  # Catches test data addresses refusing the email - Removed in production
+            pass
 
     def sendBookingConfirmation(self, toAddress: str, bookingObj: object, customer: object,
                                 viewing: object, tickets: list):
