@@ -14,6 +14,7 @@ active
     <script>
     let stats = {{ stats | tojson | safe }};
     let customers = {{ customers | tojson | safe }};
+    let defaultCustomers = customers;
     let ticketChart;
 
     </script>
@@ -44,14 +45,20 @@ active
   <div id="optionBar" class="bg-base-300 drop-shadow-md h-fit sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 transition-all duration-200 ease-in-out flex flex-col justify-between">
 
     <div class="flex flex-row justify-between transition-all gap-5">
-           <select id="timePeriodSelector" onchange="getViewings(searchElement=this)" class="select w-full max-w-xs rounded-box">
-                <option value="all">All viewings</option>
-                <option value="past">Past viewings</option>
-                <option value="upcoming">Upcoming viewings</option>
-                <option value="specific">Specific viewing</option>
-           </select>
+        <div class="flex flex-row gap-5">
+               <select id="timePeriodSelector" onchange="getViewings(searchElement=this)" class="select w-xs rounded-box">
+                    <option value="all">All viewings</option>
+                    <option value="past">Past viewings</option>
+                    <option value="upcoming">Upcoming viewings</option>
+                    <option value="specific">Specific viewing</option>
+               </select>
+
+            <input type="text" id="userSearchBar" class="input w-md rounded-md hidden" placeholder="Search Users" oninput="filterUsers()">
+        </div>
         
         <div class="flex flex-row join rounded-md transition-all">
+
+
             <label for="viewStats" id="viewStatsLabel" class="flex flex-row btn text-white btn-secondary join-item">
                 <p class="hidden sm:block" >
                 Statistics</p>
