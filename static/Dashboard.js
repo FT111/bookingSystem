@@ -9,6 +9,8 @@ let viewUsersLabel;
 let customerTable;
 let customerTableHeader;
 
+let userSearchBar;
+
 const getViewings = (searchElement=undefined, ID= undefined) => {
     let url = '/api/viewings/getStats';
 
@@ -139,6 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
     customerTable = document.getElementById('customerTable');
     customerTableHeader = document.getElementById('customerTableHeader');
 
+    userSearchBar = document.getElementById('userSearchBar');
+
     viewStatistics();
 });
 
@@ -146,6 +150,8 @@ const viewStatistics = () => {
         
     usersPage.classList.add('hidden');
     statsPage.classList.remove('hidden');
+
+    userSearchBar.classList.remove('sm:block');
 
     viewStatsLabel.classList.add('bg-primary');
     viewUsersLabel.classList.remove('bg-primary');
@@ -157,8 +163,21 @@ const viewUsers = () => {
     statsPage.classList.add('hidden');
     usersPage.classList.remove('hidden');
 
+    userSearchBar.classList.add('sm:block');
+
     viewUsersLabel.classList.add('bg-primary');
     viewStatsLabel.classList.remove('bg-primary');
+}
+
+const filterUsers = () => {
+    let searchQuery = userSearchBar.value;
+
+    let sortedData = customers.filter(customer => {
+        return Object.values(customer).some(value => value.toLowerCase().includes(searchQuery.toLowerCase()));
+    });
+
+    renderCustomers(sortedData);
+
 }
 
 const toggleView = () => {
@@ -188,16 +207,21 @@ const showCustomersForViewing = (viewingID) => {
         }
     }).then((response) => response.json())
         .then((data) => {
-            console.log(data.body);
-            renderCustomers(data.body);
+            if (data.body.length > 0) {
+                customers = data.body;
+                renderCustomers(data.body);
+            } else {
+                customers = [];
+                renderCustomers([]);
+            }
         })
         .catch((error) => {
+            customers = [];
             renderCustomers([])
         });
 }
 
 const renderCustomers = (customers) => {
-
     customerTableHeader.innerHTML = '';
 
     Object.keys(customers[0]).forEach(key => {
@@ -229,6 +253,7 @@ const renderCustomers = (customers) => {
 }
 
 const resetCustomers = () => {
+    customers = defaultCustomers;
     renderCustomers(customers);
 }
 

@@ -33,9 +33,10 @@ class EmailFuncs:
         booking = vars(bookingObj)
         seats = bookingObj.getSelectedSeats()
         priceSum = bookingObj.getPriceSum()
+        dateFormatted = viewing.getFormattedDate()
 
         # Renders the email body from Jinja template
-        emailBody = render_template('./emailFormats/bookingConfirmed.html', booking=booking,
+        emailBody = render_template('./emailFormats/bookingConfirmed.html', booking=booking, dateFormatted=dateFormatted,
                                     seats=seats, tickets=tickets, viewing=viewing, customer=customer, priceSum=priceSum)
 
         self.sendHTMLMail(toAddress, 'Booking Confirmation', emailBody)

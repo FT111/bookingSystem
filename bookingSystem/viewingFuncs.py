@@ -302,6 +302,9 @@ class Viewing:
     def getDate(self) -> datetime.date:
         return self.Date
 
+    def getFormattedDate(self) -> str:
+        return self.Date.strftime('%d/%m/%Y')
+
     def getTime(self) -> datetime.time:
         return self.Time
 
