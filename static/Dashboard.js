@@ -173,7 +173,9 @@ const filterUsers = () => {
     let searchQuery = userSearchBar.value;
 
     let sortedData = customers.filter(customer => {
-        return Object.values(customer).some(value => value.toLowerCase().includes(searchQuery.toLowerCase()));
+        return Object.values(customer).some(value => {
+            return value.toString().toLowerCase().includes(searchQuery.toLowerCase());
+        });
     });
 
     renderCustomers(sortedData);
@@ -221,35 +223,46 @@ const showCustomersForViewing = (viewingID) => {
         });
 }
 
-const renderCustomers = (customers) => {
+const renderCustomers = (customersRendered) => {
+
     customerTableHeader.innerHTML = '';
 
-    Object.keys(customers[0]).forEach(key => {
-        if (key === 'Surname') {
-            key = 'Name';
-        } else if (key === 'firstName') {
-            return;
-        }
-        customerTableHeader.innerHTML += `<th>${key}</th>`;
-    });
 
-    customerTable.innerHTML = '';
+    if (customersRendered.length !== 0) {
 
-    customers.forEach(customer => {
-        if (customer['firstName'] && customer['Surname']) {
-            customer['Surname'] = customer['firstName'] + ' ' + customer['Surname'];
-            delete customer['firstName'];
-        }
-        customerTable.innerHTML += `
+        Object.keys(customersRendered[0]).forEach(key => {
+            if (key === 'Surname') {
+                key = 'Name';
+            } else if (key === 'firstName') {
+                return;
+            }
+            customerTableHeader.innerHTML += `<th>${key}</th>`;
+        });
 
-        <tr>
-            ${Object.keys(customer).map(key => { 
-                return '<td>'+customer[key]+'</td>'
-            }).join('')}
-        </tr>
-        
+        customerTable.innerHTML = '';
+
+        customersRendered.forEach(customer => {
+            if (customer['firstName'] && customer['Surname']) {
+                customer['Surname'] = customer['firstName'] + ' ' + customer['Surname'];
+                delete customer['firstName'];
+            }
+            customerTable.innerHTML += `
+    
+            <tr>
+                ${Object.keys(customer).map(key => { 
+                    return '<td>'+customer[key]+'</td>'
+                }).join('')}
+            </tr>
+            
+            `});}
+    else {
+        customerTable.innerHTML = `
+        <div class="flex flex-col items-center px-8 py-2 justify-center w-full h-full">
+            <p class="text-3xl sm:text-2xl font-bold">No Customers Found</p>
+        </div>
         `
-    });
+
+    }
 }
 
 const resetCustomers = () => {
