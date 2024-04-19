@@ -96,7 +96,7 @@ class Database:
         wildCards = []
         for index, seat in enumerate(seats):
             wildCards += [seat, viewingID]
-            baseQuery += f'SELECT ?, ? {"UNION ALL" if index != len(seats)-1 else ';'} '
+            baseQuery += f'SELECT ?, ? {"UNION ALL" if index != len(seats)-1 else ";"} '
 
         print(baseQuery, wildCards)
 
