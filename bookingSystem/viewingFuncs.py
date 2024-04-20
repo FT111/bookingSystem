@@ -169,18 +169,25 @@ class Viewings:
 
         self.getRemainingSeatsForViewings(filteredViewingInfo, seatsPerViewing, statsPerViewing)
 
-        self.stats['meanRevenuePerViewing'] = round(self.stats['totalRevenue'] / self.stats['totalViewings'], 2)
+        if self.stats['totalViewings'] != 0:
+            self.stats['meanRevenuePerViewing'] = round(self.stats['totalRevenue'] / self.stats['totalViewings'], 2)
+        else:
+            self.stats['meanRevenuePerViewing'] = 0
 
         self.stats['mostPopularViewing'] = {'viewingName': None, 'tickets': 0}
 
         self.getMostSoldViewingForViewings(statsPerViewing)
 
         # Calculates the percentage of tickets sold
-        self.stats['percentageSold'] = round(
-            (self.stats['totalTickets'] / (self.stats['remainingSeats'] + self.stats['totalTickets'])) * 100, 2)
+        try:
+            self.stats['percentageSold'] = round(
+                (self.stats['totalTickets'] / (self.stats['remainingSeats'] + self.stats['totalTickets'])) * 100, 2)
+            meanRevenueForAllViewings = round(overallRevenue / len(allViewingInfo), 2)
 
+        except ZeroDivisionError:
+            self.stats['percentageSold'] = 0
+            meanRevenueForAllViewings = 0
         # Calculates the mean revenue for all viewings
-        meanRevenueForAllViewings = round(overallRevenue / len(allViewingInfo), 2)
 
         self.getPercentageTicketsSoldToMeanSold(meanRevenueForAllViewings)
 
