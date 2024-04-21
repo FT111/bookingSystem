@@ -32,20 +32,24 @@ let ticketTypes = {{ ticketTypes|tojson }};
 
     </div>
 
-    <h1 class="text-3xl sm:text-6xl my-6 text-center text-bg-base-200 align-middle font-bold">{{ viewing.Name }} - Select Your Tickets</h1>
+    <h1 class="text-3xl sm:text-6xl my-6 text-center text-bg-base-200 align-middle font-bold">Select Your Tickets</h1>
 
     <!-- Interaction box container -->
     <div class="flex flex-col w-full sm:w-5/6 lg:w-7/12 ">
         <!-- Main interaction card -->
         <div class="card bg-base-300 min-h-96 w-full">
             {% if viewing.Banner %}
-                <figure class="h-24"><img class="w-full" src="{{ viewing.Banner }}" alt="{{viewing.name}} banner" /></figure>
+                <figure class="h-56"><img class="w-full" src="{{ viewing.Banner }}" alt="{{viewing.name}} banner" /></figure>
             {% else %}
                 <figure></figure>
             {% endif %}
-            <div class="card-body gap-8 p-0 sm:p-10">
+            <div class="card-body gap-2 p-0 sm:p-10">
                 <h2 class="card-title sm:p-0 p-3 text-2xl sm:text-4xl font-bold">{{ viewing.Name }}</h2>
-            
+                <p class="sm:text-lg text-md py-0 sm:p-0 p-5">{{ viewing.Description }}</p>
+
+                <div class="sm:divider"></div>
+
+            <div class="flex flex-col gap-8">
                 <div class="flex flex-col gap-4">
                 {% for ticketType in ticketTypes %}
                     <div class="flex bg-base-200 sm:rounded-md p-4 items-center transition-all duration-50 ease-in-out" id="{{ ticketType.ID }}Card">
@@ -68,7 +72,7 @@ let ticketTypes = {{ ticketTypes|tojson }};
                 <p class="text-3xl sm:text-xl font-semibold text-primary grow-0">Total</p>
                 <p class="text-3xl sm:text-4xl font-semibold grow-0" id="priceSumIndicator">{{ "£%.2f"|format(priceSum) }}</p>
                 </div>
-
+            </div>
             </div>
 
         </div>
@@ -76,7 +80,7 @@ let ticketTypes = {{ ticketTypes|tojson }};
         <div class="flex flex-col gap-4 sm:gap-0 my-3 px-0 p-3 sm:flex-row w-full items-center justify-between transition-full ease-in-out duration-100">
             <div></div> <!-- Spacer -->
 
-            <div class="tooltip order-2 tooltip-top sm:tooltip-left tooltip-open" id="continueTooltip" data-tip="Select a ticket to continue">
+            <div class="tooltip order-2 tooltip-bottom sm:tooltip-left tooltip-open" id="continueTooltip" data-tip="Select a ticket to continue">
                 <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200" onclick="window.location.href='/booking/seats'" disabled="disabled" id="continueBtn">Continue
                     <!-- prettier-ignore -->
                     <svg class="stroke-base-200 transition-all ease-in-out duration-400" width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
