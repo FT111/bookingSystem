@@ -175,7 +175,7 @@ const renderViewings = (viewings) => {
             viewingsContainer.innerHTML += `
             <div class="viewingCard card w-full bg-base-300 h-80" id="${viewing.viewingID}">
             ${viewing.Banner ? `<figure><img src="${viewing.Banner}" alt="${viewing.Name} banner" /></figure>` : '<figure></figure>'}
-            <div class="card-body gap-3 flex-wrap">
+            <div class="card-body gap-3">
             
                 <h2 class="card-title text-xl font-bold flex-wrap">${viewing.Name}</h2>
                 <span class='flex flex-wrap gap-3 w-full'>
@@ -186,7 +186,7 @@ const renderViewings = (viewings) => {
                 </div>
                 </span>
                 
-                <p>${viewing.Description}</p>
+                <p class="truncate">${viewing.Description}</p>
                 <div class="flex flex-row gap-3 w-full flex-1">
                     <button onclick="beginViewingDeletion(${viewing.viewingID})" class="btn no-animation btn-error text-white text-lg" name="Select">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -210,7 +210,7 @@ const renderViewings = (viewings) => {
             viewingsContainer.innerHTML += `
             <div class="viewingCard card w-full bg-base-300 h-80" id="${viewing.viewingID}">
             ${viewing.Banner ? `<figure><img src="${viewing.Banner}" alt="${viewing.Name} banner" /></figure>` : '<figure></figure>'}
-            <div class="card-body gap-3 flex-wrap">
+            <div class="card-body gap-3">
             
                 <h2 class="card-title">${viewing.Name}</h2>
                 
@@ -222,7 +222,7 @@ const renderViewings = (viewings) => {
                 </div>
                 </span>
                 
-                <p>${viewing.Description}</p>
+                <p class="truncate">${viewing.Description}</p>
                 
                     <button onclick="newBooking(${viewing.viewingID})" class="btn no-animation btn-primary text-white text-lg" name="Select">Select
                     </button>
