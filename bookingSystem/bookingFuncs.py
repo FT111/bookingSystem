@@ -91,11 +91,10 @@ class Ticket:
     def setDatabase(cls, Database: object) -> None:
         cls.Database = Database
 
-    def __init__(self, ticketType: str, price: float, seatLocation=None) -> None:
+    def __init__(self, ticketType: str, seatLocation=None) -> None:
         self.ticketType = ticketType
         self.seatLocation = seatLocation
         self.qrCodeURL = None
-        self.price = price
 
         self.id = uuid.uuid4().int
         self.id = str(self.id)[:16]

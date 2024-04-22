@@ -114,6 +114,7 @@ def bookingSummary():
     ticketSum = sum(ticketCounts.values())
     priceSum = currentBooking.getPriceSum()
     tickets = currentBooking.getTickets()
+    currentViewing = bs.Viewings.formatViewing(vars(currentViewing))
 
     return render_template('bookings/bookingSummary.html', booking=currentBooking, tickets=tickets, ticketSum=ticketSum,
                            priceSum=priceSum, ticketCounts=ticketCounts, viewing=currentViewing,

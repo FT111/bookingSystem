@@ -179,8 +179,8 @@ def addSeat():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
-    ticketPrice = bs.TicketTypes.getTypePriceForViewing(booking.getViewing().getID(), request.json.get('ticketType'))
-    ticket = bs.Ticket(request.json.get('ticketType'), ticketPrice)
+    # ticketPrice = bs.TicketTypes.getTypePriceForViewing(booking.getViewing().getID(), request.json.get('ticketType'))
+    ticket = bs.Ticket(request.json.get('ticketType'))
     confirmation = booking.addTicket(ticket)
     booking.resetSeats()
     if not confirmation:
