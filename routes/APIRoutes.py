@@ -177,10 +177,11 @@ def startNewBooking():
 @apiRoutes.route('/bookings/addTicket', methods=['POST'])
 def addSeat():
     sessionID = getSession()
-
     booking = bs.Bookings.getBookingByID(sessionID)
-    # ticketPrice = bs.TicketTypes.getTypePriceForViewing(booking.getViewing().getID(), request.json.get('ticketType'))
-    ticket = bs.Ticket(request.json.get('ticketType'))
+
+    ticketPrice = bs.TicketTypes.getTypePriceForViewing(request.json.get('ticketType'), booking.getViewing().getID())
+    ticket = bs.Ticket(request.json.get('ticketType'), price=ticketPrice)
+
     confirmation = booking.addTicket(ticket)
     booking.resetSeats()
     if not confirmation:
