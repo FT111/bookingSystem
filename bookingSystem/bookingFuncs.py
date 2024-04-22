@@ -41,6 +41,17 @@ class TicketTypes:
 
         return self.allTypes
 
+    def getTypePriceForViewing(self, viewingID: str, ticketType: str) -> dict:
+        print(viewingID, ticketType)
+
+        ticketsSold = len(self.Database.getReservedSeats(viewingID))
+        timeTillViewing = self.Viewings.getStoredViewingByID(viewingID).getTimeTillViewing()
+
+        for allTicketType in self.allTypes:
+            if allTicketType['ID'] == ticketType:
+                price['Price'] = self.calculatePriceForTicket(allTicketType['Price'], ticketsSold, timeTillViewing)
+                return price
+
     @staticmethod
     def calculatePriceForTicket(ticketPrice, ticketsSold, timeTillViewing):
         if ticketPrice != 0:
@@ -80,10 +91,11 @@ class Ticket:
     def setDatabase(cls, Database: object) -> None:
         cls.Database = Database
 
-    def __init__(self, ticketType: str, seatLocation=None) -> None:
+    def __init__(self, ticketType: str, price: float, seatLocation=None) -> None:
         self.ticketType = ticketType
         self.seatLocation = seatLocation
         self.qrCodeURL = None
+        self.price = price
 
         self.id = uuid.uuid4().int
         self.id = str(self.id)[:16]
@@ -97,6 +109,9 @@ class Ticket:
 
     def getSeatLocation(self) -> str:
         return self.seatLocation
+
+    def getPrice(self) -> float:
+        return self.price
 
     def setTicketType(self, ticketType: str) -> None:
         self.ticketType = ticketType

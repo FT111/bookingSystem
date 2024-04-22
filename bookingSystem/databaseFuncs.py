@@ -121,8 +121,9 @@ class Database:
         return self.cursor.execute('SELECT * FROM Tickets WHERE ticketID = ?;', (ticketID,))
 
     def newTicket(self, ticket: object, customer: object, viewing: object) -> None:
-        self.cursor.execute('INSERT INTO Tickets VALUES (?, ?, ?, ?, ?);', (
-            ticket.getID(), ticket.getSeatLocation(), ticket.getType(), customer.getID(), viewing.getID(),))
+        self.cursor.execute('INSERT INTO Tickets VALUES (?, ?, ?, ?, ?, ?);', (
+            ticket.getID(), ticket.getSeatLocation(), ticket.getType(), customer.getID(),
+            viewing.getID(), ticket.getPrice(),))
 
     def removeTicket(self, viewingID, ticketID: int) -> None:
         self.cursor.execute('DELETE FROM Tickets WHERE ViewingID = ? AND CustomerID = ?;', (viewingID, ticketID,))

@@ -60,8 +60,6 @@ const getSort = () => {
         });
 };
 
-// TODO: FIX SEARCH CONFLICTING WITH SORT
-
 const searchName = () => {
     const search = document.getElementById('searchBar').value;
     const filteredViewings = viewings.filter(viewing => viewing.Name.toLowerCase().includes(search.toLowerCase()));
