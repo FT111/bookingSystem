@@ -10,7 +10,7 @@ class TicketTypes:
     """
 
     def __init__(self, Database, Viewings) -> None:
-        self.allTypes = list()
+        self.allTypes = dict()
         self.Database = Database
         self.Viewings = Viewings
 
@@ -19,16 +19,15 @@ class TicketTypes:
         Retrieves all ticket types from the database.
 
         Returns:
-            A list of dictionaries representing each ticket type, with keys 'ID', 'Name', and 'Price'.
+            A dictionary where the key is the ticket type ID and the value is a dictionary representing the ticket type.
         """
         typesTuple = self.Database.getTicketTypes()
-        self.allTypes = []
+        self.allTypes = {}
 
         for type in typesTuple:
-            self.allTypes.append({'ID': type[0],
-                                  'Name': type[1],
-                                  'Price': type[2]})
-        return self.allTypes
+            self.allTypes[type[0]] = {'ID': type[0], 'Name': type[1], 'Price': type[2]}
+
+        return [*self.allTypes.values()]
 
     def getTypesForViewing(self, viewingID: str) -> list:
         self.getTypes()
@@ -36,21 +35,14 @@ class TicketTypes:
         ticketsSold = len(self.Database.getReservedSeats(viewingID))
         timeTillViewing = self.Viewings.getStoredViewingByID(viewingID).getTimeTillViewing()
 
-        for ticketType in self.allTypes:
+        for ticketTypeID, ticketType in self.allTypes.items():
             ticketType['Price'] = self.calculatePriceForTicket(ticketType['Price'], ticketsSold, timeTillViewing)
 
-        return self.allTypes
+        return [*self.allTypes.values()]
 
     def getTypePriceForViewing(self, viewingID: str, ticketType: str) -> dict:
-        print(viewingID, ticketType)
-
-        ticketsSold = len(self.Database.getReservedSeats(viewingID))
-        timeTillViewing = self.Viewings.getStoredViewingByID(viewingID).getTimeTillViewing()
-
-        for allTicketType in self.allTypes:
-            if allTicketType['ID'] == ticketType:
-                price['Price'] = self.calculatePriceForTicket(allTicketType['Price'], ticketsSold, timeTillViewing)
-                return price
+        self.getTypesForViewing(viewingID)
+        return self.allTypes[ticketType]['Price']
 
     @staticmethod
     def calculatePriceForTicket(ticketPrice, ticketsSold, timeTillViewing):
@@ -61,20 +53,6 @@ class TicketTypes:
                 ticketPrice += 0.3 * math.log(ticketsSold)
 
         return ticketPrice
-
-    def getTicketPrice(self, ticket: object) -> float:
-        """
-        Retrieves the price of a ticket based on its type.
-
-        Args:
-            ticket (object): The ticket object for which to retrieve the price.
-
-        Returns:
-            float: The price of the ticket.
-        """
-        for ticketType in self.allTypes:
-            if ticket.getType() == ticketType['ID']:
-                return ticketType['Price']
 
 ### Container pattern heirachy: Bookings -> Booking -> Ticket
 
@@ -91,10 +69,11 @@ class Ticket:
     def setDatabase(cls, Database: object) -> None:
         cls.Database = Database
 
-    def __init__(self, ticketType: str, seatLocation=None) -> None:
+    def __init__(self, ticketType: str, price: float = 0, seatLocation=None) -> None:
         self.ticketType = ticketType
         self.seatLocation = seatLocation
         self.qrCodeURL = None
+        self.price = price
 
         self.id = uuid.uuid4().int
         self.id = str(self.id)[:16]
@@ -110,6 +89,7 @@ class Ticket:
         return self.seatLocation
 
     def getPrice(self) -> float:
+        print(self.price)
         return self.price
 
     def setTicketType(self, ticketType: str) -> None:
@@ -244,8 +224,8 @@ class Booking:
         ticketTypes = self.TicketTypes.getTypesForViewing(self.Viewing.getID())
 
         # Fill the dictionary with ticket types
-        for type in ticketTypes:
-            ticketCounts[type['ID']] = 0
+        for ticketType in ticketTypes:
+            ticketCounts[ticketType['ID']] = 0
 
         # Count the number of tickets of each type
         for ticket in self.Tickets:
@@ -258,10 +238,7 @@ class Booking:
         priceSum = 0
 
         for ticket in self.Tickets:
-            for type in ticketTypes:
-                if ticket.getType() == type['ID']:
-                    priceSum += type['Price']
-                    break
+            priceSum += ticket.getPrice()
 
         return priceSum
 
