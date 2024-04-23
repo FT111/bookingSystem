@@ -4,90 +4,90 @@
     <meta charset="UTF-8">
     <title>Booking Confirmed Email</title>
     <style>
+        /* Inline CSS */
         .content {
             display: flex;
             justify-content: center;
             min-height: 100vh;
         }
-        html {
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
             font-family: Arial, sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #f4f4f4;
+            background-color: rgb(229,233,240);
         }
 
         .container {
             width: 100%;
-            margin: 20px;
+            max-width: 600px; /* Added max-width for better readability on larger screens */
+            margin: 20px auto; /* Center the container */
             text-align: center;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
             border-radius: 10px;
             background-color: #d9dee8;
         }
-         li {
+        li {
             list-style-type: none;
             padding: 10px;
-             background-color: #e6e9ef;
-             border-radius: 5px;
-             margin-top: 10px;
-             font-weight: normal;
-         }
-         ul {
-             padding: 0;
-             margin: 0;
-         }
-         h1{
-             font-size: 40px;
-             font-weight: bold;
-         }
-         h3 {
-             margin: 25px 0 0;
-         }
-         .seat {
+            background-color: #e6e9ef;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: normal;
+        }
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+        h1{
+            font-size: 40px;
+            font-weight: bold;
+        }
+        h3 {
+            margin: 25px 0 0;
+        }
+        .seat {
             display: inline-block;
-            padding: 2px;
-            padding-inline: 15px;
-            background-color: oklch(0.45229 0.035214 264.131);
+            padding: 2px 15px; /* Changed to separate padding */
+            background-color: #007bff; /* Changed to a standard color */
             color: white;
             border-radius: 6.4px;
             margin: 2px;
-             font-weight: bold;
-         }
+            font-weight: bold;
+        }
     </style>
 </head>
 
-
-
 <body>
 <div class="content">
-<div class="container">
+    <div class="container">
 
-    <h1>Booking Confirmed.</h1>
-    <h2>Thank you for booking with us.</h2>
+        <h1>Booking Confirmed.</h1>
+        <h2>Thank you for booking with us.</h2>
 
-    <div style="padding:15px;">
-        <h3 style="text-align: left;font-size: 25px;">Viewing Details</h3>
-        <ul>
-            <li>Viewing Name: <strong>{{ viewing.Name }}</strong></li>
-            <li>Viewing Date: <strong>{{ dateFormatted }}</strong></li>
-            <li>Viewing Time: <strong>{{ viewing.Time }}</strong></li>
-        </ul>
-
-        <div class="card">
-            <h3 style="text-align: left;font-size: 25px;">Booking Details</h3>
+        <div style="padding:15px;">
+            <h3 style="text-align: left;font-size: 25px;">Viewing Details</h3>
             <ul>
-                <li>Booked by: <strong>{{ customer['Name'] }}</strong></li>
-                <li>Total Cost: <strong>{{  "£%.2f"|format(priceSum) }}</strong></li>
-                <li>Seats booked: {% for seat in seats %}<div class="seat">{{ seat }}</div> {% endfor %}</li>
+                <li>Viewing Name: <strong>{{ viewing.Name }}</strong></li>
+                <li>Viewing Date: <strong>{{ dateFormatted }}</strong></li>
+                <li>Viewing Time: <strong>{{ viewing.Time }}</strong></li>
             </ul>
+
+            <div class="card">
+                <h3 style="text-align: left;font-size: 25px;">Booking Details</h3>
+                <ul>
+                    <li>Booked by: <strong>{{ customer['Name'] }}</strong></li>
+                    <li>Total Cost: <strong>{{  "£%.2f"|format(priceSum) }}</strong></li>
+                    <li>Seats booked: {% for seat in seats %}<div class="seat">{{ seat }}</div> {% endfor %}</li>
+                </ul>
+            </div>
+
+            <h2>Your tickets are attached to this Email.</h2>
+
         </div>
-
-    `<h3>Your tickets are attached to this Email.</h3>
-
     </div>
-</div>
 </div>
 
 </body>
