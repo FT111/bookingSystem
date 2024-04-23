@@ -179,7 +179,8 @@ def addSeat():
     sessionID = getSession()
     booking = bs.Bookings.getBookingByID(sessionID)
 
-    ticketPrice = bs.TicketTypes.getTypePriceForViewing(request.json.get('ticketType'), booking.getViewing().getID())
+    ticketPrice = bs.TicketTypes.getTypePriceForViewing(booking.getViewing().getID(), request.json.get('ticketType'))
+    print(ticketPrice)
     ticket = bs.Ticket(request.json.get('ticketType'), price=ticketPrice)
 
     confirmation = booking.addTicket(ticket)
@@ -272,6 +273,8 @@ def submitBooking():
     booking = bs.Bookings.getBookingByID(sessionID)
     seatLocations = booking.getSelectedSeats()
     booking.Submit(seatLocations)
+
+    bs.Bookings.removeBooking(sessionID)
 
     return Response('{"status": "200"}', status=200, mimetype='application/json')
 

@@ -42,7 +42,7 @@ class TicketTypes:
 
     def getTypePriceForViewing(self, viewingID: str, ticketType: str) -> dict:
         self.getTypesForViewing(viewingID)
-        return self.allTypes[ticketType]['Price']
+        return self.allTypes.get(int(ticketType))['Price']
 
     @staticmethod
     def calculatePriceForTicket(ticketPrice, ticketsSold, timeTillViewing):
@@ -234,7 +234,6 @@ class Booking:
         return ticketCounts
 
     def getPriceSum(self) -> float:
-        ticketTypes = self.TicketTypes.getTypesForViewing(self.Viewing.getID())
         priceSum = 0
 
         for ticket in self.Tickets:
@@ -341,8 +340,7 @@ class Bookings:
         Args:
             index (int): The index of the booking to be removed.
         """
-
-        self.allBookings.pop(index, None)
+        del self.allBookings[index]
 
     def getBookingByID(self, index: int) -> object:
         """

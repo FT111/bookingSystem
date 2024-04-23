@@ -229,7 +229,7 @@ class Viewings:
         # Calculates the revenue for each viewing, and the total
         for ticket in selectedTickets:
             try:
-                price = [ticketType['Price'] for ticketType in ticketTypes if ticketType['ID'] == int(ticket[2])][0]
+                price = float(ticket[5])
                 ticketViewingID = int(ticket[4])
 
                 statsPerViewing[ticketViewingID]['revenue'] += price

@@ -84,25 +84,7 @@
             </ul>
         </div>
 
-    </div>
-</div>
-</div>
-
-<div class="content">
-<div class="container" style="margin-top: 0;">
-
-    <div style="padding:15px;">
-
-        <div class="card">
-            <h3 style="text-align: left;font-size: 25px;">Ticket Details</h3>
-            <ul>
-                <li>Booked by: <strong>{{ customer['Name'] }}</strong></li>
-                <li>Total Cost: <strong>{{  "£%.2f"|format(priceSum) }}</strong></li>
-                <li>Seats booked: {% for seat in seats %}<div class="seat">{{ seat }}</div> {% endfor %}</li>
-            </ul>
-        </div>
-
-    <h3>Your tickets are attached to this Email.</h3>
+    `<h3>Your tickets are attached to this Email.</h3>
 
     </div>
 </div>
