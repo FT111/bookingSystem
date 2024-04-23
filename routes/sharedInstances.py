@@ -6,18 +6,21 @@ from dotenv import load_dotenv
 
 load_dotenv('../instance/.env')
 
-# Get the IP address of the host machine to format ticket's QR code
-# Makes the ticket QR code accessible from the network. Makes the system portable.
-# Would be removed in production - IP address would be hardcoded.
-socketObj = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-socketObj.connect(('192.255.255.255', 1))
-hostName = '127.0.0.1'
 
-# Gets the machine's various IP addresses and finds the most likely one for LAN.
-for IP in socketObj.getsockname():
-    if '192' == str(IP)[:3] or '172' == str(IP)[:3]:
-        hostName = IP
-hostName = f'http://{hostName}:8000/api/tickets/validate'
+def getHostName():
+    # Get the IP address of the host machine to format ticket's QR code
+    # Makes the ticket QR code accessible from the network. Makes the system portable.
+    # Would be removed in production - IP address would be hardcoded.
+    socketObj = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    socketObj.connect(('192.255.255.255', 1))
+    hostName = '127.0.0.1'
+    # Gets the machine's various IP addresses and finds the most likely one for LAN.
+    for IP in socketObj.getsockname():
+        if '192' == str(IP)[:3] or '172' == str(IP)[:3]:
+            hostName = IP
+
+    return hostName
+
 
 # Checks if environment variables are set
 try:
@@ -32,9 +35,11 @@ try:
                                emailAuth=EMAIL_AUTH,
                                emailProvider=EMAIL_PROVIDER,
                                emailPort=EMAIL_PORT,
-                               hostName=hostName)
+                               hostName=f'http://{getHostName()}:8000/api/tickets/validate')
 except KeyError:
-    bs = bSystem.BookingSystem(dbPath='./instance/bookingDatabase.db', hostName=hostName)
+    # Configures the system to run without email functionality.
+    bs = bSystem.BookingSystem(dbPath='./instance/bookingDatabase.db',
+                               hostName=f'http://{getHostName()}:8000/api/tickets/validate')
 
 
 

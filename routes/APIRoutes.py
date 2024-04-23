@@ -272,6 +272,7 @@ def submitBooking():
 
     booking = bs.Bookings.getBookingByID(sessionID)
     seatLocations = booking.getSelectedSeats()
+
     booking.Submit(seatLocations)
 
     bs.Bookings.removeBooking(sessionID)
