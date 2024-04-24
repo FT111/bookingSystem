@@ -66,11 +66,19 @@ table > tbody > tr > td {
 }
 
 @keyframes fadeinX {
-    0% { opacity: 0; transform: translateX(4px); }
+    0% { opacity: 0; transform: translateX(7px); }
 
     100% { opacity: 1; transform: translateX(0); }
 }
 
 .fadeInTranslateX {
     animation: fadeinX 0.25s ease-in-out forwards;
+}
+
+#viewingsNavBtn:hover > #viewingsNavBtnText {
+  display: flex;
+}
+
+#dashboardNavBtn:hover > #dashboardNavBtnText {
+  display: flex;
 }

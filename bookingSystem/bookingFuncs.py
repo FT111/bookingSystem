@@ -50,9 +50,9 @@ class TicketTypes:
             if timeTillViewing - 604800 < 0:
                 ticketPrice += (604800 - timeTillViewing) * 0.00003
             if ticketsSold > 0:
-                ticketPrice += 0.3 * math.log(ticketsSold)
+                ticketPrice += 0.05 * math.log(ticketsSold)
 
-        return ticketPrice
+        return round(ticketPrice, 1)
 
 ### Container pattern heirachy: Bookings -> Booking -> Ticket
 
