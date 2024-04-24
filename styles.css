@@ -1,0 +1,84 @@
+
+html {
+  min-height: 100%;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    transition-property: color;
+    transition-duration: 0.3s;
+    font-variation-settings:
+      "slnt" 0;
+}
+
+:root {
+    transition-property: color;
+    transition-duration: 0.3s;
+
+}
+
+.card {
+    @apply rounded-md;
+}
+
+.availableSeatCbx:hover > label > .openSeatIcon {
+  fill: #0891b2;
+  transition-duration: 100;
+  transition-property: all; }
+#continueBtn:enabled {
+  scale: 1.1; }
+#coninueBtn:enabled > svg {
+  scale: 1;
+  display: block; }
+#continueBtn:disabled > svg {
+  scale: 0;
+  display: none; }
+
+.card-title {
+    color: slategray;
+}
+
+.navbar {
+  -webkit-mask: -webkit-gradient(
+    linear,
+    left 85%,
+    left 100%,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
+  mask: gradient(
+    linear,
+    left 85%,
+    left 100%,
+    from(rgba(0, 0, 0, 1)),
+    to(rgba(0, 0, 0, 0))
+  );
+}
+
+table > tbody > tr > td {
+    transition: all 0.2s ease-in-out !important;
+}
+
+.btnRadio:checked + label {
+    color: white;
+}
+
+@keyframes fadeinX {
+    0% { opacity: 0; transform: translateX(7px); }
+
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+.fadeInTranslateX {
+    animation: fadeinX 0.25s ease-in-out forwards;
+}
+
+#viewingsNavBtn:hover > #viewingsNavBtnText {
+  display: flex;
+}
+
+#dashboardNavBtn:hover > #dashboardNavBtnText {
+  display: flex;
+}
