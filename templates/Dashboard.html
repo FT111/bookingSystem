@@ -121,16 +121,16 @@ active
     </div>
 
     <div class="sm:col-span-2 bg-base-200 card card-primary order-2">
-        <div class="stats overflow-x-hidden stats-vertical lg:stats-horizontal">
+        <div class="stats overflow-x-hidden h-full stats-vertical lg:stats-horizontal">
 
-            <div class="stat">
+            <div class="stat justify-between content-between">
                 <div class="stat-title">Most popular viewing</div>
-                <div class="stat-value viewingStat text-wrap text-2xl" id="mostPopularViewing">{{ stats['mostPopularViewing']['viewingName'] }}</div>
+                <div class="stat-value viewingStat text-wrap text-3xl" id="mostPopularViewing">{{ stats['mostPopularViewing']['viewingName'] }}</div>
                 <div class="stat-desc viewingStat" id="mostPopularViewingSub">with <strong>{{ stats['mostPopularViewing']['tickets'] }}</strong> tickets sold</div>
             </div>
-            <div class="stat">
+            <div class="stat justify-between content-between">
                 <div class="stat-title">Least popular viewing</div>
-                <div class="stat-value viewingStat text-wrap text-xl" id="leastPopularViewing">{{ stats['mostRemaining']['viewingName'] }}</div>
+                <div class="stat-value viewingStat text-wrap text-3xl" id="leastPopularViewing">{{ stats['mostRemaining']['viewingName'] }}</div>
                 <div class="stat-desc viewingStat" id="leastPopularViewingSub">with <strong>{{ stats['mostRemaining']['remainingSeats']}}</strong> tickets unsold</div>
             </div>
         </div>
