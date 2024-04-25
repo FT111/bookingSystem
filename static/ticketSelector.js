@@ -15,7 +15,8 @@ const incrementTicket = (ticketType, Price) => {
     }).then((response) => {
         let responseData = response.json().then((responseData) => {
             if (responseData.status != 200) {
-                newError(responseData.body);
+                checkTotal();
+                // newError(responseData.body);
         } else {
             ticket.value = parseInt(ticket.value) + 1;
             ticketSum++;

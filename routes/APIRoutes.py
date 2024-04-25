@@ -186,7 +186,7 @@ def addSeat():
     confirmation = booking.addTicket(ticket)
     booking.resetSeats()
     if not confirmation:
-        return Response('{"body": "Not enough tickets remaining"}', status=400, mimetype='application/json')
+        return Response('{"body": "Not enough tickets remaining"}', status=403, mimetype='application/json')
     return json.dumps({"status": "200", "body": ticket.getID()})
 
 
