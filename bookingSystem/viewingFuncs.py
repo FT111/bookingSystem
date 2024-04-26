@@ -156,7 +156,7 @@ class Viewings:
 
         # Calculating the statistics
 
-        self.getRevenueForTickets(selectedTickets, statsPerViewing, ticketTypes)
+        self.stats['totalRevenue'] = self.getRevenueForTickets(selectedTickets, statsPerViewing, ticketTypes)
 
         # Adding basic statistics to the dictionary
         self.stats['lastUpdated'] = time.time()
@@ -224,8 +224,9 @@ class Viewings:
                 self.stats['mostRemaining']['viewingName'] = viewing['viewingName']
                 self.stats['mostRemaining']['remainingSeats'] = seatsRemaining
 
-    def getRevenueForTickets(self, selectedTickets, statsPerViewing, ticketTypes):
-        self.stats['totalRevenue'] = 0
+    @staticmethod
+    def getRevenueForTickets(selectedTickets, statsPerViewing, ticketTypes) -> float:
+        totalRevenue = 0
         # Calculates the revenue for each viewing, and the total
         for ticket in selectedTickets:
             try:
@@ -235,13 +236,15 @@ class Viewings:
                 statsPerViewing[ticketViewingID]['revenue'] += price
             except IndexError:
                 price = 0
-            self.stats['totalRevenue'] += price
+            totalRevenue += price
 
             if int(ticket[4]) in statsPerViewing:
                 statsPerViewing[int(ticket[4])]['tickets'] += 1
 
+        return totalRevenue
+
     @staticmethod
-    def filterViewingsByTimePeriod(allViewingInfo, timePeriod, upcomingViewingIDs, viewingID):
+    def filterViewingsByTimePeriod(allViewingInfo: dict, timePeriod: str, upcomingViewingIDs: list, viewingID: int) -> dict:
         # Filters the viewings based on the selected time period
         if timePeriod == 'upcoming':
             filteredViewingInfo = [viewing for viewing in allViewingInfo if viewing['ViewingID'] in
@@ -256,11 +259,11 @@ class Viewings:
         return filteredViewingInfo
 
     @staticmethod
-    def getOverallRevenue(allTickets, ticketTypes):
+    def getOverallRevenue(allTickets, ticketTypes) -> float:
         overallRevenue = 0
         for ticket in allTickets:
             try:
-                price = [ticketType['Price'] for ticketType in ticketTypes if ticketType['ID'] == int(ticket[2])][0]
+                price = float(ticket[5])
             except IndexError:
                 price = 0
             overallRevenue += price
@@ -282,16 +285,16 @@ class Viewing:
         self.Time = Time
         self.inDB = inDB
 
-        self.rowCount = rowCount
-        self.seatsPerRow = seatsPerRow
+        self.rowCount = abs(rowCount)
+        self.seatsPerRow = abs(seatsPerRow)
         self.seatNames = []
         self.remainingSeatCount = remainingSeatCount
         self.reservedSeats = None
         self.unavailableSeats = None
 
         # Generate seat names - 'A1', 'A2', 'A3', etc.
-        for SeatRow in range(1, rowCount + 1):
-            for Seat in range(1, seatsPerRow + 1):
+        for SeatRow in range(1, self.rowCount + 1):
+            for Seat in range(1, self.seatsPerRow + 1):
                 rowLetter = chr(ord('A') + SeatRow - 1)
                 stringValue = f"{rowLetter}{str(Seat)}"
                 self.seatNames.append(stringValue)

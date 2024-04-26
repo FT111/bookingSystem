@@ -90,7 +90,7 @@ def newViewing():
                                      request.form.get('Description') if 'Description' in request.form.keys() else None,
                                      )
 
-    return redirect(url_for('pageRoutes.manageViewings'))
+    return redirect(f'/viewings/edit/{viewing.getID()}')
 
 
 @apiRoutes.route('/viewings/getAll', methods=['POST'])
