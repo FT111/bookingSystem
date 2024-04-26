@@ -131,7 +131,7 @@ class Viewings:
         self.allViewings.pop(viewingID)
 
     @getTiming
-    def getStats(self, viewingID: int = None, timePeriod: str = None) -> dict:
+    def getStats(self, viewingID: int = None, timePeriod: str = None) -> dict[str:any]:
 
         allViewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingName', 'viewingDate',
                                                           'viewingRows', 'seatsPerRow'])

@@ -86,9 +86,9 @@ const renderViewings = (viewings) => {
               </div>
               <div class="drawer-side z-50 h-full">
                 <label for="newViewingDrawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                  <div class="w-11/12 sm:w-1/2 lg:w-1/2 h-max bg-base-100 p-3 sm:p-8">
-                <form action="/api/viewings/submit" method="POST" class="flex flex-col w-full">
-                    <div class="flex flex-col gap-5 w-full p-5 bg-base-300 card sm:p-10">
+                  <div class="w-11/12 sm:w-1/2 lg:w-1/2 min-h-full h-max bg-base-100 p-3 sm:p-8">
+                <form action="/api/viewings/submit" method="POST" class="flex flex-col min-h-full w-full">
+                    <div class="flex flex-col gap-5 w-full p-5 bg-base-200 card sm:p-10">
                         <label for="name" class="flex flex-row gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />

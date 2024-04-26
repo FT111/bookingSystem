@@ -114,8 +114,8 @@ class Ticket:
         qr.add_data(self.qrCodeURL)
         qr.make(fit=True)
         img = qr.make_image(fill_color="black", back_color="white")
-
         img.save(f'./static/assets/codes/{self.id}.png')
+
         return self.qrCodeURL
 
     def getQR(self) -> str:
@@ -353,7 +353,9 @@ class Bookings:
             object: The booking object with the specified ID, or None if it doesn't exist.
         """
 
-        if index in self.allBookings:
+        try:
             return self.allBookings[index]
-        else:
+        except ValueError:
             return None
+
+

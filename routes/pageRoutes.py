@@ -59,6 +59,8 @@ def newBookingPage():
     ticketSum = sum(ticketCounts.values())
     priceSum = currentBooking.getPriceSum()
 
+    currentViewing = bs.Viewings.formatViewing(vars(currentViewing))
+
     return render_template('bookings/bookingNew.html', booking=currentBooking, ticketSum=ticketSum, priceSum=priceSum,
                            ticketCounts=ticketCounts, viewing=currentViewing, ticketTypes=ticketTypes)
 
