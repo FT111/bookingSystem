@@ -8,6 +8,7 @@ import secrets
 
 # Simple session authentication system - Not ideal for production
 authToken = secrets.token_urlsafe(32)
+print(authToken)
 
 dotenv.load_dotenv('../instance/.env')
 appUsername = os.environ['APP_USERNAME']
@@ -35,7 +36,7 @@ def authCheck(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if session.get('token') != authToken:
-            session['loginRedirect'] = url_for(f'pageRoutes.{func.__name__}')
+            session['loginRedirect'] = url_for(f'pageRoutes.{func.__name__}', **kwargs)
             return redirect('/login')
 
         return func(*args, **kwargs)

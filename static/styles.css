@@ -40,6 +40,15 @@ body {
     color: slategray;
 }
 
+#newBookingBtn:hover > #newBookingIcon {
+    opacity: 1;
+    transition-duration: 0.15s;
+    transform: scale(1.27);
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+}
+
 .navbar {
   -webkit-mask: -webkit-gradient(
     linear,
