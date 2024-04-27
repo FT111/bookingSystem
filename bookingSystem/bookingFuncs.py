@@ -353,9 +353,10 @@ class Bookings:
             object: The booking object with the specified ID, or None if it doesn't exist.
         """
 
+        # Attempts to retrieve the current booking
         try:
             return self.allBookings[index]
-        except ValueError:
+        except KeyError:
             return None
 
 
