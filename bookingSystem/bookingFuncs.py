@@ -49,7 +49,7 @@ class TicketTypes:
         if ticketPrice != 0:
             if timeTillViewing - 604800 < 0:
                 ticketPrice += (604800 - timeTillViewing) * 0.00003
-            if ticketsSold > 0:
+            if ticketsSold > 25:
                 ticketPrice += 0.05 * math.log(ticketsSold)
 
         return round(ticketPrice, 1)
