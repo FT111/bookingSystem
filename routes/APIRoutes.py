@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, Response, 
 import json
 import os
 
+from routes.pageRoutes import login as loginPage
 from routes.sharedInstances import bs
 from routes.webAppFunctions import getSession, authenticateSession, apiAuthCheck, authCheck
 
@@ -15,7 +16,7 @@ def login():
     password = request.form.get('password')
 
     if not authenticateSession(username, password):
-        return redirect('/login')
+        return loginPage(isRetry=True)
 
     if not session.get('loginRedirect'):
         return redirect('/dashboard')

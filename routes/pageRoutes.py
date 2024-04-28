@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, Response, session, Blueprint
+from flask import Flask, render_template, request, redirect, url_for, Response, session, Blueprint, stream_template
 from datetime import datetime
 from routes.sharedInstances import bs
 from routes.webAppFunctions import getSession, authCheck
@@ -8,8 +8,8 @@ pageRoutes = Blueprint('pageRoutes', __name__)
 
 
 @pageRoutes.route('/login')
-def login():
-    return render_template('login.html')
+def login(isRetry=False):
+    return render_template('login.html', isRetry=isRetry)
 
 
 @pageRoutes.route('/dashboard')
@@ -50,7 +50,7 @@ def editViewing(viewingID):
 def viewingsPage():
     viewings = bs.Viewings.getUpcomingViewingsAsList()
 
-    return render_template('bookings/bookingViewingSelection.html', viewings=viewings)
+    return stream_template('bookings/bookingViewingSelection.html', viewings=viewings)
 
 
 # Allows the user to select the number of tickets they want to purchase
@@ -100,7 +100,7 @@ def chooseSeatsPage():
     viewingName = viewing.getName()
     bookingID = booking.getID()
 
-    return render_template('bookings/seatSelector.html', bookingID=bookingID, viewingName=viewingName, seatNames=seatNames,
+    return stream_template('bookings/seatSelector.html', bookingID=bookingID, viewingName=viewingName, seatNames=seatNames,
                            reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow,
                            maxSeats=maxSeats)
 
