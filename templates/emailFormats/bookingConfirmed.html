@@ -19,6 +19,10 @@
             background-color: rgb(229,233,240);
         }
 
+        h1, h2, h3 {
+            color: #0a0a0a;
+        }
+
         .container {
             width: 100%;
             max-width: 600px;
@@ -26,12 +30,12 @@
             text-align: center;
             padding: 20px;
             border-radius: 10px;
-            background-color: #d9dee8;
+            background-color: #e4e6ec;
         }
         li {
             list-style-type: none;
             padding: 10px;
-            background-color: #e6e9ef;
+            background-color: #ffffff;
             border-radius: 5px;
             margin-top: 10px;
             font-weight: normal;
@@ -50,7 +54,7 @@
         .seat {
             display: inline-block;
             padding: 2px 15px;
-            background-color: #007bff;
+            background-color: #5da1ea;
             color: white;
             border-radius: 6px;
             margin: 2px;
@@ -83,7 +87,21 @@
                 </ul>
             </div>
 
-            <h2>Your tickets are attached to this Email.</h2>
+            <div class="card">
+                <h3 style="text-align: left;font-size: 25px;">Tickets</h3>
+
+                <ul>
+                {% for qrEncoding in range(qrLocs|length) %}
+                    <li>
+                    <p style="font-weight: bold;font-size: larger;margin:0;">{{ seats[qrEncoding] }}</p>
+                    <img src="cid:Attachment{{ qrEncoding }}" alt="QR Code" style="border-radius: 10px; width: 200px; height: 200px; margin: 2px;">
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+
+            <h2>Your tickets are attached to this Email</h2>
+            <p style="font-weight: bold">Please have them ready on arrival</p>
 
         </div>
     </div>
