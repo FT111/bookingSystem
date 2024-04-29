@@ -126,12 +126,12 @@ active
             <div class="stat justify-between">
                 <div class="stat-title">Most popular viewing</div>
                 <div class="stat-value viewingStat text-wrap text-3xl self-center truncate" id="mostPopularViewing">{{ stats['mostPopularViewing']['viewingName'] }}</div>
-                <div class="stat-desc viewingStat" id="mostPopularViewingSub">with <strong>{{ stats['mostPopularViewing']['tickets'] }}</strong> tickets sold</div>
+                <div class="stat-desc viewingStat self-end" id="mostPopularViewingSub">with <strong>{{ stats['mostPopularViewing']['tickets'] }}</strong> tickets sold</div>
             </div>
             <div class="stat justify-between">
                 <div class="stat-title">Least popular viewing</div>
                 <div class="stat-value viewingStat text-wrap text-3xl self-center truncate" id="leastPopularViewing">{{ stats['mostRemaining']['viewingName'] }}</div>
-                <div class="stat-desc viewingStat" id="leastPopularViewingSub">with <strong>{{ stats['mostRemaining']['remainingSeats']}}</strong> tickets unsold</div>
+                <div class="stat-desc viewingStat self-end" id="leastPopularViewingSub">with <strong>{{ stats['mostRemaining']['remainingSeats']}}</strong> tickets unsold</div>
             </div>
         </div>
     </div>

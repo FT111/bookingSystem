@@ -69,13 +69,13 @@ class Database:
     def getTicketTypes(self) -> list:
         return self.cursor.execute('SELECT * FROM ticketTypes')
 
-    def getReservedSeats(self, viewingID) -> list:
+    def getReservedSeats(self, viewingID: int) -> list:
         reservedSeatTuples = self.cursor.execute('SELECT seat FROM Tickets WHERE ViewingID = ?;', (viewingID,))
         reservedSeatList = [seat[0] for seat in reservedSeatTuples]
 
         return reservedSeatList
 
-    def getUnavailableSeats(self, viewingID) -> list:
+    def getUnavailableSeats(self, viewingID: int) -> list:
         unavailableSeatTuples = self.cursor.execute('SELECT seat FROM unavailableSeats WHERE ViewingID = ?;',
                                                     (viewingID,))
         unavailableSeatList = [seat[0] for seat in unavailableSeatTuples]
@@ -91,7 +91,7 @@ class Database:
         unavailableSeats += self.cursor.execute('SELECT ViewingID FROM unavailableSeats;')
         return unavailableSeats
 
-    def addUnavailableSeats(self, viewingID, seats: list) -> None:
+    def addUnavailableSeats(self, viewingID: int, seats: list) -> None:
         baseQuery = 'INSERT INTO unavailableSeats '
         wildCards = []
         for index, seat in enumerate(seats):
@@ -102,14 +102,14 @@ class Database:
 
         self.cursor.execute(baseQuery, (*wildCards,))
 
-    def removeUnavailableSeats(self, viewingID, seats: list) -> None:
+    def removeUnavailableSeats(self, viewingID: int, seats: list) -> None:
         seatsPlaceholders = ",".join("?" * len(seats))
         baseQuery = f'DELETE FROM unavailableSeats WHERE ViewingID = ? AND Seat IN ({seatsPlaceholders})'
         wildCards = [viewingID] + seats
 
         self.cursor.execute(baseQuery, wildCards)
 
-    def getTicketsByViewingID(self, viewingID, *columns) -> iter:
+    def getTicketsByViewingID(self, viewingID: int, *columns: str) -> iter:
         if columns:
             sqlColumns = ', '.join(columns)
             tickets = self.cursor.execute(f'SELECT {sqlColumns} FROM Tickets WHERE ViewingID = ?;', (viewingID,))

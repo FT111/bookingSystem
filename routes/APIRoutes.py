@@ -4,7 +4,7 @@ import os
 
 from routes.pageRoutes import login as loginPage
 from routes.sharedInstances import bs
-from routes.webAppFunctions import getSession, authenticateSession, apiAuthCheck, authCheck
+from routes.authFuncs import getSession, authenticateSession, apiAuthCheck, authCheck
 
 # Defines the blueprint for use in the main file
 apiRoutes = Blueprint('apiRoutes', __name__)

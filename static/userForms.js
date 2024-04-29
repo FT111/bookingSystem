@@ -106,6 +106,11 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify(formValues)
         }).then(response => response.json())
         .then(data => {
+            if (data.status !== 200) {
+                newError(data.body);
+                return;
+            }
+
             let newUser = {
                 'ID': data.body,
                 'firstName': formValues.Name.split(' ')[0],

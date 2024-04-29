@@ -18,7 +18,10 @@ class Customer:
         self.phoneNumber = phoneNumber
 
         if self.id:
-            self.id, self.firstName, self.Surname, self.email, self.phoneNumber = self.Database.getCustomerInfoByID(ID=self.id)[0]
+            try:
+                self.id, self.firstName, self.Surname, self.email, self.phoneNumber = self.Database.getCustomerInfoByID(ID=self.id)[0]
+            except IndexError:
+                self.id = uuid.uuid4().int & (1 << 32) - 1
         else:
             self.id = uuid.uuid4().int & (1 << 32) - 1
 

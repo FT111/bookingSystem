@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, Response, session, Blueprint, stream_template
+from flask import Flask, render_template, request, redirect, url_for, Response, Blueprint, stream_template
 from datetime import datetime
 from routes.sharedInstances import bs
-from routes.webAppFunctions import getSession, authCheck
+from routes.authFuncs import getSession, authCheck
 
 # Defines the blueprint for use in the main file
 pageRoutes = Blueprint('pageRoutes', __name__)
