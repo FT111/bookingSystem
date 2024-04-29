@@ -17,6 +17,12 @@ body {
     transition-property: color;
     transition-duration: 0.3s;
 
+    --rounded-box: 0.4rem !important;
+    --rounded-btn: 0.2rem !important;
+    --rounded-badge: 0.4rem !important;
+    --tab-radius: 0.2rem !important;
+
+
 }
 
 .card {

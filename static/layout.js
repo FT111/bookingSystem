@@ -2,7 +2,7 @@
 const themeCheck = () => {
   const theme = localStorage.getItem('theme');
   if (theme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'black');
+    document.documentElement.setAttribute('data-theme', 'business');
     document.getElementById('themeSwitch').checked = true;
   } else {
     document.getElementById('themeSwitch').checked = false;
@@ -21,7 +21,7 @@ const toggleTheme = () => {
     document.documentElement.setAttribute('data-theme', 'nord');
 
   } else {
-    document.documentElement.setAttribute('data-theme', 'black');
+    document.documentElement.setAttribute('data-theme', 'business');
     localStorage.setItem('theme', 'dark');
   }
 };
