@@ -1,10 +1,11 @@
-from flask import session, redirect, url_for
+from flask import session, redirect, url_for, Response
 from functools import wraps
 import uuid
 import os
 import dotenv
 import secrets
 import hashlib
+
 
 
 # Simple session authentication system - Not ideal for production
@@ -43,10 +44,10 @@ def authenticateSession(username: str, password: str) -> bool:
 
 
 # Decorator to check if the user is authenticated - Redirects to the login page if not
-def authCheck(func):
+def requiresAuth(func) -> object:
     @wraps(func)
-    def wrapper(*args, **kwargs):
-        if session.get('token') != authToken and os.environ['AUTH_ENABLED'] == 'true':
+    def wrapper(*args, **kwargs) -> object:
+        if session.get('token') != authToken and appAuthEnabled == 'true':
             session['loginRedirect'] = url_for(f'pageRoutes.{func.__name__}', **kwargs)
             return redirect('/login')
 
@@ -54,12 +55,16 @@ def authCheck(func):
     return wrapper
 
 
+def isUserAuthenticated() -> bool:
+    return session.get('token') == authToken
+
+
 # Decorator for API routes to check if the user is authenticated - Returns an error if not
-def apiAuthCheck(func):
+def APIrequiresAuth(func) -> object:
     @wraps(func)
-    def wrapper(*args, **kwargs):
-        if session.get('token') != authToken:
-            return {'error': 'Not authenticated'}, 401
+    def wrapper(*args, **kwargs) -> object:
+        if session.get('token') != authToken and appAuthEnabled == 'true':
+            return Response('Unauthorised', status=401)
 
         return func(*args, **kwargs)
     return wrapper

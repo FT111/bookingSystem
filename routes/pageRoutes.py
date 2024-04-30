@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, Response, Blueprint, stream_template
+from flask import Flask, render_template, request, redirect, url_for, Response, Blueprint, stream_template, session
 from datetime import datetime
 from routes.sharedInstances import bs
-from routes.authFuncs import getSession, authCheck
+from routes.authFuncs import getSession, requiresAuth, isUserAuthenticated
 
 # Defines the blueprint for use in the main file
 pageRoutes = Blueprint('pageRoutes', __name__)
@@ -9,12 +9,29 @@ pageRoutes = Blueprint('pageRoutes', __name__)
 
 @pageRoutes.route('/login')
 def login(isRetry=False):
+    if isUserAuthenticated():
+        return redirect(url_for('pageRoutes.index'))
+
     return render_template('login.html', isRetry=isRetry)
 
 
+@pageRoutes.route('/logout')
+def logout():
+    sessionID = getSession()
+
+    print('meow')
+    bs.Bookings.removeBooking(sessionID)
+    session['sessionID'] = None
+    session['token'] = None
+
+    return redirect(url_for('pageRoutes.login'))
+
+
 @pageRoutes.route('/dashboard')
-@authCheck
+@requiresAuth
 def index():
+    sessionID = getSession()
+
     allStats = bs.Viewings.getStats()
     customers = bs.Customers.getAllCustomerInfoFromDB('firstName','Surname', 'emailAddress', 'phoneNumber')
 
@@ -22,14 +39,14 @@ def index():
 
 
 @pageRoutes.route('/viewings/manage')
-@authCheck
+@requiresAuth
 def manageViewings():
     viewings = bs.Viewings.getAllViewingsAsList()
     return render_template('viewings/manage.html', viewings=viewings)
 
 
 @pageRoutes.route('/viewings/edit/<int:viewingID>')
-@authCheck
+@requiresAuth
 def editViewing(viewingID):
     bs.Viewings.getAllViewingsFromDB()
     viewing = bs.Viewings.getStoredViewingByID(viewingID)
@@ -46,7 +63,7 @@ def editViewing(viewingID):
 
 # Shows the upcoming viewings to the user and allows selection
 @pageRoutes.route('/booking/new')
-@authCheck
+@requiresAuth
 def viewingsPage():
     viewings = bs.Viewings.getUpcomingViewingsAsList()
 
@@ -55,7 +72,7 @@ def viewingsPage():
 
 # Allows the user to select the number of tickets they want to purchase
 @pageRoutes.route('/booking/tickets')
-@authCheck
+@requiresAuth
 def newBookingPage():
     sessionID = getSession()
     try:
@@ -77,7 +94,7 @@ def newBookingPage():
 
 # Allows the user to select the seats they want to book
 @pageRoutes.route('/booking/seats')
-@authCheck
+@requiresAuth
 def chooseSeatsPage():
     sessionID = getSession()
 
@@ -106,7 +123,7 @@ def chooseSeatsPage():
 
 
 @pageRoutes.route('/booking/summary')
-@authCheck
+@requiresAuth
 def bookingSummary():
     sessionID = getSession()
     try:

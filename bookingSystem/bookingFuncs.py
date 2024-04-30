@@ -333,14 +333,18 @@ class Bookings:
 
         return newBooking
 
-    def removeBooking(self, index: int) -> None:
+    def removeBooking(self, index: int) -> bool:
         """
         Removes a booking from the collection of bookings.
 
         Args:
             index (int): The index of the booking to be removed.
         """
-        del self.allBookings[index]
+        try:
+            del self.allBookings[index]
+            return True
+        except KeyError:
+            return False
 
     def getBookingByID(self, index: int) -> object:
         """

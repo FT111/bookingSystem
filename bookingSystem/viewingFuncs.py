@@ -66,6 +66,9 @@ class Viewings:
         except ValueError:
             raise ValueError("Invalid row count or seats per row, please use strings or integers.")
 
+        if (seatsPerRow * rowCount) < 1:
+            raise ValueError('Seating must be greater or equal to 1x1.')
+
         newViewing = Viewing(self.Database, None, Name, Date, Time, rowCount, seatsPerRow, Description, BannerURL)
         newViewing.submitToDB()
 

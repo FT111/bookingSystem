@@ -4,7 +4,7 @@ import os
 
 from routes.pageRoutes import login as loginPage
 from routes.sharedInstances import bs
-from routes.authFuncs import getSession, authenticateSession, apiAuthCheck, authCheck
+from routes.authFuncs import getSession, authenticateSession, APIrequiresAuth, requiresAuth
 
 # Defines the blueprint for use in the main file
 apiRoutes = Blueprint('apiRoutes', __name__)
@@ -37,7 +37,7 @@ def checkTicket(ticketID):
 
 
 @apiRoutes.route('/viewings/manage/<int:viewingID>', methods=['DELETE'])
-@apiAuthCheck
+@APIrequiresAuth
 def deleteViewing(viewingID):
     bs.Viewings.getAllViewingsFromDB()
     bs.Viewings.deleteViewing(viewingID)
@@ -46,41 +46,41 @@ def deleteViewing(viewingID):
 
 
 @apiRoutes.route('/viewings/getViewingDataByIDs', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def getViewingData():
     selectedViewings = (bs.Viewings.getStoredViewingByID(viewingID) for viewingID in request.json.get('viewingIDs'))
 
 
 @apiRoutes.route('/viewings/getStats', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def getAllStats():
     stats = bs.Viewings.getStats()
     return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
 
 
 @apiRoutes.route('/viewings/getStats/upcoming', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def getUpcomingStats():
     stats = bs.Viewings.getStats(timePeriod='upcoming')
     return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
 
 
 @apiRoutes.route('/viewings/getStats/past', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def getPastStats():
     stats = bs.Viewings.getStats(timePeriod='past')
     return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
 
 
 @apiRoutes.route('/viewings/getStats/viewing/<int:viewingID>', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def getSpecificStats(viewingID):
     stats = bs.Viewings.getStats(viewingID=viewingID)
     return Response(f'{{"body": {json.dumps(stats)}}}', status=200, mimetype='application/json')
 
 
 @apiRoutes.route('/viewings/editAvailableSeats/<int:viewingID>', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def editAvailableSeats(viewingID):
     viewing = bs.Viewings.getStoredViewingByID(viewingID)
     print(request.json.get('unavailableSeats'))
@@ -93,7 +93,7 @@ def editAvailableSeats(viewingID):
 
 
 @apiRoutes.route('/viewings/submit', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def newViewing():
     # Validation
     requiredFields = ['viewingName', 'Date', 'Time', 'rowCount', 'seatsPerRow']
@@ -103,27 +103,30 @@ def newViewing():
         return Response(f'{{"body": "Missing required fields: {", ".join(missingFields)}"}}', status=400,
                         mimetype='application/json')
 
-    viewing = bs.Viewings.newViewing(request.form.get('viewingName'),
-                                     request.form.get('Date'),
-                                     request.form.get('Time'),
-                                     request.form.get('rowCount'),
-                                     request.form.get('seatsPerRow'),
-                                     request.form.get('Banner') if 'Banner' in request.form.keys() else None,
-                                     request.form.get('Description') if 'Description' in request.form.keys() else None,
-                                     )
+    try:
+        viewing = bs.Viewings.newViewing(request.form.get('viewingName'),
+                                         request.form.get('Date'),
+                                         request.form.get('Time'),
+                                         request.form.get('rowCount'),
+                                         request.form.get('seatsPerRow'),
+                                         request.form.get('Banner') if 'Banner' in request.form.keys() else None,
+                                         request.form.get('Description') if 'Description' in request.form.keys() else None,
+                                         )
+    except ValueError as error:
+        return redirect('/viewings/manage')
 
     return redirect(f'/viewings/edit/{viewing.getID()}')
 
 
 @apiRoutes.route('/viewings/getAll', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def getAllViewings():
     viewings = bs.Viewings.getAllViewingsAsList()
     return Response(f'{{"body": {json.dumps(viewings)}}}', status=200, mimetype='application/json')
 
 
 @apiRoutes.route('/customers/getAll', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def getAllCustomers():
     customers = bs.Customers.getAllCustomerInfoFromDB('firstName', 'Surname', 'emailAddress', 'phoneNumber', 'ID')
 
@@ -133,7 +136,7 @@ def getAllCustomers():
 
 
 @apiRoutes.route('/bookings/getTicketsByViewing/<int:viewingID>', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def getCustomersByViewing(viewingID):
     customers = bs.Customers.getAllCustomerInfoFromDB('firstName', 'Surname', 'emailAddress', 'phoneNumber', 'ID')
     customerDictByID = {customer['ID']: customer for customer in customers}
@@ -150,7 +153,7 @@ def getCustomersByViewing(viewingID):
 
 
 @apiRoutes.route('/customers/new', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def newCustomer():
     print(request.json)
     requiredFields = ['Name', 'Email', 'phoneNumber']
@@ -181,7 +184,7 @@ def newCustomer():
 
 
 @apiRoutes.route('/bookings/startNewBooking', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def startNewBooking():
     sessionID = getSession()
 
@@ -202,7 +205,7 @@ def startNewBooking():
 #     return json.dumps({'status': '200'})
 
 @apiRoutes.route('/bookings/addTicket', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def addSeat():
     sessionID = getSession()
     booking = bs.Bookings.getBookingByID(sessionID)
@@ -219,7 +222,7 @@ def addSeat():
 
 
 @apiRoutes.route('/bookings/removeTicket', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def removeTicket():
     sessionID = getSession()
 
@@ -231,7 +234,7 @@ def removeTicket():
 
 
 @apiRoutes.route('/bookings/addSeat', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def setSeats():
     sessionID = getSession()
 
@@ -242,7 +245,7 @@ def setSeats():
 
 
 @apiRoutes.route('/bookings/removeSeat', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def removeSeat():
     sessionID = getSession()
 
@@ -253,7 +256,7 @@ def removeSeat():
 
 
 @apiRoutes.route('/bookings/getBookingInfo', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def getBookingInfo():
     sessionID = getSession()
 
@@ -284,7 +287,7 @@ def getBookingInfo():
 
 
 @apiRoutes.route('/bookings/addCustomer', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 def addCustomer():
     sessionID = getSession()
 
@@ -300,7 +303,7 @@ def addCustomer():
 
 
 @apiRoutes.route('/bookings/submit', methods=['POST'])
-@apiAuthCheck
+@APIrequiresAuth
 
 def submitBooking():
     sessionID = getSession()

@@ -1,3 +1,6 @@
+const logOut = () => {
+    window.location.href = '/logout';
+}
 
 const themeCheck = () => {
   const theme = localStorage.getItem('theme');
@@ -13,6 +16,8 @@ const themeCheck = () => {
 window.addEventListener("load",function(){
   themeCheck();
 },false);
+
+
 
 const toggleTheme = () => {
   const theme = localStorage.getItem('theme');

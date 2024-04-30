@@ -102,9 +102,44 @@ table > tbody > tr > td {
 }
 
 #viewingsNavBtn:hover > #viewingsNavBtnText {
-  display: flex;
+  display: block;
+    position: absolute;
+}
+#dashboardNavBtn:hover{
+    width: 9.5rem;
 }
 
+#viewingsNavBtn:hover{
+    width: 12rem;
+}
+
+#logOutNavBtn:hover{
+    width: 7.5rem;
+}
+
+#dashboardNavBtn, #viewingsNavBtn, #logOutNavBtn {
+    transition: all 0.2s ease-in-out;
+    width: 4rem;
+    overflow: hidden;
+    wrap-option: nowrap;
+    flex-direction: row;
+}
+
+#dashboardNavBtnText, #viewingsNavBtnText, #logOutNavBtnText {
+    transition: all 0.2s ease-in-out;
+    wrap-option: nowrap;
+    text-wrap: none;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+
 #dashboardNavBtn:hover > #dashboardNavBtnText {
-  display: flex;
+  display: block;
+    position: absolute;
+}
+
+#logOutNavBtn:hover > #logOutNavBtnText {
+  display: block;
+    position: absolute;
 }
