@@ -47,7 +47,7 @@ let priceSum = {{ priceSum }};
             <!-- Main interaction card -->
             <div class="card bg-base-300 min-h-96 w-full">
                 {% if viewing.Banner %}
-                    <figure class="h-24"><img class="w-full" src="{{ viewing.Banner }}" alt="{{viewing.name}} banner" /></figure>
+                    <figure class="h-24"><img draggable="false" ondragstart="return false;"  class="w-full" src="{{ viewing.Banner }}" alt="{{viewing.name}} banner" /></figure>
                 {% else %}
                     <figure></figure>
                 {% endif %}

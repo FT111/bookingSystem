@@ -202,9 +202,13 @@ const renderViewings = (viewings) => {
             `;
 
         } else {
+            let viewingButton = viewing.remainingSeatCount > 0
+                ? `<button onclick="newBooking(${viewing.viewingID})"class="btn btn-primary text-white text-lg btn-no-animation" name="Select">Select</button>`
+                : `<button class="btn btn-neutral btn-disabled text-white text-lg" name="Select">Sold out</button>`;
+
             viewingsContainer.innerHTML += `
             <div class="viewingCard card w-full bg-base-300 h-80" id="${viewing.viewingID}">
-            ${viewing.Banner ? `<figure><img src="${viewing.Banner}" alt="${viewing.Name} banner" /></figure>` : '<figure></figure>'}
+            ${viewing.Banner ? `<figure><img draggable="false" ondragstart="return false;"  src="${viewing.Banner}" alt="${viewing.Name} banner" /></figure>` : '<figure></figure>'}
             <div class="card-body gap-3">
             
                 <h2 class="card-title">${viewing.Name}</h2>
@@ -218,10 +222,8 @@ const renderViewings = (viewings) => {
                 </span>
                 
                 <p class="truncate">${viewing.Description}</p>
-                
-                    <button onclick="newBooking(${viewing.viewingID})" class="btn no-animation btn-primary text-white text-lg" name="Select">Select
-                    </button>
-                
+
+                ${viewingButton}
                 `
         }
     });

@@ -15,6 +15,7 @@ dotenv.load_dotenv('../instance/.env')
 appUsername = os.environ['APP_USERNAME']
 appHash = os.environ['APP_AUTH_HASH']
 appSalt = os.environ['APP_SALT']
+appAuthEnabled = os.environ['AUTH_ENABLED']
 
 assert appUsername is not None, 'APP_USERNAME not found in .env'
 assert appHash is not None, 'APP_AUTH_HASH not found in .env'
@@ -45,7 +46,7 @@ def authenticateSession(username: str, password: str) -> bool:
 def authCheck(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if session.get('token') != authToken:
+        if session.get('token') != authToken and os.environ['AUTH_ENABLED'] == 'true':
             session['loginRedirect'] = url_for(f'pageRoutes.{func.__name__}', **kwargs)
             return redirect('/login')
 
