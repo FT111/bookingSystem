@@ -19,7 +19,6 @@ def login(isRetry=False):
 def logout():
     sessionID = getSession()
 
-    print('meow')
     bs.Bookings.removeBooking(sessionID)
     session['sessionID'] = None
     session['token'] = None

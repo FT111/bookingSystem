@@ -316,7 +316,7 @@ class Bookings:
         self.Database = Database
         self.allBookings = dict()
 
-    def newBooking(self, ID: str, ViewingObj: object) -> int:
+    def newBooking(self, ID: str, ViewingObj: object) -> Booking:
         """
         Creates a new booking and adds it to the collection of bookings.
 
