@@ -19,12 +19,13 @@ const disableAllSeats = () => {
         if (Seats[i].checked === false) {
             Seats[i].disabled = true;
             Seats[i].nextElementSibling.classList.add('opacity-75');
-            document.getElementById('continueBtn').disabled = false;
-            document.getElementById('continueTooltip').classList.remove('tooltip', 'tooltip-bottom');
+
         }
         ;
     }
     ;
+    document.getElementById('continueBtn').disabled = false;
+    document.getElementById('continueTooltip').classList.remove('tooltip', 'tooltip-bottom');
 };
 
 const enableAllSeats = () => {
@@ -65,7 +66,6 @@ const toggleSeat = (seat) => {
 };
 
 const refreshSeatIndicator = () => {
-    console.log(selectedSeats);
     const seatsRemainingIndicator = document.getElementById("seatsRemaining");
     seatsRemainingIndicator.innerHTML = (maxSeats - selectedSeats.length);
     const seatIndicator = document.getElementById("seatIndicator");
@@ -91,28 +91,10 @@ const refreshSeatIndicator = () => {
 };
 
 window.onload = () => {
-    if (sessionStorage.getItem('maxSeats')) {
-        if (sessionStorage.getItem('bookingID')!= null) {
-            const lastBookingID = JSON.parse(sessionStorage.getItem('bookingID'));
-            const lastMaxSeats = JSON.parse(sessionStorage.getItem('maxSeats'));
+    serverSelectedSeats.forEach((seat) => {
+        selectedSeats.push(seat);
+        document.getElementById(seat).checked = true;
 
-            if (lastMaxSeats != maxSeats || lastBookingID != bookingID) {
-                sessionStorage.setItem('maxSeats', JSON.stringify(maxSeats));
-                sessionStorage.setItem('bookingID', JSON.stringify(bookingID));
-            }
-            else {
-                if (sessionStorage.getItem('selectedSeats')) {
-                    selectedSeats = JSON.parse(sessionStorage.getItem('selectedSeats'));
-                    refreshSeatIndicator();
-                }
-                else {
-                    sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
-                };
-            };
-        }
-    } else {
-        sessionStorage.setItem('maxSeats', JSON.stringify(maxSeats));
-        sessionStorage.setItem('bookingID', JSON.stringify(bookingID));
-            
-        };
+    });
+    refreshSeatIndicator();
 };

@@ -108,6 +108,7 @@ def chooseSeatsPage():
 
     # Retrieve the viewing object from the current user's booking
     viewing = booking.getViewing()
+    selectedSeats = booking.getSelectedSeats()
 
     seatNames = viewing.getSeatNames()
     reservedNames = viewing.getReservedSeats()
@@ -118,7 +119,7 @@ def chooseSeatsPage():
 
     return stream_template('bookings/seatSelector.html', bookingID=bookingID, viewingName=viewingName, seatNames=seatNames,
                            reservedSeats=reservedNames, unavailableSeats=unavailableNames, seatsPerRow=seatsPerRow,
-                           maxSeats=maxSeats)
+                           maxSeats=maxSeats, selectedSeats=selectedSeats)
 
 
 @pageRoutes.route('/booking/summary')

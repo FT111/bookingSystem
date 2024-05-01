@@ -11,6 +11,7 @@ active
 
 <!-- Passing data to JS -->
 <script>
+let serverSelectedSeats = {{ selectedSeats | tojson }};
 let maxSeats = {{ maxSeats }};
 let bookingID = '{{ bookingID }}';
 </script>
