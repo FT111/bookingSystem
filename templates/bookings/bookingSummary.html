@@ -20,7 +20,7 @@ let priceSum = {{ priceSum }};
 
 {% block body %}
 
-    <div id="confirmationScreen" class="fixed hidden opacity-0 top-0 z-50 bg-base-100/0 w-screen h-lvh transition-all duration-500 ease-in-out">
+    <div id="confirmationScreen" class="fixed hidden opacity-0 top-0 z-50 bg-base-100/0 backdrop-blur-xl w-screen h-lvh transition-all duration-500 ease-in-out">
         <div class="flex flex-col items-center justify-center w-full h-full">
             <h2 class="text-3xl sm:text-6xl text-center text-content font-bold">Booking Confirmed.</h2>
         </div>
@@ -178,7 +178,7 @@ let priceSum = {{ priceSum }};
                 <div></div> <!-- Spacer -->
 
                 <div class="tooltip order-2 sm:tooltip-left tooltip-bottom tooltip-open" id="continueTooltip" data-tip="Select a user to submit">
-                    <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end rounded-md text-base-200 transition-all ease-in-out duration-200" onclick="submitBooking()" disabled="disabled" id="continueBtn">Submit
+                    <button class="btn btn-primary items-center btn-block sm:btn-md mw-8 sm:mw-0 sm:w-auto flex-end gap-2 rounded-md text-base-200 transition-all ease-in-out duration-200" onclick="submitBooking()" disabled="disabled" id="continueBtn">Submit
                         <!-- prettier-ignore -->
                         <svg class="stroke-base-200 transition-all ease-in-out duration-400" width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                     </button>

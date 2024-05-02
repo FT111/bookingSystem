@@ -278,6 +278,7 @@ class Booking:
                 if ticket.getSeatLocation() in unavailableSeats or ticket.getSeatLocation() not in self.Viewing.getSeatNames():
                     self.Tickets = []
                     return False
+
         else:
             for seat in seats:
                 if seat in unavailableSeats or seat not in self.Viewing.getSeatNames():
@@ -293,9 +294,6 @@ class Booking:
                                                 self.Viewing, self.Tickets)
 
         return True
-
-    def confirmBooking(self) -> None:
-        pass
 
 
 class Bookings:

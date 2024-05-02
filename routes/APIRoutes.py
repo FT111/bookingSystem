@@ -304,14 +304,14 @@ def addCustomer():
 
 @apiRoutes.route('/bookings/submit', methods=['POST'])
 @APIrequiresAuth
-
 def submitBooking():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
     seatLocations = booking.getSelectedSeats()
 
-    booking.Submit(seatLocations)
+    if not booking.Submit(seatLocations):
+        return Response('{"status": "403"}', status=403, mimetype='application/json')
 
     bs.Bookings.removeBooking(sessionID)
 
