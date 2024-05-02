@@ -69,7 +69,7 @@ const getViewings = (searchElement=undefined, ID= undefined) => {
 
 const closeViewings = () => {
     let viewingSelector = document.getElementById('viewingSelector');
-    viewingSelector.classList.add('hidden', '-translate-y-1/2', 'opacity-0', 'blur-lg');
+    viewingSelector.classList.add('hidden', '-translate-y-1/2', 'opacity-0', 'blur-md');
 
     let optionBar = document.getElementById('optionBar');
     optionBar.classList.remove('h-1/2')
@@ -95,7 +95,7 @@ const showViewings = (viewings) => {
     });
 
     setTimeout(() => {
-        viewingSelector.classList.remove('-translate-y-1/2', 'opacity-0', 'blur-lg');
+        viewingSelector.classList.remove('-translate-y-1/2', 'opacity-0', 'blur-md');
     }, 1);
     
 }

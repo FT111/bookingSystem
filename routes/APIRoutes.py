@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, Response, 
 import json
 import os
 
+import time
+import random
+
 from routes.pageRoutes import login as loginPage
 from routes.sharedInstances import bs
 from routes.authFuncs import getSession, authenticateSession, APIrequiresAuth, requiresAuth
@@ -320,6 +323,39 @@ def submitBooking():
 
 # Test Endpoints
 # vvvvvvvvvvvvvv
+
+
+@apiRoutes.route('/testBooking')
+def testBookings():
+    sessionID = getSession()
+
+    bs.Viewings.getAllViewingsFromDB()
+    viewing = bs.Viewings.getAllViewingsFromDB()[1]
+    print(viewing)
+    booking = bs.Bookings.newBooking(sessionID, viewing)
+    ticket = bs.Ticket(2)
+    ticket2 = bs.Ticket(1)
+
+    booking.addTicket(ticket)
+    booking.addTicket(ticket2)
+
+    booking.addSeat('C1')
+    booking.addSeat('C2')
+
+    return redirect('/booking/summary')
+
+@apiRoutes.route('/bookings/testSubmit', methods=['POST'])
+@APIrequiresAuth
+def testSubmitBooking():
+    sessionID = getSession()
+
+    time.sleep(random.randint(1, 3))
+
+    bs.Bookings.removeBooking(sessionID)
+
+    return Response('{"status": "200"}', status=200, mimetype='application/json')
+
+
 
 @apiRoutes.route('/testEmail')
 def testEmail():
