@@ -16,24 +16,22 @@ class DatabaseConnection:
         return connection
 
     def executeQueuedQueries(self):
-        while True:
-            # file deepcode ignore single~iteration~loop: <please specify a reason of ignoring this>
-            arguments = self.queue.get()
-            query = arguments[0]
-            args = arguments[1]
-            db = self.newConnection()
-            cursor = db.cursor()
+        arguments = self.queue.get()
+        query = arguments[0]
+        args = arguments[1]
+        db = self.newConnection()
+        cursor = db.cursor()
 
-            if args == ():
-                cursor.execute(query)
-            else:
-                cursor.execute(query, args)
-            db.commit()
-            queryOutput = cursor.fetchall()
-            self.queue.task_done()
-            db.close()
+        if args == ():
+            cursor.execute(query)
+        else:
+            cursor.execute(query, args)
+        db.commit()
+        queryOutput = cursor.fetchall()
+        self.queue.task_done()
+        db.close()
 
-            return queryOutput
+        return queryOutput
 
     def startHandler(self):
         for thread in range(10):

@@ -9,7 +9,7 @@ const submitBooking = () => {
     <span class="loading loading-spinner loading-md"></span>
     `;
 
-    let response = fetch('/api/bookings/testSubmit', {
+    let response = fetch('/api/bookings/submit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
