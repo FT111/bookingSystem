@@ -7,7 +7,6 @@ import secrets
 import hashlib
 
 
-
 # Simple session authentication system - Not ideal for production
 authToken = secrets.token_urlsafe(32)
 

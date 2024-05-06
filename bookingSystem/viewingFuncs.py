@@ -133,7 +133,6 @@ class Viewings:
         viewing.delete()
         self.allViewings.pop(viewingID)
 
-    @getTiming
     def getStats(self, viewingID: int = None, timePeriod: str = None) -> dict[str:any]:
 
         allViewingInfo = self.Database.getAllViewingInfo(['ViewingID', 'viewingName', 'viewingDate',
@@ -290,6 +289,7 @@ class Viewing:
 
         self.rowCount = abs(rowCount)
         self.seatsPerRow = abs(seatsPerRow)
+
         self.seatNames = []
         self.remainingSeatCount = remainingSeatCount
         self.reservedSeats = None

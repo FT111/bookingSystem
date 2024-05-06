@@ -15,39 +15,37 @@ class DatabaseConnection:
         connection = sqlite3.connect(self.path)
         return connection
 
+    # Executes queued queries in a separate thread
     def executeQueuedQueries(self):
-        arguments = self.queue.get()
-        query = arguments[0]
-        args = arguments[1]
-        db = self.newConnection()
-        cursor = db.cursor()
+        while True:
+            arguments = self.queue.get()
+            query = arguments[0]
+            args = arguments[1]
+            db = self.newConnection()
+            cursor = db.cursor()
 
-        if args == ():
-            cursor.execute(query)
-        else:
-            cursor.execute(query, args)
-        db.commit()
-        queryOutput = cursor.fetchall()
-        self.queue.task_done()
-        db.close()
+            if args == ():
+                cursor.execute(query)
+            else:
+                cursor.execute(query, (*args,))
+            db.commit()
+            queryOutput = cursor.fetchall()
 
-        return queryOutput
+            self.queue.task_done()
+            db.close()
+
+            return queryOutput
 
     def startHandler(self):
-        for thread in range(10):
-            threading.Thread(target=self.executeQueuedQueries, daemon=True).start()
+        threading.Thread(target=self.executeQueuedQueries, daemon=True).start()
 
     def execute(self, query: str, args: tuple = ()) -> list:
-        try:
-            print(f'Executing {query} {"with" + args if args != () else ""}')
-        except TypeError:
-            print(f'Executing {query}')
         self.queue.put((query, args))
         return self.executeQueuedQueries()
 
 
 class Database:
-    def __init__(self, DBConnectionInstance: object) -> None:
+    def __init__(self, DBConnectionInstance: DatabaseConnection) -> None:
         self.cursor = DBConnectionInstance
 
         self.acceptedCustomerColumns = ['ID', 'firstName', 'Surname', 'emailAddress', 'phoneNumber']
