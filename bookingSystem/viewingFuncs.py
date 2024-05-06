@@ -399,6 +399,9 @@ class Viewing:
     def delete(self) -> None:
         self.Database.deleteViewing(self.viewingID)
 
+        for ticket in self.getTicketInfo():
+            self.Database.removeTicket(self.viewingID, ticket['TicketID'])
+
     def submitToDB(self) -> None:
         self.Database.newViewing(self)
 

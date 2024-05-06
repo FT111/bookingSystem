@@ -22,7 +22,11 @@ class BookingSystemWebApp:
 
     def run(self):
         # deepcode ignore RunWithDebugTrue: Development server
-        self.app.run(debug=True, port=8000, host='0.0.0.0')
+        self.app.run(port=8000, host='0.0.0.0')
+
+
+def createApp():
+    return BookingSystemWebApp().app
 
 
 if __name__ == '__main__':

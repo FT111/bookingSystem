@@ -34,7 +34,7 @@ def index():
     allStats = bs.Viewings.getStats()
     customers = bs.Customers.getAllCustomerInfoFromDB('firstName','Surname', 'emailAddress', 'phoneNumber')
 
-    return render_template('dashboard.html', stats=allStats, customers=customers)
+    return render_template('Dashboard.html', stats=allStats, customers=customers)
 
 
 @pageRoutes.route('/viewings/manage')
