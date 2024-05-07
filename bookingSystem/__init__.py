@@ -51,7 +51,6 @@ class BookingSystem:
         Viewings.setTicketTypes(self.TicketTypes)
         Ticket.setDatabase(self.Database)
         if hostName:
-            print(f'Host name set to {hostName}')
             Ticket.setHostName(hostName)
 
         Customer.setDatabase(self.Database)

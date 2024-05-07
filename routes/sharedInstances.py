@@ -4,7 +4,7 @@ import socket
 import bookingSystem as bSystem
 from dotenv import load_dotenv
 
-load_dotenv('../instance/.env')
+load_dotenv('./instance/.env')
 
 
 def getHostName():

@@ -2,8 +2,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import smtplib
+import os
 from flask import render_template
-import base64
 
 
 class EmailFuncs:
@@ -12,6 +12,13 @@ class EmailFuncs:
         self.emailAuth = emailAuth
         self.emailProvider = emailProvider
         self.emailPort = emailPort
+
+        assert self.emailAddress is not None, 'EMAIL_ADDRESS not found in .env'
+        assert self.emailAuth is not None, 'EMAIL_AUTH not found in .env'
+        assert self.emailProvider is not None, 'EMAIL_PROVIDER not found in .env'
+        assert self.emailPort is not None, 'EMAIL_PORT not found in .env'
+
+        print(os.environ)
 
     def sendHTMLMail(self, toAddress, subject, body, imageLocs: list[str] = None):
         msg = MIMEMultipart()
@@ -30,9 +37,17 @@ class EmailFuncs:
 
         try:
             with smtplib.SMTP(self.emailProvider, self.emailPort) as server:
+                server.connect(self.emailProvider, self.emailPort)
                 server.starttls()
                 server.login(self.emailAddress, self.emailAuth)
                 server.sendmail(self.emailAddress, toAddress, msg.as_string())
+
+        except smtplib.SMTPAuthenticationError as e:
+            print('Email authentication failed:', e)
+
+        except smtplib.SMTPConnectError as e:
+            print('Email connection failed:', e)
+
         except smtplib.SMTPRecipientsRefused:  # Catches test data addresses refusing the email - Removed in production
             pass
 
