@@ -312,7 +312,7 @@ class Bookings:
 
     def __init__(self, Database: object) -> None:
         self.Database = Database
-        self.allBookings = dict()
+        self.allBookings: {str: Booking} = dict()
 
     def newBooking(self, ID: str, ViewingObj: object) -> Booking:
         """

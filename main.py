@@ -25,6 +25,7 @@ class BookingSystemWebApp:
         self.app.run(port=8000, host='0.0.0.0')
 
 
+# Used in WSGI servers
 def createApp():
     return BookingSystemWebApp().app
 

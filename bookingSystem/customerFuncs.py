@@ -52,7 +52,7 @@ class Customer:
 
 class Customers:
     def __init__(self, Database) -> None:
-        self.allCustomers = dict()
+        self.allCustomers: {int: Customer} = dict()
         self.Database = Database
 
     def getAllCustomersFromDB(self) -> dict:
