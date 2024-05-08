@@ -43,4 +43,4 @@ jobs:
             docker pull ftaylor0/bookingsystem-web:latest
             docker stop bookingsystem-web
             docker rm bookingsystem-web
-            docker run -d --name bookingsystem-web -p 80:80 ftaylor0/bookingsystem-web:latest
+            docker run -d --name bookingsystem-web -p 9000:9000 ftaylor0/bookingsystem-web:latest
