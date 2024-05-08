@@ -5,19 +5,6 @@ import time
 from functools import wraps
 
 
-def getTiming(f):
-    @wraps(f)
-    def wrap(*args, **kw):
-        ts = time.time()
-        result = f(*args, **kw)
-        te = time.time()
-        print('func:%r args:[%r, %r] took: %2.4f sec' % \
-              (f.__name__, args, kw, te - ts))
-        return result
-
-    return wrap
-
-
 class Viewings:
     ticketTypes = None
 
@@ -26,7 +13,7 @@ class Viewings:
         cls.ticketTypes = TicketTypes
 
     def __init__(self, Database) -> None:
-        self.allViewings = dict()
+        self.allViewings: {int: Viewing} = dict()
         self.Database = Database
         self.stats = dict()
 
