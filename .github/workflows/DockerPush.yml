@@ -37,6 +37,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
+            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
             docker pull ftaylor0/bookingsystem-web:latest
             docker stop bookingsystem-web
             docker rm bookingsystem-web
