@@ -12,6 +12,7 @@ class BookingSystemWebApp:
     """
 
     def __init__(self):
+        # Creates the Flask app
         self.app = Flask(__name__)
 
         # Used to sign cookies
