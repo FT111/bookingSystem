@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ftaylor0/bookingsystem-web:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/bookingsystem-web:latest
 
       - name: Deploy to server
         uses: appleboy/ssh-action@master
@@ -40,7 +40,7 @@ jobs:
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
             docker stop bookingsystem-web
             docker rm bookingsystem-web
-            docker pull ftaylor0/bookingsystem-web:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bookingsystem-web:latest
             docker stop bookingsystem-web
             docker rm bookingsystem-web
-            docker run -d --name bookingsystem-web -p 9000:9000 ftaylor0/bookingsystem-web:latest
+            docker run -d --name bookingsystem-web -p 9000:9000 ${{ secrets.DOCKERHUB_USERNAME }}/bookingsystem-web:latest
