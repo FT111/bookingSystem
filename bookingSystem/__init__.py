@@ -35,7 +35,6 @@ class BookingSystem:
         self.Viewing = Viewing
         self.Customer = Customer
 
-        # The composite pattern is needed to manage simultaneous Flask sessions
         self.DATABASE_CONNECTION = DatabaseConnection(dbPath)  # Thread safe SQLite connection handler
         self.Database = Database(self.DATABASE_CONNECTION)  # Primary database functions
 
