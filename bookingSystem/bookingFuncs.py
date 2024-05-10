@@ -77,7 +77,6 @@ class Ticket:
 
         self.id = uuid.uuid4().int
         self.id = str(self.id)[:16]
-        print(self.id)
 
     def getID(self) -> str:
         return self.id
@@ -89,7 +88,6 @@ class Ticket:
         return self.seatLocation
 
     def getPrice(self) -> float:
-        print(self.price)
         return self.price
 
     def setTicketType(self, ticketType: str) -> None:

@@ -94,8 +94,6 @@ class Database:
             wildCards += [seat, viewingID]
             baseQuery += f'SELECT ?, ? {"UNION ALL" if index != len(seats)-1 else ";"} '
 
-        print(baseQuery, wildCards)
-
         self.cursor.execute(baseQuery, (*wildCards,))
 
     def removeUnavailableSeats(self, viewingID: int, seats: list) -> None:

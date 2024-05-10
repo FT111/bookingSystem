@@ -12,7 +12,6 @@ authToken = secrets.token_urlsafe(32)
 
 # Loads environment variables from the .env file - Asserts that the required variables are present
 dotenv.load_dotenv('./instance/.env')
-print(os.environ)
 
 appUsername = os.environ['APP_USERNAME']
 appHash = os.environ['APP_AUTH_HASH']

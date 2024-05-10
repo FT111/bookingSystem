@@ -86,7 +86,6 @@ def getSpecificStats(viewingID):
 @APIrequiresAuth
 def editAvailableSeats(viewingID):
     viewing = bs.Viewings.getStoredViewingByID(viewingID)
-    print(request.json.get('unavailableSeats'))
 
     # Ensures the process is completed
     if viewing.setUnavailableSeats(request.json.get('unavailableSeats')):
@@ -158,7 +157,6 @@ def getCustomersByViewing(viewingID):
 @apiRoutes.route('/customers/new', methods=['POST'])
 @APIrequiresAuth
 def newCustomer():
-    print(request.json)
     requiredFields = ['Name', 'Email', 'phoneNumber']
     missingFields = [field for field in requiredFields if field not in request.json.keys()]
 
@@ -214,7 +212,6 @@ def addSeat():
     booking = bs.Bookings.getBookingByID(sessionID)
 
     ticketPrice = bs.TicketTypes.getTypePriceForViewing(booking.getViewing().getID(), request.json.get('ticketType'))
-    print(ticketPrice)
     ticket = bs.Ticket(request.json.get('ticketType'), price=ticketPrice)
 
     confirmation = booking.addTicket(ticket)
@@ -230,7 +227,6 @@ def removeTicket():
     sessionID = getSession()
 
     booking = bs.Bookings.getBookingByID(sessionID)
-    print(request.json.get('ticketType'))
     booking.removeTicketOfType(request.json.get('ticketType'))
     booking.resetSeats()
     return json.dumps({'status': '200'})
@@ -331,7 +327,6 @@ def testBookings():
 
     bs.Viewings.getAllViewingsFromDB()
     viewing = bs.Viewings.getAllViewingsFromDB()[1]
-    print(viewing)
     booking = bs.Bookings.newBooking(sessionID, viewing)
     ticket = bs.Ticket(2)
     ticket2 = bs.Ticket(1)
