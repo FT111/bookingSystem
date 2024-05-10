@@ -232,6 +232,7 @@ const renderViewings = (viewings) => {
 
 document.addEventListener('keydown', (event) => {
     if (event.metaKey && event.key === 'k' || event.ctrlKey && event.key === 'k') {
+        event.preventDefault();
         let searchBox = document.getElementById('searchBar');
         searchBox.focus();
     }
