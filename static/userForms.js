@@ -108,13 +108,16 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.status !== 200) {
                 newError(data.body);
+                console.log(data);
                 return;
             }
 
+            let Name =  formValues.Name.split(' ');
+
             let newUser = {
                 'ID': data.body,
-                'firstName': formValues.Name.split(' ')[0],
-                'Surname': formValues.Name.split(' ')[1],
+                'firstName': Name[0],
+                'Surname': Name[Name.length -1],
                 'emailAddress': formValues.Email,
                 'phoneNumber': formValues.phoneNumber
             }

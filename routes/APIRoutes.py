@@ -160,13 +160,19 @@ def newCustomer():
     requiredFields = ['Name', 'Email', 'phoneNumber']
     missingFields = [field for field in requiredFields if field not in request.json.keys()]
 
+    # Validates all fields have been provided
     if missingFields:
         return Response(f'{{"body": "Missing required fields: {", ".join(missingFields)}"}}', status=400,
                         mimetype='application/json')
 
     splitName = request.json.get('Name').split(' ')
     firstName = splitName[0]
-    surname = splitName[len(splitName) - 1]
+
+    # Supports languages without surnames
+    if len(splitName) != 1:
+        surname = splitName[len(splitName) - 1]
+    else:
+        surname = ''
 
     newCust = bs.Customers.newCustomer(firstName=firstName,
                                        surname=surname,
@@ -181,7 +187,7 @@ def newCustomer():
         booking = bs.Bookings.getBookingByID(sessionID)
         booking.setCustomer(newCust)
 
-    return Response(f'{{"body": "{str(newCust.getID())}"}}', status=200, mimetype='application/json')
+    return Response(f'{{"body": "{str(newCust.getID())}", "status": 200}}', status=200, mimetype='application/json')
 
 
 @apiRoutes.route('/bookings/startNewBooking', methods=['POST'])
