@@ -32,7 +32,7 @@ let edit = false;
         </ul>
     </div>
 
-<h1 class="text-3xl sm:text-6xl mt-9 text-center text-bg-base-200 align-middle font-bold">Select a Viewing</h1>
+<h1 class="text-3xl sm:text-6xl mt-9 text-center text-bg-base-200 align-middle font-bold">Select an Upcoming Viewing</h1>
 </div>
 
 {% if viewings|length != 0 %}
@@ -41,16 +41,16 @@ let edit = false;
 
     <div class="bg-base-300 drop-shadow-md sticky top-[4.1rem] z-50 rounded-box p-3 gap-5 flex justify-between">
 
-       <select id="orderSelector" onchange="getSort()" class="select w-full max-w-xs rounded-box">
-            <option value="earliest">Earliest first</option>
-            <option value="latest">Latest First</option>
-        </select>
+           <select id="orderSelector" onchange="getSort()" class="select w-full max-w-xs rounded-box">
+                <option value="earliest">Earliest first</option>
+                <option value="latest">Latest First</option>
+            </select>
 
-        <label class="input flex items-center gap-2 w-full rounded-box max-w-xs">
-            <input class="w-full" type="text" onfocusout="hideEnter()" onfocus="showEnter()" onkeyup="searchName()" id="searchBar" placeholder="Search by title" class="grow" />
-            <kbd class="kbd kbd-sm unfocusedKbd hidden md:block">/</kbd>
-            <kbd id='enter' class="kbd kbd-sm hidden">⏎</kbd>
-        </label>   
+            <label class="input flex items-center gap-2 w-full rounded-box max-w-xs">
+                <input class="w-full" type="text" onfocusout="hideEnter()" onfocus="showEnter()" onkeyup="searchName()" id="searchBar" placeholder="Search by title" class="grow" />
+                <kbd class="kbd kbd-sm unfocusedKbd hidden md:block">/</kbd>
+                <kbd id='enter' class="kbd kbd-sm hidden">⏎</kbd>
+            </label>
     </div>
 
     <div id="viewingsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 min-[2000px]:grid-cols-5 gap-5">
