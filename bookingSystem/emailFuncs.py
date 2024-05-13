@@ -18,8 +18,6 @@ class EmailFuncs:
         assert self.emailProvider is not None, 'EMAIL_PROVIDER not found in .env'
         assert self.emailPort is not None, 'EMAIL_PORT not found in .env'
 
-        print(os.environ)
-
     def sendHTMLMail(self, toAddress, subject, body, imageLocs: list[str] = None):
         msg = MIMEMultipart()
         msg['From'] = self.emailAddress

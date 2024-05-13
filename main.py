@@ -22,7 +22,6 @@ class BookingSystemWebApp:
         self.app.register_blueprint(apiRoutes, url_prefix='/api')
 
     def run(self):
-        # deepcode ignore RunWithDebugTrue: Development server
         self.app.run(port=8000, host='0.0.0.0')
 
 
